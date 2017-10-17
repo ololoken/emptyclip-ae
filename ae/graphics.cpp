@@ -480,18 +480,28 @@ void _Graphics::DrawRectangle3D(const glm::vec2 &Start, const glm::vec2 &End, bo
 
 	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0f)));
 
-	float Vertices[] = {
-		Start.x, Start.y,
-		End.x  , Start.y,
-		End.x  , End.y  ,
-		Start.x, End.y  ,
-	};
+	if(Filled) {
+		float Vertices[] = {
+			Start.x, End.y  ,
+			End.x  , End.y  ,
+			Start.x, Start.y,
+			End.x  , Start.y,
+		};
 
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, Vertices);
-	if(Filled)
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, Vertices);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	else
+	}
+	else {
+		float Vertices[] = {
+			Start.x, Start.y,
+			End.x  , Start.y,
+			End.x  , End.y  ,
+			Start.x, End.y  ,
+		};
+
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, Vertices);
 		glDrawArrays(GL_LINE_LOOP, 0, 4);
+	}
 }
 
 // Draw rectangle

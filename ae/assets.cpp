@@ -173,9 +173,10 @@ void _Assets::LoadPrograms(const std::string &Path) {
 		std::getline(File, VertexPath, '\t');
 		std::getline(File, FragmentPath, '\t');
 
-		// Get attrib count
+		// Get integer parameters
 		int Attribs;
-		File >> Attribs;
+		int MaxLights;
+		File >> Attribs >> MaxLights;
 
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
@@ -192,7 +193,7 @@ void _Assets::LoadPrograms(const std::string &Path) {
 			Shaders[FragmentPath] = new _Shader(FragmentPath, GL_FRAGMENT_SHADER);
 
 		// Create program
-		Programs[Name] = new _Program(Name, Shaders[VertexPath], Shaders[FragmentPath], Attribs);
+		Programs[Name] = new _Program(Name, Shaders[VertexPath], Shaders[FragmentPath], Attribs, MaxLights);
 	}
 
 	File.close();

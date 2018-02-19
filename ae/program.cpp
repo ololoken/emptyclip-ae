@@ -25,15 +25,15 @@
 #include <stdexcept>
 
 // Load a program from two shaders
-_Program::_Program(const std::string &Name, const _Shader *VertexShader, const _Shader *FragmentShader, int Attribs) :
+_Program::_Program(const std::string &Name, const _Shader *VertexShader, const _Shader *FragmentShader, int Attribs, int MaxLights) :
 	Name(Name),
 	ViewProjectionTransformID(-1),
 	ModelTransformID(-1),
-	LightPositionID(-1),
-	LightAttenuationID(-1),
 	AmbientLightID(-1),
+	LightCountID(-1),
 	Attribs(Attribs),
-	LightAttenuation(1.0f, 0.0f, 0.0f),
+	LightCount(0),
+	Lights(nullptr),
 	AmbientLight(1.0f) {
 
 	// Create program
@@ -58,6 +58,10 @@ _Program::_Program(const std::string &Name, const _Shader *VertexShader, const _
 		throw std::runtime_error(ErrorMessage);
 	}
 
+	// Setup lights
+	if(MaxLights)
+		Lights = new _Light[MaxLights]();
+
 	// Get uniforms
 	SamplerIDs[0] = glGetUniformLocation(ID, "sampler0");
 	glBindAttribLocation(ID, 0, "vertex_pos");
@@ -66,13 +70,20 @@ _Program::_Program(const std::string &Name, const _Shader *VertexShader, const _
 
 	ViewProjectionTransformID = glGetUniformLocation(ID, "view_projection_transform");
 	ModelTransformID = glGetUniformLocation(ID, "model_transform");
-	LightPositionID = glGetUniformLocation(ID, "light_position");
-	LightAttenuationID = glGetUniformLocation(ID, "light_attenuation");
 	AmbientLightID = glGetUniformLocation(ID, "ambient_light");
+	LightCountID = glGetUniformLocation(ID, "light_count");
+
+	for(int i = 0; i < MaxLights; i++) {
+		std::string LightPositionName = "lights[" + std::to_string(i) + "].position";
+		std::string LightColorName = "lights[" + std::to_string(i) + "].color";
+		Lights[i].PositionID = glGetUniformLocation(ID, LightPositionName.c_str());
+		Lights[i].ColorID = glGetUniformLocation(ID, LightColorName.c_str());
+	}
 }
 
 // Destructor
 _Program::~_Program() {
+	delete[] Lights;
 	glDeleteProgram(ID);
 }
 
@@ -84,14 +95,16 @@ void _Program::Use() const {
 	if(SamplerIDs[0] != -1)
 		glUniform1i(SamplerIDs[0], 0);
 
-	if(LightPositionID != -1)
-		glUniform3fv(LightPositionID, 1, &LightPosition[0]);
-
-	if(LightAttenuationID != -1)
-		glUniform3fv(LightAttenuationID, 1, &LightAttenuation[0]);
-
 	if(AmbientLightID != -1)
 		glUniform4fv(AmbientLightID, 1, &AmbientLight[0]);
+
+	if(LightCountID != -1)
+		glUniform1i(LightCountID, LightCount);
+
+	for(int i = 0; i < LightCount; i++) {
+		glUniform3fv(Lights[i].PositionID, 1, &Lights[i].Position[0]);
+		glUniform4fv(Lights[i].ColorID, 1, &Lights[i].Color[0]);
+	}
 }
 
 // Loads a shader

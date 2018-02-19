@@ -26,12 +26,22 @@
 
 class _Shader;
 
+// Light
+struct _Light {
+	_Light() : PositionID(-1), ColorID(-1) { }
+
+	GLint PositionID;
+	GLint ColorID;
+	glm::vec3 Position;
+	glm::vec4 Color;
+};
+
 // Program
 class _Program {
 
 	public:
 
-		_Program(const std::string &Name, const _Shader *VertexShader, const _Shader *FragmentShader, int Attribs);
+		_Program(const std::string &Name, const _Shader *VertexShader, const _Shader *FragmentShader, int Attribs, int MaxLights);
 		~_Program();
 
 		void Use() const;
@@ -41,13 +51,14 @@ class _Program {
 		GLuint ID;
 		GLint ViewProjectionTransformID;
 		GLint ModelTransformID;
-		GLint LightPositionID;
-		GLint LightAttenuationID;
 		GLint AmbientLightID;
-		int Attribs;
+		GLint LightCountID;
 
-		glm::vec3 LightPosition;
-		glm::vec3 LightAttenuation;
+		int Attribs;
+		int MaxLights;
+
+		int LightCount;
+		_Light *Lights;
 		glm::vec4 AmbientLight;
 
 	private:

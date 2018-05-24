@@ -61,6 +61,8 @@ _Element::_Element() :
 	Atlas(nullptr),
 	TextureIndex(0),
 	Fade(1.0f),
+	Size(0.0f, 0.0f),
+	Offset(0.0f, 0.0f),
 	HitElement(nullptr),
 	PressedElement(nullptr),
 	ReleasedElement(nullptr),

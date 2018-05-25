@@ -21,6 +21,10 @@
 
 // Constructor
 _RigidBody::_RigidBody() :
+	LastPosition(0.0f, 0.0f),
+	Position(0.0f, 0.0f),
+	Velocity(0.0f, 0.0f),
+	Acceleration(0.0f, 0.0f),
 	InverseMass(0.0f),
 	Restitution(1.0f),
 	CollisionMask(0),

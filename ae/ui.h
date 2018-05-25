@@ -38,7 +38,7 @@ namespace tinyxml2 {
 
 // Bounds struct
 struct _Bounds {
-	_Bounds() { }
+	_Bounds() : Start(0.0f, 0.0f), End(0.0f, 0.0f) { }
 	_Bounds(const glm::vec2 &Start, const glm::vec2 &End) : Start(Start), End(End) { }
 	_Bounds(const glm::vec4 &Bounds) : Start(Bounds[0], Bounds[1]), End(Bounds[2], Bounds[3]) { }
 	bool Inside(const glm::vec2 &Point) { return Point.x >= Start.x && Point.y >= Start.y && Point.x < End.x && Point.y < End.y; }
@@ -72,6 +72,9 @@ struct _Alignment {
 // Style struct
 struct _Style {
 	_Style() :
+		TextureColor(0.0f),
+		BackgroundColor(0.0f),
+		BorderColor(0.0f),
 		HasBackgroundColor(false),
 		HasBorderColor(false),
 		Program(nullptr),

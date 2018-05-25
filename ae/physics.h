@@ -29,6 +29,8 @@ class _Shape {
 
 	public:
 
+		_Shape() : HalfWidth(0.0f, 0.0f) { }
+
 		// AABB
 		bool IsAABB() { return HalfWidth[1] != 0.0f; }
 		glm::vec4 GetAABB(const glm::vec2 &Position);
@@ -39,7 +41,7 @@ class _Shape {
 
 // Physics response
 struct _Manifold {
-	_Manifold() : ObjectA(nullptr), ObjectB(nullptr), Penetration(0.0f) { }
+	_Manifold() : ObjectA(nullptr), ObjectB(nullptr), Normal(0.0f, 0.0f), Penetration(0.0f) { }
 	bool IsDiagonal() const { return Normal.x != 0 && Normal.y != 0; }
 
 	void *ObjectA;

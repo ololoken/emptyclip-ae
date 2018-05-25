@@ -53,7 +53,7 @@ _Element::_Element() :
 	MaskOutside(false),
 	Stretch(false),
 	Debug(0),
-	Color(1.0f, 1.0f, 1.0f, 1.0f),
+	Color(1.0f),
 	Style(nullptr),
 	HoverStyle(nullptr),
 	DisabledStyle(nullptr),
@@ -71,7 +71,7 @@ _Element::_Element() :
 	CursorPosition(0),
 	CursorTimer(0),
 	Password(false),
-	ChildrenOffset(0, 0) {
+	ChildrenOffset(0.0f, 0.0f) {
 }
 
 // Constructor for loading from xml

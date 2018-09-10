@@ -22,51 +22,13 @@
 #include <ae/opengl.h>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
-#include <string>
 
-class _Shader;
-struct _Light;
+// Light
+struct _Light {
+	_Light() : PositionID(-1), ColorID(-1), Position(0.0f, 0.0f, 0.0f), Color(1.0f) { }
 
-// Program
-class _Program {
-
-	public:
-
-		_Program(const std::string &Name, const _Shader *VertexShader, const _Shader *FragmentShader, int Attribs, int MaxLights);
-		~_Program();
-
-		void Use() const;
-
-		std::string Name;
-
-		GLuint ID;
-		GLint ViewProjectionTransformID;
-		GLint ModelTransformID;
-		GLint AmbientLightID;
-		GLint LightCountID;
-		int Attribs;
-
-		int MaxLights;
-		int LightCount;
-		_Light *Lights;
-		glm::vec4 AmbientLight;
-
-	private:
-
-		GLint SamplerIDs[4];
-
-};
-
-// Shader
-class _Shader {
-
-	public:
-
-		_Shader(const std::string &Path, GLenum ProgramType);
-		~_Shader();
-
-		GLuint ID;
-
-	private:
-
+	GLint PositionID;
+	GLint ColorID;
+	glm::vec3 Position;
+	glm::vec4 Color;
 };

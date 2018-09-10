@@ -77,8 +77,10 @@ _Program::_Program(const std::string &Name, const _Shader *VertexShader, const _
 	for(int i = 0; i < MaxLights; i++) {
 		std::string LightPositionName = "lights[" + std::to_string(i) + "].position";
 		std::string LightColorName = "lights[" + std::to_string(i) + "].color";
+		std::string LightRadiusName = "lights[" + std::to_string(i) + "].radius";
 		Lights[i].PositionID = glGetUniformLocation(ID, LightPositionName.c_str());
 		Lights[i].ColorID = glGetUniformLocation(ID, LightColorName.c_str());
+		Lights[i].RadiusID = glGetUniformLocation(ID, LightRadiusName.c_str());
 	}
 }
 
@@ -105,6 +107,7 @@ void _Program::Use() const {
 	for(int i = 0; i < LightCount; i++) {
 		glUniform3fv(Lights[i].PositionID, 1, &Lights[i].Position[0]);
 		glUniform4fv(Lights[i].ColorID, 1, &Lights[i].Color[0]);
+		glUniform1fv(Lights[i].RadiusID, 1, &Lights[i].Radius);
 	}
 }
 

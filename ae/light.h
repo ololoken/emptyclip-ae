@@ -25,10 +25,12 @@
 
 // Light
 struct _Light {
-	_Light() : PositionID(-1), ColorID(-1), Position(0.0f, 0.0f, 0.0f), Color(1.0f) { }
+	_Light() : PositionID(-1), ColorID(-1), RadiusID(-1), Position(0.0f, 0.0f, 0.0f), Color(1.0f), Radius(1.0f) { }
 
 	GLint PositionID;
 	GLint ColorID;
+	GLint RadiusID;
 	glm::vec3 Position;
 	glm::vec4 Color;
+	float Radius;
 };

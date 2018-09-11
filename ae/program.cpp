@@ -33,6 +33,7 @@ _Program::_Program(const std::string &Name, const _Shader *VertexShader, const _
 	AmbientLightID(-1),
 	LightCountID(-1),
 	Attribs(Attribs),
+	MaxLights(MaxLights),
 	LightCount(0),
 	Lights(nullptr),
 	AmbientLight(1.0f) {

@@ -23,6 +23,7 @@
 #include <ae/texture.h>
 #include <ae/ui.h>
 #include <SDL.h>
+#include <SDL_mouse.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/constants.hpp>

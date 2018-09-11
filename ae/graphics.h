@@ -24,7 +24,6 @@
 #include <glm/vec2.hpp>
 #include <glm/mat4x4.hpp>
 #include <SDL_video.h>
-#include <SDL_mouse.h>
 #include <string>
 
 // Forward Declarations
@@ -32,6 +31,7 @@ class _Texture;
 class _Program;
 class _Element;
 struct _Bounds;
+struct SDL_Cursor;
 
 enum VertexBufferType {
 	VBO_NONE,

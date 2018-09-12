@@ -32,7 +32,7 @@ class _Shape {
 		_Shape() : HalfWidth(0.0f, 0.0f) { }
 
 		// AABB
-		bool IsAABB() { return HalfWidth[1] != 0.0f; }
+		bool IsAABB() const { return HalfWidth[1] != 0.0f; }
 		glm::vec4 GetAABB(const glm::vec2 &Position);
 
 		// Properties

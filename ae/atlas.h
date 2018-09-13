@@ -22,6 +22,8 @@
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
 
+namespace ae {
+
 // Forward Declarations
 class _Texture;
 
@@ -50,3 +52,5 @@ class _Atlas {
 		uint32_t Columns;
 
 };
+
+}

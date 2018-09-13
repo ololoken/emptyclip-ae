@@ -29,6 +29,8 @@
 #include <glm/gtc/constants.hpp>
 #include <stdexcept>
 
+namespace ae {
+
 _Graphics Graphics;
 
 // Initializes the graphics system
@@ -741,3 +743,5 @@ void _Graphics::DisableStencilTest() { glDisable(GL_STENCIL_TEST); }
 void _Graphics::EnableScissorTest() { glEnable(GL_SCISSOR_TEST); }
 void _Graphics::DisableScissorTest() { glDisable(GL_SCISSOR_TEST); }
 void _Graphics::ShowCursor(int Type) { SDL_SetCursor(Cursors[Type]); }
+
+}

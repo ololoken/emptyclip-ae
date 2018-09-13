@@ -25,6 +25,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <stdexcept>
 
+namespace ae {
+
 // Load a program from two shaders
 _Program::_Program(const std::string &Name, const _Shader *VertexShader, const _Shader *FragmentShader, int Attribs, int MaxLights) :
 	Name(Name),
@@ -149,4 +151,6 @@ _Shader::_Shader(const std::string &Path, GLenum ProgramType) {
 // Destructor
 _Shader::~_Shader() {
 	glDeleteShader(ID);
+}
+
 }

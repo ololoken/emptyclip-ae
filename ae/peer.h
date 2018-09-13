@@ -26,6 +26,8 @@
 struct _ENetPeer;
 class _Object;
 
+namespace ae {
+
 // Peer
 class _Peer {
 
@@ -41,3 +43,5 @@ class _Peer {
 		uint16_t LastAck;
 
 };
+
+}

@@ -28,6 +28,8 @@
 struct sqlite3;
 struct sqlite3_stmt;
 
+namespace ae {
+
 // Classes
 class _Database {
 
@@ -64,3 +66,5 @@ class _Database {
 		std::unordered_map<std::string, int> ColumnIndexes[2];
 
 };
+
+}

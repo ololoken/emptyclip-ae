@@ -22,6 +22,8 @@
 #include <stdexcept>
 #include <vector>
 
+namespace ae {
+
 _Audio Audio;
 
 // Function to run the audio thread
@@ -460,4 +462,6 @@ void _Audio::SetMusicVolume(float Volume) {
 
 	MusicVolume = std::min(std::max(Volume, 0.0f), 1.0f);
 	alSourcef(MusicSource, AL_GAIN, MusicVolume);
+}
+
 }

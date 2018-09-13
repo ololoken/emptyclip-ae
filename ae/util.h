@@ -23,6 +23,8 @@
 #include <string>
 #include <sstream>
 
+namespace ae {
+
 const char *LoadFileIntoMemory(const char *Path);
 std::string RemoveExtension(const std::string &Path);
 std::string TrimString(const std::string &String);
@@ -39,3 +41,5 @@ inline T ToNumber(const std::string &String) {
 }
 
 inline float Round(float Number) { return (int)(Number * 10) / 10.0f; }
+
+}

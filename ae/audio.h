@@ -26,6 +26,8 @@
 #include <list>
 #include <string>
 
+namespace ae {
+
 // Sound class
 class _Sound {
 
@@ -122,3 +124,5 @@ class _Audio {
 };
 
 extern _Audio Audio;
+
+}

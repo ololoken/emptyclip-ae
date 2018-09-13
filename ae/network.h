@@ -25,11 +25,14 @@
 #include <queue>
 #include <cstdint>
 
+typedef struct _ENetEvent ENetEvent;
+typedef struct _ENetHost ENetHost;
+
+namespace ae {
+
 // Forward Declarations
 class _Buffer;
 class _Peer;
-typedef struct _ENetEvent ENetEvent;
-typedef struct _ENetHost ENetHost;
 
 // Network Event
 struct _NetworkEvent {
@@ -111,3 +114,5 @@ class _Network {
 		double FakeLag;
 		std::queue<_NetworkEvent> NetworkEvents;
 };
+
+}

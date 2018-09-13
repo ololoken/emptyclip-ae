@@ -23,6 +23,8 @@
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
 
+namespace ae {
+
 // Bounds struct
 struct _Bounds {
 	_Bounds() : Start(0.0f, 0.0f), End(0.0f, 0.0f) { }
@@ -33,3 +35,5 @@ struct _Bounds {
 	glm::vec2 Start;
 	glm::vec2 End;
 };
+
+}

@@ -22,6 +22,8 @@
 // Libraries
 #include <ae/type.h>
 
+namespace ae {
+
 // Classes
 class _BaseObject {
 
@@ -38,3 +40,5 @@ class _BaseObject {
 	protected:
 
 };
+
+}

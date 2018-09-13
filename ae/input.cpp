@@ -23,6 +23,8 @@
 #include <SDL_keyboard.h>
 #include <SDL_mouse.h>
 
+namespace ae {
+
 _Input Input;
 
 const std::string MouseButtonNames[] = {
@@ -78,4 +80,6 @@ bool _Input::ModKeyDown(int Key) {
 // Returns true if a mouse button is down
 bool _Input::MouseDown(uint32_t Button) {
 	return MouseState & SDL_BUTTON(Button);
+}
+
 }

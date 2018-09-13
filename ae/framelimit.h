@@ -22,6 +22,8 @@
 // Libraries
 #include <SDL_timer.h>
 
+namespace ae {
+
 class _FrameLimit {
 
 	public:
@@ -63,3 +65,5 @@ class _FrameLimit {
 		// Time
 		Uint64 Timer;
 };
+
+}

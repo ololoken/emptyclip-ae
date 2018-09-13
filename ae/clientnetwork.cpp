@@ -23,6 +23,8 @@
 #include <enet/enet.h>
 #include <stdexcept>
 
+namespace ae {
+
 // Constructor
 _ClientNetwork::_ClientNetwork()
 :	ConnectionState(State::DISCONNECTED),
@@ -123,4 +125,6 @@ uint32_t _ClientNetwork::GetRTT() {
 		return 0;
 
 	return Peer->ENetPeer->roundTripTime;
+}
+
 }

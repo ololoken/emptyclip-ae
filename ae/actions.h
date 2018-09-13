@@ -26,6 +26,8 @@
 #include <string>
 #include <vector>
 
+namespace ae {
+
 // Constants
 const int ACTIONS_MAXINPUTS = SDL_NUM_SCANCODES;
 
@@ -78,3 +80,5 @@ class _Actions {
 };
 
 extern _Actions Actions;
+
+}

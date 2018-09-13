@@ -23,6 +23,8 @@
 #include <string>
 #include <glm/vec2.hpp>
 
+namespace ae {
+
 struct _KeyEvent {
 	_KeyEvent(const char *Text, int Scancode, bool Pressed, bool Repeat) : Text(Text), Scancode(Scancode), Pressed(Pressed), Repeat(Repeat) { }
 	const char *Text;
@@ -74,3 +76,5 @@ class _Input {
 };
 
 extern _Input Input;
+
+}

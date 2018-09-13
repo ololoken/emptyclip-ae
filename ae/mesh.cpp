@@ -24,6 +24,8 @@
 #include <limits>
 #include <map>
 
+namespace ae {
+
 // Constructor
 _Mesh::_Mesh(const std::string &Path) :
 	Identifier(Path),
@@ -221,4 +223,6 @@ void _Mesh::ConvertOBJ(const std::string &Path) {
 	OutFile.write((char *)PackedIndices.data(), sizeof(GLuint) * IndexCount);
 
 	OutFile.close();
+}
+
 }

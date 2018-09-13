@@ -24,6 +24,8 @@
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
 
+namespace ae {
+
 // Physics shape
 class _Shape {
 
@@ -79,3 +81,5 @@ class _RigidBody {
 		void RungeKutta4Evaluate(const _RigidBody &Derivative, float DeltaTime, _RigidBody &Output);
 
 };
+
+}

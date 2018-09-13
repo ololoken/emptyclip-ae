@@ -22,5 +22,9 @@
 // Libraries
 #include <cstdint>
 
+namespace ae {
+
 // Types
 typedef uint16_t NetworkIDType;
+
+}

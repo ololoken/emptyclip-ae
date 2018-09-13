@@ -22,6 +22,8 @@
 #include <ae/assets.h>
 #include <fstream>
 
+namespace ae {
+
 _Actions Actions;
 
 // Reset the action state
@@ -142,4 +144,6 @@ void _Actions::InputEvent(_State *GameState, int InputType, int Input, float Val
 		if(GameState->HandleAction(InputType, MapIterator.Action, (int)InputValue))
 			break;
 	}
+}
+
 }

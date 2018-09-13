@@ -29,6 +29,8 @@
 #include <functional>
 #include <iostream>
 
+namespace ae {
+
 // Get next power of two
 inline uint32_t GetNextPowerOf2(uint32_t Value) {
 	--Value;
@@ -509,4 +511,6 @@ void _Font::BreakupString(const std::string &Text, float Width, std::list<std::s
 
 	// Add last cut
 	Strings.push_back(Text.substr(StartCut, Text.size()));
+}
+
 }

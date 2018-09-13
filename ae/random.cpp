@@ -19,6 +19,8 @@
 *******************************************************************************/
 #include <ae/random.h>
 
+namespace ae {
+
 std::mt19937 RandomGenerator;
 
 int GetRandomInt(int Min, int Max) {
@@ -39,4 +41,6 @@ uint64_t GetRandomInt(uint64_t Min, uint64_t Max) {
 double GetRandomReal(double Min, double Max) {
 	std::uniform_real_distribution<double> Distribution(Min, Max);
 	return Distribution(RandomGenerator);
+}
+
 }

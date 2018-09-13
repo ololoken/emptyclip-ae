@@ -24,6 +24,8 @@
 #include <glm/vec4.hpp>
 #include <string>
 
+namespace ae {
+
 class _Shader;
 struct _Light;
 
@@ -70,3 +72,5 @@ class _Shader {
 	private:
 
 };
+
+}

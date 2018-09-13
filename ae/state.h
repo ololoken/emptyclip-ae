@@ -23,6 +23,8 @@
 #include <ae/input.h>
 #include <cstdint>
 
+namespace ae {
+
 // Classes
 class _State {
 
@@ -49,3 +51,5 @@ class _State {
 	private:
 
 };
+
+}

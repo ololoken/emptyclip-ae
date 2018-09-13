@@ -19,6 +19,8 @@
 *******************************************************************************/
 #pragma once
 
+namespace ae {
+
 // Classes
 template<class T> class _CircularBuffer {
 
@@ -150,3 +152,5 @@ template<class T> class _CircularBuffer {
 		// Pointers
 		int ReadIndex, WriteIndex;
 };
+
+}

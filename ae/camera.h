@@ -24,6 +24,8 @@
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 
+namespace ae {
+
 // Camera class
 class _Camera {
 
@@ -65,3 +67,5 @@ class _Camera {
 
 		glm::vec4 AABB;
 };
+
+}

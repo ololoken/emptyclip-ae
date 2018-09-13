@@ -26,6 +26,8 @@
 #include <vector>
 #include <cstring>
 
+namespace ae {
+
 // Struct for an interleaved vertex
 struct _PackedVertex {
 
@@ -70,3 +72,5 @@ class _Mesh {
 	private:
 
 };
+
+}

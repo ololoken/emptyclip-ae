@@ -22,6 +22,8 @@
 // Libraries
 #include <ae/network.h>
 
+namespace ae {
+
 // Forward Declarations
 class _Buffer;
 class _Peer;
@@ -55,3 +57,5 @@ class _ServerNetwork : public _Network {
 		// Peers
 		std::list<_Peer *> Peers;
 };
+
+}

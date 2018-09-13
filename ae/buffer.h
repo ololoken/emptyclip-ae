@@ -22,6 +22,8 @@
 // Libraries
 #include <cstddef>
 
+namespace ae {
+
 // Classes
 class _Buffer {
 
@@ -79,3 +81,5 @@ class _Buffer {
 		size_t AllocatedSize, CurrentByte;
 		unsigned char CurrentBit;
 };
+
+}

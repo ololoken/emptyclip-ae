@@ -25,6 +25,8 @@
 #include <unordered_map>
 #include <string>
 
+namespace ae {
+
 // Forward Declarations
 class _Font;
 class _Element;
@@ -96,3 +98,5 @@ class _Assets {
 };
 
 extern _Assets Assets;
+
+}

@@ -28,6 +28,8 @@
 #include <list>
 #include FT_FREETYPE_H
 
+namespace ae {
+
 // Forward Declarations
 class _Texture;
 class _Program;
@@ -84,3 +86,5 @@ class _Font {
 		FT_Face Face;
 		FT_Int32 LoadFlags;
 };
+
+}

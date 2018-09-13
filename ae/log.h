@@ -24,6 +24,8 @@
 #include <iostream>
 #include <ctime>
 
+namespace ae {
+
 // Log file class
 class _LogFile {
 
@@ -101,4 +103,6 @@ inline void _LogFile::GetDateString(char *Buffer) {
 	time_t Now = time(0);
 	tm *LocalTime = localtime(&Now);
 	strftime(Buffer, 64, "%Y-%m-%dT%H:%M:%S%z", LocalTime);
+}
+
 }

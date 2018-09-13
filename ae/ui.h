@@ -27,15 +27,19 @@
 #include <list>
 
 // Forward Declarations
+namespace tinyxml2 {
+	class XMLDocument;
+	class XMLElement;
+}
+
+namespace ae {
+
+// Forward Declarations
 class _Font;
 class _Texture;
 class _Atlas;
 class _Program;
 struct _KeyEvent;
-namespace tinyxml2 {
-	class XMLDocument;
-	class XMLElement;
-}
 
 // Alignment struct
 struct _Alignment {
@@ -191,3 +195,5 @@ const _Alignment CENTER_MIDDLE    = _Alignment(_Alignment::CENTER, _Alignment::M
 const _Alignment LEFT_BASELINE    = _Alignment(_Alignment::LEFT,   _Alignment::BASELINE);
 const _Alignment RIGHT_BASELINE   = _Alignment(_Alignment::RIGHT,  _Alignment::BASELINE);
 const _Alignment CENTER_BASELINE  = _Alignment(_Alignment::CENTER, _Alignment::BASELINE);
+
+}

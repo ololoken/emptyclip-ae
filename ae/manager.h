@@ -26,6 +26,8 @@
 #include <limits>
 #include <stdexcept>
 
+namespace ae {
+
 // Classes
 template<class T> class _Manager {
 
@@ -155,4 +157,6 @@ void _Manager<T>::Clear() {
 	IDMap.clear();
 	Objects.clear();
 	NextID = 0;
+}
+
 }

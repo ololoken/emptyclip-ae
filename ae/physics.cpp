@@ -19,6 +19,8 @@
 *******************************************************************************/
 #include <ae/physics.h>
 
+namespace ae {
+
 // Constructor
 _RigidBody::_RigidBody() :
 	LastPosition(0.0f, 0.0f),
@@ -94,4 +96,6 @@ glm::vec4 _Shape::GetAABB(const glm::vec2 &Position) {
 			Position.y + HalfWidth.x
 		);
 	}
+}
+
 }

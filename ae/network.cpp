@@ -23,6 +23,8 @@
 #include <enet/enet.h>
 #include <stdexcept>
 
+namespace ae {
+
 // Constructor
 _Network::_Network()
 :	Connection(nullptr),
@@ -109,4 +111,6 @@ void _Network::Update(double FrameTime) {
 		Connection->totalReceivedData = 0;
 		SecondTimer -= 1.0;
 	}
+}
+
 }

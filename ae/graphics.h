@@ -26,12 +26,15 @@
 #include <SDL_video.h>
 #include <string>
 
+struct SDL_Cursor;
+
+namespace ae {
+
 // Forward Declarations
 class _Texture;
 class _Program;
 class _Element;
 struct _Bounds;
-struct SDL_Cursor;
 
 enum VertexBufferType {
 	VBO_NONE,
@@ -153,3 +156,5 @@ class _Graphics {
 };
 
 extern _Graphics Graphics;
+
+}

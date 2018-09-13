@@ -23,6 +23,8 @@
 #include <string>
 #include <vector>
 
+namespace ae {
+
 // Class for getting a list of files in a directory
 class _Files {
 
@@ -33,3 +35,5 @@ class _Files {
 		std::vector<std::string> Nodes;
 		std::string Path;
 };
+
+}

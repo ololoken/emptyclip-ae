@@ -22,6 +22,8 @@
 #include <fstream>
 #include <regex>
 
+namespace ae {
+
 // Loads a file into a string
 const char *LoadFileIntoMemory(const char *Path) {
 
@@ -69,4 +71,6 @@ int MakeDirectory(const std::string &Path) {
 #else
 	return mkdir(Path.c_str(), 0755);
 #endif
+}
+
 }

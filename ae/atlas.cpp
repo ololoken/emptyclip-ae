@@ -20,6 +20,8 @@
 #include <ae/atlas.h>
 #include <ae/texture.h>
 
+namespace ae {
+
 // Constructor
 _Atlas::_Atlas(const _Texture *Texture, const glm::vec2 &Size, float Padding) :
 	Texture(Texture),
@@ -44,4 +46,6 @@ glm::vec4 _Atlas::GetTextureCoords(uint32_t Index) const {
 	float TexelOffsetY = TexelSize.y + Y * (Size.y + Padding * 2.0f) * TexelSize.y;
 
 	return glm::vec4(TexelOffsetX, TexelOffsetY, TexelOffsetX + TextureSizeInTexels.x, TexelOffsetY + TextureSizeInTexels.y);
+}
+
 }

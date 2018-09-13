@@ -23,6 +23,8 @@
 #include <glm/vec2.hpp>
 #include <string>
 
+namespace ae {
+
 // Classes
 class _Texture {
 
@@ -40,3 +42,5 @@ class _Texture {
 		glm::ivec2 Size;
 
 };
+
+}

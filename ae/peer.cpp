@@ -20,6 +20,8 @@
 #include <ae/peer.h>
 #include <enet/enet.h>
 
+namespace ae {
+
 // Constructor
 _Peer::_Peer(_ENetPeer *ENetPeer) :
 	ENetPeer(ENetPeer),
@@ -32,4 +34,6 @@ _Peer::_Peer(_ENetPeer *ENetPeer) :
 _Peer::~_Peer() {
 	if(ENetPeer)
 		enet_peer_reset(ENetPeer);
+}
+
 }

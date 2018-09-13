@@ -22,6 +22,8 @@
 #include <SDL_image.h>
 #include <stdexcept>
 
+namespace ae {
+
 // Load from file
 _Texture::_Texture(const std::string &Path, bool IsServer, bool Repeat, bool Mipmaps) {
 	if(IsServer) {
@@ -101,4 +103,6 @@ _Texture::_Texture(unsigned char *Data, const glm::ivec2 &Size, GLint InternalFo
 _Texture::~_Texture() {
 	if(ID)
 		glDeleteTextures(1, &ID);
+}
+
 }

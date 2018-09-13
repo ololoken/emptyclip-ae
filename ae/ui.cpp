@@ -31,6 +31,8 @@
 #include <algorithm>
 #include <iostream>
 
+namespace ae {
+
 _Element *FocusedElement = nullptr;
 const glm::vec4 DebugColors[] = {
 	{ 0.0f, 1.0f, 1.0f, 1.0f },
@@ -586,4 +588,6 @@ void _Element::AssignAttributeString(tinyxml2::XMLElement *Node, const char *Att
 	const char *Value = Node->Attribute(Attribute);
 	if(Value)
 		String = Value;
+}
+
 }

@@ -19,6 +19,8 @@
 *******************************************************************************/
 #include <ae/files.h>
 
+namespace ae {
+
 #ifdef _WIN32
 	#define WIN32_LEAN_AND_MEAN
 	#include <windows.h>
@@ -67,4 +69,6 @@ _Files::_Files(const std::string &Path) : Path(Path) {
 		}
 
 	#endif
+}
+
 }

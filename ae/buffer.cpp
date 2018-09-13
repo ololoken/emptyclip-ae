@@ -20,6 +20,8 @@
 #include <ae/buffer.h>
 #include <cstring>
 
+namespace ae {
+
 // Constructor for a new buffer
 _Buffer::_Buffer(size_t InitialSize) :
 	CurrentByte(0),
@@ -149,4 +151,6 @@ const char *_Buffer::ReadString() {
 	CurrentByte += strlen(String) + 1;
 
 	return String;
+}
+
 }

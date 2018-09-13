@@ -34,6 +34,8 @@
 #include <limits>
 #include <tinyxml2.h>
 
+namespace ae {
+
 _Assets Assets;
 
 // Initialize
@@ -441,4 +443,6 @@ void _Assets::SaveUI(const std::string &Path) {
 
 	// Write file
 	Document.SaveFile(Path.c_str());
+}
+
 }

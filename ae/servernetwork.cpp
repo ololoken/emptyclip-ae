@@ -23,6 +23,8 @@
 #include <enet/enet.h>
 #include <stdexcept>
 
+namespace ae {
+
 // Constructor
 _ServerNetwork::_ServerNetwork(size_t MaxPeers, uint16_t NetworkPort) {
 	ENetAddress Address;
@@ -122,4 +124,6 @@ void _ServerNetwork::BroadcastPacket(const _Buffer &Buffer, _Peer *ExceptionPeer
 		if(Peer != ExceptionPeer && Peer->Object)
 			SendPacket(Buffer, Peer, Type, Channel);
 	}
+}
+
 }

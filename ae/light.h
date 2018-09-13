@@ -23,6 +23,8 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
+namespace ae {
+
 // Light
 struct _Light {
 	_Light() : PositionID(-1), ColorID(-1), RadiusID(-1), Position(0.0f, 0.0f, 0.0f), Color(1.0f), Radius(1.0f) { }
@@ -34,3 +36,5 @@ struct _Light {
 	glm::vec4 Color;
 	float Radius;
 };
+
+}

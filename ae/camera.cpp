@@ -23,6 +23,8 @@
 #include <glm/gtx/norm.hpp>
 #include <cmath>
 
+namespace ae {
+
 // Initialize
 _Camera::_Camera(const glm::vec3 &Position, float UpdateDivisor, float Fovy, float Near, float Far)
 :	LastPosition(Position),
@@ -103,4 +105,6 @@ void _Camera::Update(double FrameTime) {
 // Interpolate between position and last position
 void _Camera::GetDrawPosition(double BlendFactor, glm::vec3 &DrawPosition) {
 	DrawPosition = Position * (float)BlendFactor + LastPosition * (1.0f - (float)BlendFactor);
+}
+
 }

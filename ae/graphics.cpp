@@ -718,7 +718,7 @@ void _Graphics::SetDepthTest(bool DepthTest) {
 
 // Set scissor region
 void _Graphics::SetScissor(const _Bounds &Bounds) {
-	glScissor((GLint)Bounds.Start.x, (GLint)(CurrentSize.y - Bounds.End.y - 1), (GLsizei)(Bounds.End.x - Bounds.Start.x + 1), (GLsizei)(Bounds.End.y - Bounds.Start.y + 1));
+	glScissor((GLint)Bounds.Start.x, (GLint)(CurrentSize.y - Bounds.End.y), (GLsizei)(Bounds.End.x - Bounds.Start.x), (GLsizei)(Bounds.End.y - Bounds.Start.y));
 }
 
 // Resets all the last used variables

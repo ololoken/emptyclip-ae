@@ -362,15 +362,9 @@ void _Graphics::DrawCenteredImage(const glm::ivec2 &Position, const _Texture *Te
 void _Graphics::DrawImage(const _Bounds &Bounds, const _Texture *Texture, bool Stretch) {
 	SetTextureID(Texture->ID);
 
-	// Get s and t
-	float S, T;
-	if(Stretch) {
-		S = T = 1;
-	}
-	else {
-		S = (Bounds.End.x - Bounds.Start.x) / (float)(Texture->Size.x);
-		T = (Bounds.End.y - Bounds.Start.y) / (float)(Texture->Size.y);
-	}
+	// Get texture coordinates
+	float S = Stretch ? 1.0f : (Bounds.End.x - Bounds.Start.x) / (float)(Texture->Size.x);
+	float T = Stretch ? 1.0f : (Bounds.End.y - Bounds.Start.y) / (float)(Texture->Size.y);
 
 	// Vertex data for quad
 	float Vertices[] = {
@@ -516,10 +510,10 @@ void _Graphics::DrawRectangle(const glm::vec2 &Start, const glm::vec2 &End, bool
 
 	if(Filled) {
 		float Vertices[] = {
-			Start.x + 0.0f, End.y   + 1.0f,
-			End.x   + 1.0f, End.y   + 1.0f,
-			Start.x + 0.0f, Start.y + 0.0f,
-			End.x   + 1.0f, Start.y + 0.0f,
+			Start.x, End.y,
+			End.x, End.y,
+			Start.x, Start.y,
+			End.x, Start.y,
 		};
 
 		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, Vertices);
@@ -527,10 +521,10 @@ void _Graphics::DrawRectangle(const glm::vec2 &Start, const glm::vec2 &End, bool
 	}
 	else {
 		float Vertices[] = {
-			Start.x + 0.5f, Start.y + 0.5f,
-			End.x   + 0.5f, Start.y + 0.5f,
-			End.x   + 0.5f, End.y   + 0.5f,
-			Start.x + 0.5f, End.y   + 0.5f,
+			Start.x + 0.50f, Start.y + 0.50f,
+			End.x   - 0.49f, Start.y + 0.50f,
+			End.x   - 0.49f, End.y   - 0.49f,
+			Start.x + 0.50f, End.y   - 0.49f,
 		};
 
 		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, Vertices);
@@ -554,10 +548,10 @@ void _Graphics::DrawMask(const _Bounds &Bounds) {
 	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
 
 	float Vertices[] = {
-		Bounds.Start.x + 0.0f, Bounds.End.y   + 1.0f,
-		Bounds.End.x   + 1.0f, Bounds.End.y   + 1.0f,
-		Bounds.Start.x + 0.0f, Bounds.Start.y + 0.0f,
-		Bounds.End.x   + 1.0f, Bounds.Start.y + 0.0f,
+		Bounds.Start.x, Bounds.End.y,
+		Bounds.End.x, Bounds.End.y,
+		Bounds.Start.x, Bounds.Start.y,
+		Bounds.End.x, Bounds.Start.y,
 	};
 
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, Vertices);

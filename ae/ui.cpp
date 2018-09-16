@@ -427,7 +427,7 @@ void _Element::Render() const {
 				// Draw cursor
 				if(CursorTimer < 0.5 && (FocusedElement == this || FocusedElement == Parent)) {
 					Graphics.SetProgram(Assets.Programs["ortho_pos"]);
-					Graphics.DrawRectangle(glm::vec2(StartPosition.x + TextBounds.Width+1, StartPosition.y - Font->MaxAbove), glm::vec2(StartPosition.x + TextBounds.Width+2, StartPosition.y + Font->MaxBelow));
+					Graphics.DrawRectangle(glm::vec2(StartPosition.x + TextBounds.Width+1, StartPosition.y - Font->MaxAbove), glm::vec2(StartPosition.x + TextBounds.Width+3, StartPosition.y + Font->MaxBelow));
 				}
 			}
 			else
@@ -486,7 +486,7 @@ void _Element::CalculateBounds() {
 		case _Alignment::CENTER:
 			if(Parent)
 				Bounds.Start.x += Parent->Size.x / 2;
-			Bounds.Start.x -= Size.x / 2;
+			Bounds.Start.x -= (int)(Size.x / 2);
 		break;
 		case _Alignment::RIGHT:
 			if(Parent)
@@ -500,7 +500,7 @@ void _Element::CalculateBounds() {
 		case _Alignment::MIDDLE:
 			if(Parent)
 				Bounds.Start.y += Parent->Size.y / 2;
-			Bounds.Start.y -= Size.y / 2;
+			Bounds.Start.y -= (int)(Size.y / 2);
 		break;
 		case _Alignment::BOTTOM:
 			if(Parent)

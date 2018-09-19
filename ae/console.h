@@ -60,6 +60,7 @@ class _Console {
 
 		// UI
 		_Element *Element;
+		_Element *InputElement;
 		_Style *Style;
 		const _Font *Font;
 		float FontHeight;

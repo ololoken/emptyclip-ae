@@ -31,6 +31,11 @@ _Console::_Console(const _Program *Program, const _Font *Font) :
 	Font(Font),
 	FontHeight(0.0f) {
 
+	// Get font dimensions
+	_TextBounds TextBounds;
+	Font->GetStringDimensions("Py", TextBounds);
+	FontHeight = TextBounds.AboveBase + TextBounds.BelowBase + 5;
+
 	// Add style
 	Style = new _Style();
 	Style->Program = Program;
@@ -42,14 +47,21 @@ _Console::_Console(const _Program *Program, const _Font *Font) :
 	Element->Parent = Graphics.Element;
 	Element->Style = Style;
 	Element->Alignment = LEFT_TOP;
-	Element->SetDebug(0);
-	UpdateSize();
 	Graphics.Element->Children.push_back(Element);
 
-	// Get font dimensions
-	_TextBounds TextBounds;
-	Font->GetStringDimensions("Py", TextBounds);
-	FontHeight = TextBounds.AboveBase + TextBounds.BelowBase + 5;
+	// Add background element
+	InputElement = new _Element();
+	InputElement->Parent = Element;
+	//InputElement->Style = Style;
+	InputElement->Alignment = LEFT_BASELINE;
+	InputElement->Size = glm::vec2(Graphics.Element->Size.x, FontHeight + 5);
+	InputElement->MaxLength = 255;
+	InputElement->Font = Font;
+	Element->Children.push_back(InputElement);
+
+	// Update size of main element
+	UpdateSize();
+
 }
 
 // Destructor
@@ -84,12 +96,14 @@ void _Console::Render(double BlendFactor) {
 
 // Toggle display of console
 void _Console::Toggle() {
-	Element->Active = !Element->Active;
+	Element->SetActive(!Element->Active);
+	ae::FocusedElement = Element->Active ? InputElement : nullptr;
 }
 
 // Update size of console based on parent element
 void _Console::UpdateSize() {
 	Element->Size = glm::vec2(Element->Parent->Size.x, Element->Parent->Size.y / 2.0f);
+	InputElement->Offset.y = Element->Size.y - FontHeight;
 	Element->CalculateBounds();
 }
 

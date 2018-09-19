@@ -124,10 +124,13 @@ class _Element {
 		void SetFade(float Fade);
 		void SetEnabled(bool Enabled);
 		void SetOffset(const glm::vec2 &Offset) { this->Offset = Offset; CalculateBounds(); }
+		void SetOffsetPercent(const glm::vec2 &Value) { Offset = Value * (Parent->Size - Size); CalculateBounds(); }
 		void SetWidth(float Width) { Size.x = Width; CalculateBounds(); }
 		void SetHeight(float Height) { Size.y = Height; CalculateBounds(); }
 		void SetText(const std::string &Text) { this->Text = Text; CursorPosition = Text.length(); }
 		void SetWrap(float Width);
+
+		glm::vec2 GetOffsetPercent() { return Offset / (Parent->Size - Size); }
 
 		// Attributes
 		std::string Name;
@@ -139,6 +142,7 @@ class _Element {
 		bool Enabled;
 		bool Checked;
 		bool Clickable;
+		bool Draggable;
 		bool MaskOutside;
 		bool Stretch;
 		int Debug;
@@ -164,6 +168,8 @@ class _Element {
 		_Element *HitElement;
 		_Element *PressedElement;
 		_Element *ReleasedElement;
+		glm::vec2 HitOffset;
+		glm::vec2 PressedOffset;
 
 		// Text
 		const _Font *Font;

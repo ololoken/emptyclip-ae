@@ -28,6 +28,7 @@
 #include <constants.h>
 #include <SDL_keycode.h>
 #include <tinyxml2.h>
+#include <glm/common.hpp>
 #include <algorithm>
 #include <iostream>
 
@@ -52,6 +53,7 @@ _Element::_Element() :
 	Enabled(true),
 	Checked(false),
 	Clickable(true),
+	Draggable(false),
 	MaskOutside(false),
 	Stretch(false),
 	Debug(0),
@@ -68,6 +70,8 @@ _Element::_Element() :
 	HitElement(nullptr),
 	PressedElement(nullptr),
 	ReleasedElement(nullptr),
+	HitOffset(0.0f, 0.0f),
+	PressedOffset(0.0f, 0.0f),
 	Font(nullptr),
 	MaxLength(0),
 	CursorPosition(0),
@@ -102,6 +106,7 @@ _Element::_Element(tinyxml2::XMLElement *Node, _Element *Parent) :
 	Node->QueryIntAttribute("alignment_x", &Alignment.Horizontal);
 	Node->QueryIntAttribute("alignment_y", &Alignment.Vertical);
 	Node->QueryBoolAttribute("clickable", &Clickable);
+	Node->QueryBoolAttribute("draggable", &Draggable);
 	Node->QueryBoolAttribute("stretch", &Stretch);
 	Node->QueryIntAttribute("index", &Index);
 	Node->QueryIntAttribute("debug", &Debug);
@@ -192,6 +197,8 @@ void _Element::SerializeElement(tinyxml2::XMLDocument &Document, tinyxml2::XMLEl
 			Node->SetAttribute("maxlength", (uint32_t)MaxLength);
 		if(Clickable != 1)
 			Node->SetAttribute("clickable", Clickable);
+		if(Draggable != 1)
+			Node->SetAttribute("draggable", Draggable);
 		if(Stretch)
 			Node->SetAttribute("stretch", Stretch);
 		if(Index != -1)
@@ -278,6 +285,7 @@ void _Element::HandleMouseButton(bool Pressed) {
 	if(!Active)
 		return;
 
+	// Handle text boxes
 	if(MaxLength && Enabled) {
 	   if(HitElement || (Parent && Parent->HitElement)) {
 		   ResetCursor();
@@ -292,14 +300,18 @@ void _Element::HandleMouseButton(bool Pressed) {
 		Child->HandleMouseButton(Pressed);
 
 	// Set pressed element
-	if(Pressed)
+	if(Pressed) {
 		PressedElement = HitElement;
+		PressedOffset = HitOffset;
+	}
 
 	// Get released element
-	if(!Pressed && PressedElement && HitElement) {
+	if(!Pressed && PressedElement && HitElement)
 		ReleasedElement = PressedElement;
+
+	// Unset pressed element
+	if(!Pressed)
 		PressedElement = nullptr;
-	}
 }
 
 // Get the element that was clicked and released
@@ -325,9 +337,17 @@ void _Element::Update(double FrameTime, const glm::vec2 &Mouse) {
 	HitElement = nullptr;
 	ReleasedElement = nullptr;
 
+	// Handle dragging
+	if(Draggable && PressedElement && Parent) {
+		Offset = Mouse - Parent->Bounds.Start - PressedOffset;
+		Offset = glm::clamp(Offset, glm::vec2(0), Parent->Size - Size);
+		CalculateBounds();
+	}
+
 	// Test element first
 	if(Bounds.Inside(Mouse) && Active && Clickable && Enabled) {
 		HitElement = this;
+		HitOffset = Mouse - Bounds.Start;
 	}
 	else if(MaskOutside) {
 		HitElement = nullptr;

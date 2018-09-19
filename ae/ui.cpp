@@ -197,7 +197,7 @@ void _Element::SerializeElement(tinyxml2::XMLDocument &Document, tinyxml2::XMLEl
 			Node->SetAttribute("maxlength", (uint32_t)MaxLength);
 		if(Clickable != 1)
 			Node->SetAttribute("clickable", Clickable);
-		if(Draggable != 1)
+		if(Draggable)
 			Node->SetAttribute("draggable", Draggable);
 		if(Stretch)
 			Node->SetAttribute("stretch", Stretch);

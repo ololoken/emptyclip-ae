@@ -20,18 +20,49 @@
 #pragma once
 
 // Libraries
+#include <string>
+#include <vector>
+#include <glm/vec4.hpp>
 
 namespace ae {
+
+// Forward Declarations
+class _Element;
+class _Program;
+class _Font;
+struct _Style;
 
 // Console class
 class _Console {
 
+	// Console message
+	struct _Message {
+		std::string Text;
+		glm::vec4 Color;
+	};
+
 	public:
 
-		_Console();
-		~_Console() { }
+		_Console(const _Program *Program, const _Font *Font);
+		~_Console();
+
+		void Update(double FrameTime);
+		void Render(double BlendFactor);
+
+		void Toggle();
+		void UpdateSize();
+		void AddMessage(const std::string &Text, const glm::vec4 &Color=glm::vec4(1.0f));
 
 	private:
+
+		// Messages
+		std::vector<_Message> Messages;
+
+		// UI
+		_Element *Element;
+		_Style *Style;
+		const _Font *Font;
+		float FontHeight;
 
 };
 

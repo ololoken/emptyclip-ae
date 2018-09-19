@@ -49,6 +49,7 @@ class _Console {
 		void Update(double FrameTime);
 		void Render(double BlendFactor);
 
+		bool IsOpen();
 		void Toggle();
 		void UpdateSize();
 		void AddMessage(const std::string &Text, const glm::vec4 &Color=glm::vec4(1.0f));
@@ -60,10 +61,12 @@ class _Console {
 
 		// UI
 		_Element *Element;
-		_Element *InputElement;
+		_Element *TextboxElement;
 		_Style *Style;
+		_Style *InputStyle;
 		const _Font *Font;
-		float FontHeight;
+		float RowHeight;
+		float BelowBase;
 
 };
 

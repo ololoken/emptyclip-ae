@@ -25,22 +25,35 @@
 
 namespace ae {
 
+const float PADDING = 5.0f;
+const glm::vec4 TEXT_COLOR = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
+const glm::vec4 CONSOLE_BG_COLOR = glm::vec4(0.0f, 0.0f, 0.0f, 0.95f);
+const glm::vec4 TEXTBOX_BG_COLOR = glm::vec4(0.05f, 0.05f, 0.05f, 0.5f);
+
 // Initialize
 _Console::_Console(const _Program *Program, const _Font *Font) :
 	Element(nullptr),
 	Font(Font),
-	FontHeight(0.0f) {
+	RowHeight(0.0f),
+	BelowBase(0.0f) {
 
 	// Get font dimensions
 	_TextBounds TextBounds;
 	Font->GetStringDimensions("Py", TextBounds);
-	FontHeight = TextBounds.AboveBase + TextBounds.BelowBase + 5;
+	RowHeight = TextBounds.AboveBase + TextBounds.BelowBase + PADDING;
+	BelowBase = TextBounds.BelowBase;
 
 	// Add style
 	Style = new _Style();
 	Style->Program = Program;
 	Style->HasBackgroundColor = true;
-	Style->BackgroundColor = glm::vec4(0.0f, 0.0f, 0.0f, 0.95f);
+	Style->BackgroundColor = CONSOLE_BG_COLOR;
+
+	// Add textbox style
+	InputStyle = new _Style();
+	InputStyle->Program = Program;
+	InputStyle->HasBackgroundColor = true;
+	InputStyle->BackgroundColor = TEXTBOX_BG_COLOR;
 
 	// Add background element
 	Element = new _Element();
@@ -49,61 +62,80 @@ _Console::_Console(const _Program *Program, const _Font *Font) :
 	Element->Alignment = LEFT_TOP;
 	Graphics.Element->Children.push_back(Element);
 
-	// Add background element
-	InputElement = new _Element();
-	InputElement->Parent = Element;
-	//InputElement->Style = Style;
-	InputElement->Alignment = LEFT_BASELINE;
-	InputElement->Size = glm::vec2(Graphics.Element->Size.x, FontHeight + 5);
-	InputElement->MaxLength = 255;
-	InputElement->Font = Font;
-	Element->Children.push_back(InputElement);
+	// Add textbox background element
+	_Element *TextboxBackgroundElement = new _Element();
+	TextboxBackgroundElement->Parent = Element;
+	TextboxBackgroundElement->Style = InputStyle;
+	TextboxBackgroundElement->Alignment = LEFT_BOTTOM;
+	TextboxBackgroundElement->Size = glm::vec2(Graphics.Element->Size.x, RowHeight + PADDING);
+	Element->Children.push_back(TextboxBackgroundElement);
+
+	// Add textbox element
+	TextboxElement = new _Element();
+	TextboxElement->Parent = TextboxBackgroundElement;
+	TextboxElement->Alignment = LEFT_BASELINE;
+	TextboxElement->MaxLength = 255;
+	TextboxElement->Offset = glm::vec2(PADDING, RowHeight - 1);
+	TextboxElement->Font = Font;
+	TextboxBackgroundElement->Children.push_back(TextboxElement);
 
 	// Update size of main element
 	UpdateSize();
-
 }
 
 // Destructor
 _Console::~_Console() {
 	delete Style;
+	delete InputStyle;
 }
 
 // Update
 void _Console::Update(double FrameTime) {
 
+	// Handle commands
+	if(TextboxElement->ReturnKeyPressed) {
+		if(!TextboxElement->Text.empty())
+			AddMessage(TextboxElement->Text, TEXT_COLOR);
+		TextboxElement->Text = "";
+		TextboxElement->ReturnKeyPressed = false;
+	}
 }
 
 // Render
 void _Console::Render(double BlendFactor) {
-	if(!Element->Active)
+	if(!IsOpen())
 		return;
 
 	// Draw background
 	Element->Render();
 
 	// Draw messages
-	glm::vec2 DrawPosition(5.0f, Element->Bounds.End.y - FontHeight);
+	glm::vec2 DrawPosition(PADDING, Element->Bounds.End.y - TextboxElement->Parent->Size.y - BelowBase - PADDING);
 	for(auto Iterator = Messages.rbegin(); Iterator != Messages.rend(); ++Iterator) {
 		_Message &Message = (*Iterator);
 		Font->DrawText(Message.Text, DrawPosition, LEFT_BASELINE, Message.Color);
-		DrawPosition.y -= FontHeight;
+		DrawPosition.y -= RowHeight;
 
 		if(DrawPosition.y < 0)
 			break;
 	}
 }
 
+// Return if true if console is open
+bool _Console::IsOpen() {
+	return Element->Active;
+}
+
 // Toggle display of console
 void _Console::Toggle() {
 	Element->SetActive(!Element->Active);
-	ae::FocusedElement = Element->Active ? InputElement : nullptr;
+	ae::FocusedElement = Element->Active ? TextboxElement : nullptr;
+	TextboxElement->ResetCursor();
 }
 
 // Update size of console based on parent element
 void _Console::UpdateSize() {
 	Element->Size = glm::vec2(Element->Parent->Size.x, Element->Parent->Size.y / 2.0f);
-	InputElement->Offset.y = Element->Size.y - FontHeight;
 	Element->CalculateBounds();
 }
 

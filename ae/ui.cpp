@@ -77,6 +77,7 @@ _Element::_Element() :
 	CursorPosition(0),
 	CursorTimer(0),
 	Password(false),
+	ReturnKeyPressed(false),
 	ChildrenOffset(0.0f, 0.0f) {
 }
 
@@ -235,7 +236,7 @@ bool _Element::HandleKey(const _KeyEvent &KeyEvent) {
 					CursorPosition--;
 			}
 			else if(KeyEvent.Scancode == SDL_SCANCODE_RETURN) {
-				return false;
+				ReturnKeyPressed = true;
 			}
 			else if(KeyEvent.Scancode == SDL_SCANCODE_DELETE) {
 				Text.erase(CursorPosition, 1);

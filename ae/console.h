@@ -22,6 +22,7 @@
 // Libraries
 #include <string>
 #include <vector>
+#include <list>
 #include <glm/vec4.hpp>
 
 namespace ae {
@@ -53,6 +54,7 @@ class _Console {
 		void Toggle();
 		void UpdateSize();
 		void AddMessage(const std::string &Text, const glm::vec4 &Color=glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
+		void UpdateHistory(int Direction);
 
 		// Commands
 		std::string Command;
@@ -62,6 +64,10 @@ class _Console {
 
 		// Messages
 		std::vector<_Message> Messages;
+
+		// Commands
+		std::list<std::string> CommandHistory;
+		std::list<std::string>::iterator CommandHistoryIterator;
 
 		// UI
 		_Element *Element;

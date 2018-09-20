@@ -108,12 +108,26 @@ void _Console::Update(double FrameTime) {
 			Parameters = "";
 			if(SpaceIndex != std::string::npos)
 				Parameters = TextboxElement->Text.substr(SpaceIndex + 1);
+
+			// Add command to history if not a repeat
+			if(CommandHistory.size() == 0 || (CommandHistory.size() > 0 && CommandHistory.back() != TextboxElement->Text))
+				CommandHistory.push_back(TextboxElement->Text);
+
+			CommandHistoryIterator = CommandHistory.end();
 		}
 		TextboxElement->Text = "";
 		TextboxElement->LastKeyPressed = SDL_SCANCODE_UNKNOWN;
 	}
 	else if(TextboxElement->LastKeyPressed == SDL_SCANCODE_ESCAPE) {
 		Toggle();
+		TextboxElement->LastKeyPressed = SDL_SCANCODE_UNKNOWN;
+	}
+	else if(TextboxElement->LastKeyPressed == SDL_SCANCODE_UP) {
+		UpdateHistory(-1);
+		TextboxElement->LastKeyPressed = SDL_SCANCODE_UNKNOWN;
+	}
+	else if(TextboxElement->LastKeyPressed == SDL_SCANCODE_DOWN) {
+		UpdateHistory(1);
 		TextboxElement->LastKeyPressed = SDL_SCANCODE_UNKNOWN;
 	}
 }
@@ -166,6 +180,31 @@ void _Console::AddMessage(const std::string &Text, const glm::vec4 &Color) {
 	Message.Text = Text;
 	Message.Color = Color;
 	Messages.push_back(Message);
+}
+
+// Set command textbox string based on history
+void _Console::UpdateHistory(int Direction) {
+	if(CommandHistory.size() == 0)
+		return;
+
+	if(Direction < 0 && CommandHistoryIterator != CommandHistory.begin()) {
+		CommandHistoryIterator--;
+
+		TextboxElement->Text = *CommandHistoryIterator;
+		TextboxElement->CursorPosition = TextboxElement->Text.length();
+	}
+	else if(Direction > 0 && CommandHistoryIterator != CommandHistory.end()) {
+
+		CommandHistoryIterator++;
+		if(CommandHistoryIterator == CommandHistory.end()) {
+			TextboxElement->Text = "";
+			TextboxElement->CursorPosition = 0;
+			return;
+		}
+
+		TextboxElement->Text = *CommandHistoryIterator;
+		TextboxElement->CursorPosition = TextboxElement->Text.length();
+	}
 }
 
 }

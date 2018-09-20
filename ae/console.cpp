@@ -92,7 +92,8 @@ _Console::~_Console() {
 
 // Update
 void _Console::Update(double FrameTime) {
-	ae::FocusedElement = Element->Active ? TextboxElement : nullptr;
+	if(Element->Active)
+		ae::FocusedElement = TextboxElement;
 
 	// Handle commands
 	if(TextboxElement->LastKeyPressed == SDL_SCANCODE_RETURN) {
@@ -147,8 +148,10 @@ void _Console::Toggle() {
 	Element->SetActive(!Element->Active);
 	TextboxElement->ResetCursor();
 
-	if(!Element->Active)
+	if(!Element->Active) {
+		ae::FocusedElement = nullptr;
 		TextboxElement->Text = "";
+	}
 }
 
 // Update size of console based on parent element

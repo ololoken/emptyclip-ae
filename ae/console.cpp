@@ -96,7 +96,7 @@ void _Console::Update(double FrameTime) {
 		ae::FocusedElement = TextboxElement;
 
 	// Handle commands
-	if(TextboxElement->LastKeyPressed == SDL_SCANCODE_RETURN) {
+	if(TextboxElement->LastKeyPressed == SDL_SCANCODE_RETURN || TextboxElement->LastKeyPressed == SDL_SCANCODE_KP_ENTER) {
 		if(!TextboxElement->Text.empty()) {
 			TextboxElement->Text = TrimString(TextboxElement->Text);
 

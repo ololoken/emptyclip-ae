@@ -22,6 +22,7 @@
 #include <ae/ui.h>
 #include <ae/font.h>
 #include <ae/graphics.h>
+#include <SDL_scancode.h>
 
 namespace ae {
 
@@ -93,11 +94,15 @@ _Console::~_Console() {
 void _Console::Update(double FrameTime) {
 
 	// Handle commands
-	if(TextboxElement->ReturnKeyPressed) {
+	if(TextboxElement->LastKeyPressed == SDL_SCANCODE_RETURN) {
 		if(!TextboxElement->Text.empty())
 			AddMessage(TextboxElement->Text, TEXT_COLOR);
 		TextboxElement->Text = "";
-		TextboxElement->ReturnKeyPressed = false;
+		TextboxElement->LastKeyPressed = SDL_SCANCODE_UNKNOWN;
+	}
+	else if(TextboxElement->LastKeyPressed == SDL_SCANCODE_ESCAPE) {
+		Toggle();
+		TextboxElement->LastKeyPressed = SDL_SCANCODE_UNKNOWN;
 	}
 }
 

@@ -76,8 +76,8 @@ _Element::_Element() :
 	MaxLength(0),
 	CursorPosition(0),
 	CursorTimer(0),
+	LastKeyPressed(SDL_SCANCODE_UNKNOWN),
 	Password(false),
-	ReturnKeyPressed(false),
 	ChildrenOffset(0.0f, 0.0f) {
 }
 
@@ -223,6 +223,7 @@ bool _Element::HandleKey(const _KeyEvent &KeyEvent) {
 	// Handle editable text fields
 	if(MaxLength) {
 		if(FocusedElement == this && Active && KeyEvent.Pressed) {
+			LastKeyPressed = KeyEvent.Scancode;
 			if(Text.length() < MaxLength && KeyEvent.Text[0] >= 32 && KeyEvent.Text[0] <= 126) {
 				if(CursorPosition > Text.length())
 					CursorPosition = Text.length();
@@ -234,9 +235,6 @@ bool _Element::HandleKey(const _KeyEvent &KeyEvent) {
 				Text.erase(CursorPosition - 1, 1);
 				if(CursorPosition > 0)
 					CursorPosition--;
-			}
-			else if(KeyEvent.Scancode == SDL_SCANCODE_RETURN) {
-				ReturnKeyPressed = true;
 			}
 			else if(KeyEvent.Scancode == SDL_SCANCODE_DELETE) {
 				Text.erase(CursorPosition, 1);

@@ -177,8 +177,8 @@ class _Element {
 		size_t MaxLength;
 		size_t CursorPosition;
 		double CursorTimer;
+		int LastKeyPressed;
 		bool Password;
-		bool ReturnKeyPressed;
 
 		// Children
 		std::list<_Element *> Children;

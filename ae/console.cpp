@@ -22,12 +22,12 @@
 #include <ae/ui.h>
 #include <ae/font.h>
 #include <ae/graphics.h>
+#include <ae/util.h>
 #include <SDL_scancode.h>
 
 namespace ae {
 
 const float PADDING = 5.0f;
-const glm::vec4 TEXT_COLOR = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
 const glm::vec4 CONSOLE_BG_COLOR = glm::vec4(0.0f, 0.0f, 0.0f, 0.95f);
 const glm::vec4 TEXTBOX_BG_COLOR = glm::vec4(0.05f, 0.05f, 0.05f, 0.5f);
 
@@ -92,11 +92,22 @@ _Console::~_Console() {
 
 // Update
 void _Console::Update(double FrameTime) {
+	ae::FocusedElement = Element->Active ? TextboxElement : nullptr;
 
 	// Handle commands
 	if(TextboxElement->LastKeyPressed == SDL_SCANCODE_RETURN) {
-		if(!TextboxElement->Text.empty())
-			AddMessage(TextboxElement->Text, TEXT_COLOR);
+		if(!TextboxElement->Text.empty()) {
+			TextboxElement->Text = TrimString(TextboxElement->Text);
+
+			// Separate command from parameters
+			size_t SpaceIndex = TextboxElement->Text.find_first_of(' ');
+			Command = TextboxElement->Text.substr(0, SpaceIndex);
+
+			// Handle parameters
+			Parameters = "";
+			if(SpaceIndex != std::string::npos)
+				Parameters = TextboxElement->Text.substr(SpaceIndex + 1);
+		}
 		TextboxElement->Text = "";
 		TextboxElement->LastKeyPressed = SDL_SCANCODE_UNKNOWN;
 	}
@@ -134,8 +145,10 @@ bool _Console::IsOpen() {
 // Toggle display of console
 void _Console::Toggle() {
 	Element->SetActive(!Element->Active);
-	ae::FocusedElement = Element->Active ? TextboxElement : nullptr;
 	TextboxElement->ResetCursor();
+
+	if(!Element->Active)
+		TextboxElement->Text = "";
 }
 
 // Update size of console based on parent element

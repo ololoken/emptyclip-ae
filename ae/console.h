@@ -52,7 +52,11 @@ class _Console {
 		bool IsOpen();
 		void Toggle();
 		void UpdateSize();
-		void AddMessage(const std::string &Text, const glm::vec4 &Color=glm::vec4(1.0f));
+		void AddMessage(const std::string &Text, const glm::vec4 &Color=glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
+
+		// Commands
+		std::string Command;
+		std::string Parameters;
 
 	private:
 

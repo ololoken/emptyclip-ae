@@ -20,6 +20,7 @@
 #include <ae/util.h>
 #include <sys/stat.h>
 #include <fstream>
+#include <sstream>
 #include <regex>
 
 namespace ae {
@@ -71,6 +72,14 @@ int MakeDirectory(const std::string &Path) {
 #else
 	return mkdir(Path.c_str(), 0755);
 #endif
+}
+
+// Tokenize a string by a delimiting char
+void TokenizeString(const std::string &String, std::vector<std::string> &Tokens, char Delimiter) {
+	std::stringstream Buffer(String);
+	std::string Token = "";
+	while(std::getline(Buffer, Token, Delimiter))
+		Tokens.push_back(std::move(Token));
 }
 
 }

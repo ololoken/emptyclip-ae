@@ -20,6 +20,7 @@
 #pragma once
 
 // Libraries
+#include <vector>
 #include <string>
 #include <sstream>
 
@@ -28,6 +29,7 @@ namespace ae {
 const char *LoadFileIntoMemory(const char *Path);
 std::string RemoveExtension(const std::string &Path);
 std::string TrimString(const std::string &String);
+void TokenizeString(const std::string &String, std::vector<std::string> &Tokens, char Delimiter=' ');
 int MakeDirectory(const std::string &Path);
 
 template <class T>

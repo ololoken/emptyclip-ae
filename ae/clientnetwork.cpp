@@ -66,7 +66,7 @@ void _ClientNetwork::Connect(const std::string &HostAddress, uint16_t Port) {
 void _ClientNetwork::Disconnect(bool Force) {
 
 	// Soft disconnect
-	if(CanDisconnect() || Force) {
+	if(IsConnected() || Force) {
 
 		// Disconnect from host
 		if(Peer->ENetPeer)

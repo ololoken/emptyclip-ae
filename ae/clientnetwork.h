@@ -58,7 +58,6 @@ class _ClientNetwork : public _Network {
 		bool IsDisconnected() { return ConnectionState == State::DISCONNECTED; }
 		bool IsConnected() { return ConnectionState == State::CONNECTED; }
 		bool CanConnect() { return IsDisconnected(); }
-		bool CanDisconnect() { return ConnectionState == State::CONNECTED; }
 		State GetConnectionState() { return ConnectionState; }
 
 	private:

@@ -118,7 +118,7 @@ void _Console::Update(double FrameTime) {
 				CommandHistoryIterator = CommandHistory.end();
 
 				// Add to console
-				AddMessage(TextboxElement->Text);
+				AddMessage(TextboxElement->Text, glm::vec4(1.0f));
 			}
 
 			TextboxElement->Text = "";
@@ -169,6 +169,8 @@ void _Console::Update(double FrameTime) {
 				for(const auto &Token : PossibleCommands)
 					AddMessage(Token);
 			}
+
+			TextboxElement->ResetCursor();
 		} break;
 		case SDL_SCANCODE_ESCAPE: {
 			Toggle();
@@ -236,6 +238,7 @@ void _Console::AddMessage(const std::string &Text, const glm::vec4 &Color) {
 
 // Set command textbox string based on history
 void _Console::UpdateHistory(int Direction) {
+	TextboxElement->ResetCursor();
 	if(CommandHistory.size() == 0)
 		return;
 

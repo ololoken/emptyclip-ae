@@ -116,6 +116,9 @@ void _Console::Update(double FrameTime) {
 					CommandHistory.push_back(TextboxElement->Text);
 
 				CommandHistoryIterator = CommandHistory.end();
+
+				// Add to console
+				AddMessage(TextboxElement->Text);
 			}
 
 			TextboxElement->Text = "";
@@ -162,7 +165,7 @@ void _Console::Update(double FrameTime) {
 				}
 
 				// Display available commands;
-				AddMessage("Available commands:");
+				AddMessage("");
 				for(const auto &Token : PossibleCommands)
 					AddMessage(Token);
 			}

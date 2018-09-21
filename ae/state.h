@@ -25,6 +25,8 @@
 
 namespace ae {
 
+class _Console;
+
 // Classes
 class _State {
 
@@ -41,6 +43,7 @@ class _State {
 		virtual void HandleMouseButton(const _MouseEvent &MouseEvent) { }
 		virtual void HandleMouseMove(const glm::ivec2 &Position) { }
 		virtual void HandleMouseWheel(int Direction) { }
+		virtual void HandleCommand(_Console *Console) { }
 		virtual void HandleWindow(uint8_t Event) { }
 		virtual void HandleQuit() { }
 

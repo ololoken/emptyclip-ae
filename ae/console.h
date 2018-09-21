@@ -57,6 +57,7 @@ class _Console {
 		void UpdateHistory(int Direction);
 
 		// Commands
+		std::vector<std::string> CommandList;
 		std::string Command;
 		std::string Parameters;
 

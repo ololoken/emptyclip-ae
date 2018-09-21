@@ -96,40 +96,89 @@ void _Console::Update(double FrameTime) {
 		ae::FocusedElement = TextboxElement;
 
 	// Handle commands
-	if(TextboxElement->LastKeyPressed == SDL_SCANCODE_RETURN || TextboxElement->LastKeyPressed == SDL_SCANCODE_KP_ENTER) {
-		if(!TextboxElement->Text.empty()) {
-			TextboxElement->Text = TrimString(TextboxElement->Text);
+	switch(TextboxElement->LastKeyPressed) {
+		case SDL_SCANCODE_KP_ENTER:
+		case SDL_SCANCODE_RETURN: {
+			if(!TextboxElement->Text.empty()) {
+				TextboxElement->Text = TrimString(TextboxElement->Text);
 
-			// Separate command from parameters
-			size_t SpaceIndex = TextboxElement->Text.find_first_of(' ');
-			Command = TextboxElement->Text.substr(0, SpaceIndex);
+				// Separate command from parameters
+				size_t SpaceIndex = TextboxElement->Text.find_first_of(' ');
+				Command = TextboxElement->Text.substr(0, SpaceIndex);
 
-			// Handle parameters
-			Parameters = "";
-			if(SpaceIndex != std::string::npos)
-				Parameters = TextboxElement->Text.substr(SpaceIndex + 1);
+				// Handle parameters
+				Parameters = "";
+				if(SpaceIndex != std::string::npos)
+					Parameters = TextboxElement->Text.substr(SpaceIndex + 1);
 
-			// Add command to history if not a repeat
-			if(CommandHistory.size() == 0 || (CommandHistory.size() > 0 && CommandHistory.back() != TextboxElement->Text))
-				CommandHistory.push_back(TextboxElement->Text);
+				// Add command to history if not a repeat
+				if(CommandHistory.size() == 0 || (CommandHistory.size() > 0 && CommandHistory.back() != TextboxElement->Text))
+					CommandHistory.push_back(TextboxElement->Text);
 
-			CommandHistoryIterator = CommandHistory.end();
-		}
-		TextboxElement->Text = "";
-		TextboxElement->LastKeyPressed = SDL_SCANCODE_UNKNOWN;
+				CommandHistoryIterator = CommandHistory.end();
+			}
+
+			TextboxElement->Text = "";
+		} break;
+		case SDL_SCANCODE_TAB: {
+
+			// Compare input with all commands
+			std::list<std::string> PossibleCommands;
+			size_t CompareLength = TextboxElement->Text.length();
+			for(const auto &Token : CommandList) {
+				if(Token.substr(0, CompareLength) == TextboxElement->Text)
+					PossibleCommands.push_back(Token);
+			}
+
+			// Check for one possible match
+			if(PossibleCommands.size() == 1) {
+				TextboxElement->Text = PossibleCommands.front() + " ";
+				TextboxElement->CursorPosition = TextboxElement->Text.length();
+			}
+			// Autocomplete rest of matching characters
+			else if(PossibleCommands.size()) {
+				bool Done = false;
+				while(!Done) {
+
+					// Compare character for each token
+					char LastChar = 0;
+					for(const auto &Token : PossibleCommands) {
+						if(LastChar == 0) {
+							LastChar = Token[CompareLength];
+						}
+						else if(LastChar != Token[CompareLength]) {
+							Done = true;
+							break;
+						}
+					}
+
+					// Add last character to command
+					if(!Done) {
+						TextboxElement->Text += LastChar;
+						TextboxElement->CursorPosition++;
+					}
+
+					CompareLength++;
+				}
+
+				// Display available commands;
+				AddMessage("Available commands:");
+				for(const auto &Token : PossibleCommands)
+					AddMessage(Token);
+			}
+		} break;
+		case SDL_SCANCODE_ESCAPE: {
+			Toggle();
+		} break;
+		case SDL_SCANCODE_UP: {
+			UpdateHistory(-1);
+		} break;
+		case SDL_SCANCODE_DOWN: {
+			UpdateHistory(1);
+		} break;
 	}
-	else if(TextboxElement->LastKeyPressed == SDL_SCANCODE_ESCAPE) {
-		Toggle();
-		TextboxElement->LastKeyPressed = SDL_SCANCODE_UNKNOWN;
-	}
-	else if(TextboxElement->LastKeyPressed == SDL_SCANCODE_UP) {
-		UpdateHistory(-1);
-		TextboxElement->LastKeyPressed = SDL_SCANCODE_UNKNOWN;
-	}
-	else if(TextboxElement->LastKeyPressed == SDL_SCANCODE_DOWN) {
-		UpdateHistory(1);
-		TextboxElement->LastKeyPressed = SDL_SCANCODE_UNKNOWN;
-	}
+
+	TextboxElement->LastKeyPressed = SDL_SCANCODE_UNKNOWN;
 }
 
 // Render

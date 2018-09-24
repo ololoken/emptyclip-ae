@@ -64,8 +64,8 @@ class _Actions {
 		void ClearMappingsForAction(int InputType, size_t Action);
 		void ClearAllMappingsForAction(size_t Action);
 		void AddInputMap(int InputType, int Input, size_t Action, float Scale=1.0f, float DeadZone=-1.0f, bool IfNone=true);
-		int GetInputForAction(int InputType, size_t Action);
-		std::string GetInputNameForAction(size_t Action);
+		int GetInputForAction(int InputType, size_t Action, int ActionIndex=0);
+		std::string GetInputNameForAction(size_t Action, int ActionIndex=0);
 
 		// Handlers
 		void InputEvent(_State *GameState, int InputType, int Input, float Value);

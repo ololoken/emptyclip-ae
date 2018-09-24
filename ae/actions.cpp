@@ -21,6 +21,7 @@
 #include <ae/state.h>
 #include <ae/assets.h>
 #include <fstream>
+#include <iostream>
 
 namespace ae {
 
@@ -78,12 +79,17 @@ void _Actions::AddInputMap(int InputType, int Input, size_t Action, float Scale,
 		InputMap[InputType][Input].push_back(_ActionMap(Action, Scale, DeadZone));
 }
 
-// Returns the first input for an action
-int _Actions::GetInputForAction(int InputType, size_t Action) {
+// Returns an input for an action
+int _Actions::GetInputForAction(int InputType, size_t Action, int ActionIndex) {
+
+	int ActionCount = 0;
 	for(int i = 0; i < ACTIONS_MAXINPUTS; i++) {
 		for(auto &MapIterator : InputMap[InputType][i]) {
 			if(MapIterator.Action == Action) {
-				return i;
+				if(ActionCount == ActionIndex)
+					return i;
+
+				ActionCount++;
 			}
 		}
 	}
@@ -92,10 +98,10 @@ int _Actions::GetInputForAction(int InputType, size_t Action) {
 }
 
 // Get name of input key/button for a given action
-std::string _Actions::GetInputNameForAction(size_t Action) {
+std::string _Actions::GetInputNameForAction(size_t Action, int ActionIndex) {
 
 	for(int i = 0; i < _Input::INPUT_COUNT; i++) {
-		int Input = GetInputForAction(i, Action);
+		int Input = GetInputForAction(i, Action, ActionIndex);
 
 		if(Input != -1) {
 			switch(i) {

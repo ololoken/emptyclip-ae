@@ -111,6 +111,7 @@ _Element::_Element(tinyxml2::XMLElement *Node, _Element *Parent) :
 	Node->QueryBoolAttribute("stretch", &Stretch);
 	Node->QueryIntAttribute("index", &Index);
 	Node->QueryIntAttribute("debug", &Debug);
+	Node->QueryBoolAttribute("enabled", &Enabled);
 
 	// Check ids
 	if(Assets.Elements.find(Name) != Assets.Elements.end())
@@ -204,6 +205,8 @@ void _Element::SerializeElement(tinyxml2::XMLDocument &Document, tinyxml2::XMLEl
 			Node->SetAttribute("stretch", Stretch);
 		if(Index != -1)
 			Node->SetAttribute("index", Index);
+		if(Enabled != 1)
+			Node->SetAttribute("enabled", Enabled);
 
 		ParentNode->InsertEndChild(Node);
 	}

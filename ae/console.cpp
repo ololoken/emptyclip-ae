@@ -39,10 +39,8 @@ _Console::_Console(const _Program *Program, const _Font *Font) :
 	BelowBase(0.0f) {
 
 	// Get font dimensions
-	_TextBounds TextBounds;
-	Font->GetStringDimensions("Py", TextBounds);
-	RowHeight = TextBounds.AboveBase + TextBounds.BelowBase + PADDING;
-	BelowBase = TextBounds.BelowBase;
+	RowHeight = Font->MaxAbove + Font->MaxBelow + PADDING;
+	BelowBase = Font->MaxBelow;
 
 	// Add style
 	Style = new _Style();

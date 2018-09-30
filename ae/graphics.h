@@ -40,6 +40,8 @@ enum VertexBufferType {
 	VBO_NONE,
 	VBO_CIRCLE,
 	VBO_QUAD,
+	VBO_RECT,
+	VBO_SPRITE,
 	VBO_ATLAS,
 	VBO_CUBE,
 	VBO_COUNT

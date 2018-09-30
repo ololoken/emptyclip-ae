@@ -235,9 +235,32 @@ void _Graphics::BuildVertexBuffers() {
 		delete[] Triangles;
 	}
 
+	// 2D Quad
+	{
+		float Triangles[] = {
+			0.0f, 1.0f,
+			1.0f, 1.0f,
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+		};
+
+		VertexBuffer[VBO_QUAD] = CreateVBO(Triangles, sizeof(Triangles), GL_STATIC_DRAW);
+	}
+
+	// 2D Rectangle
+	{
+		float Triangles[] = {
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f,
+			0.0f, 1.0f,
+		};
+
+		VertexBuffer[VBO_RECT] = CreateVBO(Triangles, sizeof(Triangles), GL_STATIC_DRAW);
+	}
+
 	// Textured 2D Quad
 	{
-		// Vertex data for quad
 		float Triangles[] = {
 			-0.5f,  0.5f,
 			 0.5f,  0.5f,
@@ -249,12 +272,11 @@ void _Graphics::BuildVertexBuffers() {
 			 1.0f, 0.0f,
 		};
 
-		VertexBuffer[VBO_QUAD] = CreateVBO(Triangles, sizeof(Triangles), GL_STATIC_DRAW);
+		VertexBuffer[VBO_SPRITE] = CreateVBO(Triangles, sizeof(Triangles), GL_STATIC_DRAW);
 	}
 
 	// Dynamic vbo for drawing animations
 	{
-
 		float Triangles[] = {
 			-0.5f, 0.5f,
 			 0.5f,  0.5f,
@@ -271,7 +293,6 @@ void _Graphics::BuildVertexBuffers() {
 
 	// Cube
 	{
-
 		float Triangles[] = {
 
 			// Top
@@ -503,31 +524,24 @@ void _Graphics::DrawRectangle3D(const glm::vec2 &Start, const glm::vec2 &End, bo
 
 // Draw rectangle
 void _Graphics::DrawRectangle(const glm::vec2 &Start, const glm::vec2 &End, bool Filled) {
-	if(LastAttribLevel != 1)
-		throw std::runtime_error(std::string(__FUNCTION__) + " - LastAttribLevel mismatch");
 
-	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0f)));
-
+	glm::mat4 Transform(1.0f);
 	if(Filled) {
-		float Vertices[] = {
-			Start.x, End.y,
-			End.x, End.y,
-			Start.x, Start.y,
-			End.x, Start.y,
-		};
+		SetVBO(VBO_QUAD);
+		Transform = glm::translate(Transform, glm::vec3(Start, 0.0f));
+		Transform = glm::scale(Transform, glm::vec3(End - Start, 0.0f));
+	}
+	else {
+		SetVBO(VBO_RECT);
+		Transform = glm::translate(Transform, glm::vec3(Start.x + 0.5f, Start.y + 0.5f, 0.0f));
+		Transform = glm::scale(Transform, glm::vec3(End - Start - glm::vec2(1.0f), 0.0f));
+	}
 
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, Vertices);
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(Transform));
+	if(Filled) {
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	}
 	else {
-		float Vertices[] = {
-			Start.x + 0.50f, Start.y + 0.50f,
-			End.x   - 0.49f, Start.y + 0.50f,
-			End.x   - 0.49f, End.y   - 0.49f,
-			Start.x + 0.50f, End.y   - 0.49f,
-		};
-
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, Vertices);
 		glDrawArrays(GL_LINE_LOOP, 0, 4);
 	}
 }
@@ -617,12 +631,14 @@ void _Graphics::SetVBO(GLuint VBO) {
 			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (GLvoid *)(sizeof(glm::vec3)));
 			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (GLvoid *)(sizeof(glm::vec3) + sizeof(glm::vec2)));
 		break;
-		case VBO_QUAD:
+		case VBO_SPRITE:
 		case VBO_ATLAS:
 			EnableAttribs(2);
 			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
 			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (GLvoid *)(sizeof(float) * 8));
 		break;
+		case VBO_RECT:
+		case VBO_QUAD:
 		case VBO_CIRCLE:
 			EnableAttribs(1);
 			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);

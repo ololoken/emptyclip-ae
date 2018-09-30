@@ -275,6 +275,22 @@ void _Graphics::BuildVertexBuffers() {
 		VertexBuffer[VBO_SPRITE] = CreateVBO(Triangles, sizeof(Triangles), GL_STATIC_DRAW);
 	}
 
+	// Text
+	{
+		float Triangles[] = {
+			0.0f, 0.0f,
+			0.0f, 0.0f,
+			0.0f, 0.0f,
+			0.0f, 0.0f,
+			0.0f, 0.0f,
+			0.0f, 0.0f,
+			0.0f, 0.0f,
+			0.0f, 0.0f,
+		};
+
+		VertexBuffer[VBO_TEXT] = CreateVBO(Triangles, sizeof(Triangles), GL_DYNAMIC_DRAW);
+	}
+
 	// Dynamic vbo for drawing animations
 	{
 		float Triangles[] = {
@@ -381,6 +397,7 @@ void _Graphics::DrawCenteredImage(const glm::ivec2 &Position, const _Texture *Te
 
 // Draw image in screen space
 void _Graphics::DrawImage(const _Bounds &Bounds, const _Texture *Texture, bool Stretch) {
+	SetVBO(VBO_NONE);
 	SetTextureID(Texture->ID);
 
 	// Get texture coordinates
@@ -404,6 +421,7 @@ void _Graphics::DrawImage(const _Bounds &Bounds, const _Texture *Texture, bool S
 
 // Draw image from a texture atlas
 void _Graphics::DrawAtlas(const _Bounds &Bounds, const _Texture *Texture, const glm::vec4 &TextureCoords) {
+	SetVBO(VBO_NONE);
 	SetTextureID(Texture->ID);
 
 	// Vertex data for quad
@@ -631,6 +649,7 @@ void _Graphics::SetVBO(GLuint VBO) {
 			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (GLvoid *)(sizeof(glm::vec3)));
 			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (GLvoid *)(sizeof(glm::vec3) + sizeof(glm::vec2)));
 		break;
+		case VBO_TEXT:
 		case VBO_SPRITE:
 		case VBO_ATLAS:
 			EnableAttribs(2);

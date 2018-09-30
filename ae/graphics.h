@@ -44,6 +44,7 @@ enum VertexBufferType {
 	VBO_SPRITE,
 	VBO_ATLAS,
 	VBO_CUBE,
+	VBO_TEXT,
 	VBO_COUNT
 };
 

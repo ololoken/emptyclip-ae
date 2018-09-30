@@ -263,14 +263,17 @@ void _Font::DrawGlyph(glm::vec2 &Position, char Char, float Scale) const {
 	// Get vertices
 	glm::vec2 DrawPosition(Position.x + Scale * Glyph.OffsetX, Position.y - Scale * Glyph.OffsetY);
 	float Vertices[] = {
-		DrawPosition.x,                       DrawPosition.y + Scale * Glyph.Height, Glyph.Left,  Glyph.Bottom,
-		DrawPosition.x + Scale * Glyph.Width, DrawPosition.y + Scale * Glyph.Height, Glyph.Right, Glyph.Bottom,
-		DrawPosition.x,                       DrawPosition.y,                        Glyph.Left,  Glyph.Top,
-		DrawPosition.x + Scale * Glyph.Width, DrawPosition.y,                        Glyph.Right, Glyph.Top,
+		DrawPosition.x,                       DrawPosition.y + Scale * Glyph.Height,
+		DrawPosition.x + Scale * Glyph.Width, DrawPosition.y + Scale * Glyph.Height,
+		DrawPosition.x,                       DrawPosition.y,
+		DrawPosition.x + Scale * Glyph.Width, DrawPosition.y,
+		Glyph.Left,                           Glyph.Bottom,
+		Glyph.Right,                          Glyph.Bottom,
+		Glyph.Left,                           Glyph.Top,
+		Glyph.Right,                          Glyph.Top,
 	};
 
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, &Vertices[0]);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, &Vertices[2]);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(Vertices), Vertices);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
 	Position.x += Scale * Glyph.Advance;
@@ -310,7 +313,7 @@ void _Font::AdjustPosition(const std::string &Text, glm::vec2 &Position, bool Us
 // Draws a string
 float _Font::DrawText(const std::string &Text, glm::vec2 Position, const _Alignment &Alignment, const glm::vec4 &Color, float Scale) const {
 	Graphics.SetProgram(Program);
-	Graphics.SetVBO(VBO_NONE);
+	Graphics.SetVBO(VBO_TEXT);
 	Graphics.SetColor(Color);
 	Graphics.SetTextureID(Texture->ID);
 
@@ -341,7 +344,7 @@ float _Font::DrawText(const std::string &Text, glm::vec2 Position, const _Alignm
 // Draw formatted text with colors: "Example [c red]red[c white] text here"
 void _Font::DrawTextFormatted(const std::string &Text, glm::vec2 Position, const _Alignment &Alignment, float Scale) const {
 	Graphics.SetProgram(Program);
-	Graphics.SetVBO(VBO_NONE);
+	Graphics.SetVBO(VBO_TEXT);
 	Graphics.SetColor(glm::vec4(1.0f));
 	Graphics.SetTextureID(Texture->ID);
 	bool InTag = false;

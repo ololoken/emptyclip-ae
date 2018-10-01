@@ -275,22 +275,6 @@ void _Graphics::BuildVertexBuffers() {
 		VertexBuffer[VBO_SPRITE] = CreateVBO(Triangles, sizeof(Triangles), GL_STATIC_DRAW);
 	}
 
-	// Text
-	{
-		float Triangles[] = {
-			0.0f, 0.0f,
-			0.0f, 0.0f,
-			0.0f, 0.0f,
-			0.0f, 0.0f,
-			0.0f, 0.0f,
-			0.0f, 0.0f,
-			0.0f, 0.0f,
-			0.0f, 0.0f,
-		};
-
-		VertexBuffer[VBO_TEXT] = CreateVBO(Triangles, sizeof(Triangles), GL_DYNAMIC_DRAW);
-	}
-
 	// Dynamic vbo for drawing animations
 	{
 		float Triangles[] = {
@@ -362,8 +346,6 @@ GLuint _Graphics::CreateVBO(float *Triangles, GLuint Size, GLenum Type) {
 // Fade the screen
 void _Graphics::FadeScreen(float Amount) {
 	Graphics.SetProgram(Assets.Programs["ortho_pos"]);
-	Graphics.SetVBO(VBO_NONE);
-
 	Graphics.SetColor(glm::vec4(0.0f, 0.0f, 0.0f, Amount));
 	DrawRectangle(glm::vec2(0, 0), CurrentSize, true);
 }
@@ -397,7 +379,7 @@ void _Graphics::DrawCenteredImage(const glm::ivec2 &Position, const _Texture *Te
 
 // Draw image in screen space
 void _Graphics::DrawImage(const _Bounds &Bounds, const _Texture *Texture, bool Stretch) {
-	SetVBO(VBO_NONE);
+	SetVBO(VBO_ATLAS);
 	SetTextureID(Texture->ID);
 
 	// Get texture coordinates
@@ -406,44 +388,44 @@ void _Graphics::DrawImage(const _Bounds &Bounds, const _Texture *Texture, bool S
 
 	// Vertex data for quad
 	float Vertices[] = {
-		Bounds.End.x,   Bounds.Start.y, S,    0.0f,
-		Bounds.Start.x, Bounds.Start.y, 0.0f, 0.0f,
-		Bounds.End.x,   Bounds.End.y,   S,    T,
-		Bounds.Start.x, Bounds.End.y,   0.0f, T,
+		Bounds.End.x,   Bounds.Start.y,
+		Bounds.Start.x, Bounds.Start.y,
+		Bounds.End.x,   Bounds.End.y,
+		Bounds.Start.x, Bounds.End.y,
+		S,		        0.0f,
+		0.0f,           0.0f,
+		S,		        T,
+		0.0f,           T,
 	};
-	if(LastAttribLevel != 2)
-		throw std::runtime_error("bad");
 
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, &Vertices[0]);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, &Vertices[2]);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(Vertices), Vertices);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
 // Draw image from a texture atlas
 void _Graphics::DrawAtlas(const _Bounds &Bounds, const _Texture *Texture, const glm::vec4 &TextureCoords) {
-	SetVBO(VBO_NONE);
+	SetVBO(VBO_ATLAS);
 	SetTextureID(Texture->ID);
 
 	// Vertex data for quad
 	float Vertices[] = {
-		Bounds.End.x,   Bounds.Start.y, TextureCoords[2], TextureCoords[1],
-		Bounds.Start.x, Bounds.Start.y, TextureCoords[0], TextureCoords[1],
-		Bounds.End.x,   Bounds.End.y,   TextureCoords[2], TextureCoords[3],
-		Bounds.Start.x, Bounds.End.y,   TextureCoords[0], TextureCoords[3],
+		Bounds.End.x,   Bounds.Start.y,
+		Bounds.Start.x, Bounds.Start.y,
+		Bounds.End.x,   Bounds.End.y,
+		Bounds.Start.x, Bounds.End.y,
+		TextureCoords[2], TextureCoords[1],
+		TextureCoords[0], TextureCoords[1],
+		TextureCoords[2], TextureCoords[3],
+		TextureCoords[0], TextureCoords[3],
 	};
-	if(LastAttribLevel != 2)
-		throw std::runtime_error("bad");
 
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, &Vertices[0]);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, &Vertices[2]);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(Vertices), Vertices);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
 // Draw 3d sprite
 void _Graphics::DrawSprite(const glm::vec3 &Position, const _Texture *Texture, float Rotation, const glm::vec2 Scale) {
-	if(LastAttribLevel != 2)
-		throw std::runtime_error(std::string(__FUNCTION__) + " - LastAttribLevel mismatch");
-
+	SetVBO(VBO_SPRITE);
 	SetTextureID(Texture->ID);
 
 	Rotation = glm::radians(Rotation);
@@ -511,31 +493,23 @@ void _Graphics::DrawRectangle(const _Bounds &Bounds, bool Filled) {
 
 // Draw rectangle in 3D space
 void _Graphics::DrawRectangle3D(const glm::vec2 &Start, const glm::vec2 &End, bool Filled) {
-	if(LastAttribLevel != 1)
-		throw std::runtime_error(std::string(__FUNCTION__) + " - LastAttribLevel mismatch");
-
-	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0f)));
-
+	glm::mat4 Transform(1.0f);
 	if(Filled) {
-		float Vertices[] = {
-			Start.x, End.y  ,
-			End.x  , End.y  ,
-			Start.x, Start.y,
-			End.x  , Start.y,
-		};
+		SetVBO(VBO_QUAD);
+		Transform = glm::translate(Transform, glm::vec3(Start, 0.0f));
+		Transform = glm::scale(Transform, glm::vec3(End - Start, 0.0f));
+	}
+	else {
+		SetVBO(VBO_RECT);
+		Transform = glm::translate(Transform, glm::vec3(Start.x, Start.y, 0.0f));
+		Transform = glm::scale(Transform, glm::vec3(End - Start, 0.0f));
+	}
 
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, Vertices);
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(Transform));
+	if(Filled) {
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	}
 	else {
-		float Vertices[] = {
-			Start.x, Start.y,
-			End.x  , Start.y,
-			End.x  , End.y  ,
-			Start.x, End.y  ,
-		};
-
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, Vertices);
 		glDrawArrays(GL_LINE_LOOP, 0, 4);
 	}
 }
@@ -649,7 +623,6 @@ void _Graphics::SetVBO(GLuint VBO) {
 			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (GLvoid *)(sizeof(glm::vec3)));
 			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (GLvoid *)(sizeof(glm::vec3) + sizeof(glm::vec2)));
 		break;
-		case VBO_TEXT:
 		case VBO_SPRITE:
 		case VBO_ATLAS:
 			EnableAttribs(2);

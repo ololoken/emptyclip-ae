@@ -43,7 +43,7 @@ class _State {
 		virtual void HandleMouseButton(const _MouseEvent &MouseEvent) { }
 		virtual void HandleMouseMove(const glm::ivec2 &Position) { }
 		virtual void HandleMouseWheel(int Direction) { }
-		virtual void HandleCommand(_Console *Console) { }
+		virtual bool HandleCommand(_Console *Console) { return false; }
 		virtual void HandleWindow(uint8_t Event) { }
 		virtual void HandleQuit() { }
 

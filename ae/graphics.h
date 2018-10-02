@@ -71,10 +71,12 @@ class _Graphics {
 		void Close();
 
 		bool SetFullscreen(bool Fullscreen);
+		bool SetVsync(bool Vsync);
+		bool GetVsync();
 		void ShowCursor(int Type);
-		void BuildVertexBuffers();
 
 		void SetStaticUniforms();
+		void BuildVertexBuffers();
 		void ChangeViewport(const glm::ivec2 &Size);
 		void ChangeWindowSize(const glm::ivec2 &Size);
 		void Setup2D();

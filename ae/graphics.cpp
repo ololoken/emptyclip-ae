@@ -173,6 +173,16 @@ bool _Graphics::SetFullscreen(bool Fullscreen) {
 	return true;
 }
 
+// Set Vsync
+bool _Graphics::SetVsync(bool Vsync) {
+	return SDL_GL_SetSwapInterval(Vsync) == 0;
+}
+
+// Get Vsync value
+bool _Graphics::GetVsync() {
+	return SDL_GL_GetSwapInterval();
+}
+
 // Sets up OpenGL
 void _Graphics::SetupOpenGL() {
 

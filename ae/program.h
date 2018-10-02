@@ -44,6 +44,7 @@ class _Program {
 		GLuint ID;
 		GLint ViewProjectionTransformID;
 		GLint ModelTransformID;
+		GLint TextureTransformID;
 		GLint AmbientLightID;
 		GLint LightCountID;
 		int Attribs;

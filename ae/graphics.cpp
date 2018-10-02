@@ -266,10 +266,10 @@ void _Graphics::BuildVertexBuffers() {
 			 0.5f,  0.5f,
 			-0.5f, -0.5f,
 			 0.5f, -0.5f,
-			 0.0f, 1.0f,
-			 1.0f, 1.0f,
-			 0.0f, 0.0f,
-			 1.0f, 0.0f,
+			 0.0f,  1.0f,
+			 1.0f,  1.0f,
+			 0.0f,  0.0f,
+			 1.0f,  0.0f,
 		};
 
 		VertexBuffer[VBO_SPRITE] = CreateVBO(Triangles, sizeof(Triangles), GL_STATIC_DRAW);
@@ -278,7 +278,7 @@ void _Graphics::BuildVertexBuffers() {
 	// Dynamic vbo for drawing animations
 	{
 		float Triangles[] = {
-			-0.5f, 0.5f,
+			-0.5f,  0.5f,
 			 0.5f,  0.5f,
 			-0.5f, -0.5f,
 			 0.5f, -0.5f,
@@ -324,7 +324,6 @@ void _Graphics::BuildVertexBuffers() {
 			1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
 			1.0f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,
 			1.0f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,  0.0f,
-
 		};
 
 		VertexBuffer[VBO_CUBE] = CreateVBO(Triangles, sizeof(Triangles), GL_STATIC_DRAW);

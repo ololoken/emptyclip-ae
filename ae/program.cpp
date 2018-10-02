@@ -32,6 +32,7 @@ _Program::_Program(const std::string &Name, const _Shader *VertexShader, const _
 	Name(Name),
 	ViewProjectionTransformID(-1),
 	ModelTransformID(-1),
+	TextureTransformID(-1),
 	AmbientLightID(-1),
 	LightCountID(-1),
 	Attribs(Attribs),
@@ -67,13 +68,14 @@ _Program::_Program(const std::string &Name, const _Shader *VertexShader, const _
 		Lights = new _Light[MaxLights]();
 
 	// Get uniforms
-	SamplerIDs[0] = glGetUniformLocation(ID, "sampler0");
 	glBindAttribLocation(ID, 0, "vertex_pos");
 	glBindAttribLocation(ID, 1, "vertex_uv");
 	glBindAttribLocation(ID, 2, "vertex_norm");
 
+	SamplerIDs[0] = glGetUniformLocation(ID, "sampler0");
 	ViewProjectionTransformID = glGetUniformLocation(ID, "view_projection_transform");
 	ModelTransformID = glGetUniformLocation(ID, "model_transform");
+	TextureTransformID = glGetUniformLocation(ID, "texture_transform");
 	AmbientLightID = glGetUniformLocation(ID, "ambient_light");
 	LightCountID = glGetUniformLocation(ID, "light_count");
 

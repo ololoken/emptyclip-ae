@@ -114,6 +114,7 @@ class _Graphics {
 		void SetDepthTest(bool DepthTest);
 
 		void DirtyState();
+		void CheckError();
 
 		// State
 		_Element *Element;

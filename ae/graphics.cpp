@@ -600,6 +600,11 @@ void _Graphics::Flip(double FrameTime) {
 		FrameCount = 0;
 		FrameRateTimer -= 1.0;
 	}
+
+	// Check for errors
+	#ifndef NDEBUG
+		CheckError();
+	#endif
 }
 
 // Update texture coordinates for a vbo
@@ -736,6 +741,13 @@ void _Graphics::DirtyState() {
 	LastColor = glm::vec4(-1, -1, -1, -1);
 	LastProgram = nullptr;
 	LastDepthTest = false;
+}
+
+// Throw opengl error
+void _Graphics::CheckError() {
+	int Error = glGetError();
+	if(Error)
+		throw std::runtime_error("glGetError returned " + std::to_string(Error));
 }
 
 void _Graphics::SetDepthMask(bool Value) { glDepthMask(Value); }

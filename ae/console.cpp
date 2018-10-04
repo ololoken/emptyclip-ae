@@ -98,7 +98,6 @@ void _Console::Update(double FrameTime) {
 		case SDL_SCANCODE_KP_ENTER:
 		case SDL_SCANCODE_RETURN: {
 			if(!TextboxElement->Text.empty()) {
-				TextboxElement->Text = TrimString(TextboxElement->Text);
 
 				// Separate command from parameters
 				size_t SpaceIndex = TextboxElement->Text.find_first_of(' ');
@@ -107,7 +106,7 @@ void _Console::Update(double FrameTime) {
 				// Handle parameters
 				Parameters = "";
 				if(SpaceIndex != std::string::npos)
-					Parameters = TextboxElement->Text.substr(SpaceIndex + 1);
+					Parameters = TrimString(TextboxElement->Text.substr(SpaceIndex + 1));
 
 				// Add command to history if not a repeat
 				if(CommandHistory.size() == 0 || (CommandHistory.size() > 0 && CommandHistory.back() != TextboxElement->Text))

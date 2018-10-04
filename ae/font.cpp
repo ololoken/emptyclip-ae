@@ -254,31 +254,6 @@ void _Font::CreateFontTexture(std::string SortedCharacters, uint32_t TextureWidt
 	delete[] Image;
 }
 
-// Draw one glyph
-void _Font::DrawGlyph(glm::vec2 &Position, char Char, float Scale) const {
-
-	// Get glyph data
-	const _Glyph &Glyph = Glyphs[(FT_Byte)Char];
-
-	// Get vertices
-	glm::vec2 DrawPosition(Position.x + Scale * Glyph.OffsetX, Position.y - Scale * Glyph.OffsetY);
-	float Vertices[] = {
-		DrawPosition.x,                       DrawPosition.y + Scale * Glyph.Height,
-		DrawPosition.x + Scale * Glyph.Width, DrawPosition.y + Scale * Glyph.Height,
-		DrawPosition.x,                       DrawPosition.y,
-		DrawPosition.x + Scale * Glyph.Width, DrawPosition.y,
-		Glyph.Left,                           Glyph.Bottom,
-		Glyph.Right,                          Glyph.Bottom,
-		Glyph.Left,                           Glyph.Top,
-		Glyph.Right,                          Glyph.Top,
-	};
-
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(Vertices), Vertices);
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-	Position.x += Scale * Glyph.Advance;
-}
-
 // Adjust position based on alignment
 void _Font::AdjustPosition(const std::string &Text, glm::vec2 &Position, bool UseFormatting, const _Alignment &Alignment, float Scale) const {
 
@@ -310,10 +285,39 @@ void _Font::AdjustPosition(const std::string &Text, glm::vec2 &Position, bool Us
 	}
 }
 
+// Draw one glyph
+void _Font::DrawGlyph(glm::vec2 &Position, char Char, float Scale) const {
+
+	// Get glyph data
+	const _Glyph &Glyph = Glyphs[(FT_Byte)Char];
+
+	// Get vertices
+	glm::vec2 DrawPosition(Position.x + Scale * Glyph.OffsetX, Position.y - Scale * Glyph.OffsetY);
+
+	// Model transform
+	glm::mat4 Transform(1.0f);
+	Transform[3][0] = DrawPosition.x;
+	Transform[3][1] = DrawPosition.y;
+	Transform[0][0] = Scale * Glyph.Width;
+	Transform[1][1] = Scale * Glyph.Height;
+	glUniformMatrix4fv(Program->ModelTransformID, 1, GL_FALSE, glm::value_ptr(Transform));
+
+	// Texture transform
+	glm::mat4 TextureTransform(1.0f);
+	TextureTransform[3][0] = Glyph.Left;
+	TextureTransform[3][1] = Glyph.Top;
+	TextureTransform[0][0] = Glyph.Right - Glyph.Left;
+	TextureTransform[1][1] = Glyph.Bottom - Glyph.Top;
+	glUniformMatrix4fv(Program->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	Position.x += Scale * Glyph.Advance;
+}
+
 // Draws a string
 float _Font::DrawText(const std::string &Text, glm::vec2 Position, const _Alignment &Alignment, const glm::vec4 &Color, float Scale) const {
 	Graphics.SetProgram(Program);
-	Graphics.SetVBO(VBO_ATLAS);
+	Graphics.SetVBO(VBO_TEXT);
 	Graphics.SetColor(Color);
 	Graphics.SetTextureID(Texture->ID);
 
@@ -344,7 +348,7 @@ float _Font::DrawText(const std::string &Text, glm::vec2 Position, const _Alignm
 // Draw formatted text with colors: "Example [c red]red[c white] text here"
 void _Font::DrawTextFormatted(const std::string &Text, glm::vec2 Position, const _Alignment &Alignment, float Scale) const {
 	Graphics.SetProgram(Program);
-	Graphics.SetVBO(VBO_ATLAS);
+	Graphics.SetVBO(VBO_TEXT);
 	Graphics.SetColor(glm::vec4(1.0f));
 	Graphics.SetTextureID(Texture->ID);
 	bool InTag = false;

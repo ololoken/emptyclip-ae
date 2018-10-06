@@ -292,10 +292,10 @@ void _Graphics::BuildVertexBuffers() {
 			 0.5f,  0.5f,
 			-0.5f, -0.5f,
 			 0.5f, -0.5f,
+			 1.0f,  0.0f,
 			 0.0f,  0.0f,
-			 0.0f,  0.0f,
-			 0.0f,  0.0f,
-			 0.0f,  0.0f,
+			 1.0f,  1.0f,
+			 0.0f,  1.0f,
 		};
 
 		VertexBuffer[VBO_ATLAS] = CreateVBO(Triangles, sizeof(Triangles), GL_DYNAMIC_DRAW);
@@ -565,8 +565,6 @@ void _Graphics::DrawRectangle(const glm::vec2 &Start, const glm::vec2 &End, bool
 
 // Draw stencil mask
 void _Graphics::DrawMask(const _Bounds &Bounds) {
-	if(LastAttribLevel != 1)
-		throw std::runtime_error(std::string(__FUNCTION__) + " - LastAttribLevel mismatch");
 
 	// Enable stencil
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
@@ -587,8 +585,7 @@ void _Graphics::DrawMask(const _Bounds &Bounds) {
 
 // Draw circle
 void _Graphics::DrawCircle(const glm::vec3 &Position, float Radius) {
-	if(LastAttribLevel != 1)
-		throw std::runtime_error(std::string(__FUNCTION__) + " - LastAttribLevel mismatch");
+	Graphics.SetVBO(VBO_CIRCLE);
 
 	glm::mat4 ModelTransform;
 	ModelTransform = glm::translate(glm::mat4(1.0f), Position);

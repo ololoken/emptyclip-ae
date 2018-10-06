@@ -395,13 +395,11 @@ void _Element::Render() const {
 		else if(Atlas) {
 			Graphics.SetColor(Color);
 			Graphics.SetProgram(Assets.Programs["ortho_pos_uv"]);
-			Graphics.SetVBO(VBO_NONE);
 			Graphics.DrawAtlas(Bounds, Atlas->Texture, Atlas->GetTextureCoords(TextureIndex));
 		}
 		else if(Texture) {
 			Graphics.SetColor(Color);
 			Graphics.SetProgram(Assets.Programs["ortho_pos_uv"]);
-			Graphics.SetVBO(VBO_NONE);
 			Graphics.DrawImage(Bounds, Texture, Stretch);
 		}
 
@@ -421,7 +419,6 @@ void _Element::Render() const {
 			RenderColor.a *= 0.5f;
 
 		Graphics.SetProgram(Assets.Programs["pos_uv"]);
-		Graphics.SetVBO(VBO_NONE);
 		if(Texts.size()) {
 
 			// Center box
@@ -469,7 +466,6 @@ void _Element::Render() const {
 	// Draw debug info
 	if(Debug && Debug-1 < DebugColorCount) {
 		Graphics.SetProgram(Assets.Programs["ortho_pos"]);
-		Graphics.SetVBO(VBO_NONE);
 		Graphics.SetColor(DebugColors[Debug-1]);
 		Graphics.DrawRectangle(Bounds.Start, Bounds.End);
 	}
@@ -478,7 +474,6 @@ void _Element::Render() const {
 // Draw an element using a style
 void _Element::DrawStyle(const _Style *DrawStyle) const {
 	Graphics.SetProgram(DrawStyle->Program);
-	Graphics.SetVBO(VBO_NONE);
 	if(DrawStyle->Texture) {
 		Graphics.SetColor(DrawStyle->TextureColor);
 		Graphics.DrawImage(Bounds, DrawStyle->Texture, DrawStyle->Stretch);

@@ -245,19 +245,19 @@ void _Graphics::BuildVertexBuffers() {
 		delete[] Triangles;
 	}
 
-	// 2D Quad
+	// Quad
 	{
 		float Triangles[] = {
-			0.0f, 1.0f,
-			1.0f, 1.0f,
-			0.0f, 0.0f,
 			1.0f, 0.0f,
+			0.0f, 0.0f,
+			1.0f, 1.0f,
+			0.0f, 1.0f,
 		};
 
 		VertexBuffer[VBO_QUAD] = CreateVBO(Triangles, sizeof(Triangles), GL_STATIC_DRAW);
 	}
 
-	// 2D Rectangle
+	// Rectangle
 	{
 		float Triangles[] = {
 			0.0f, 0.0f,
@@ -269,7 +269,7 @@ void _Graphics::BuildVertexBuffers() {
 		VertexBuffer[VBO_RECT] = CreateVBO(Triangles, sizeof(Triangles), GL_STATIC_DRAW);
 	}
 
-	// Textured 2D Quad
+	// Centered textured quad
 	{
 		float Triangles[] = {
 			-0.5f,  0.5f,
@@ -301,7 +301,7 @@ void _Graphics::BuildVertexBuffers() {
 		VertexBuffer[VBO_ATLAS] = CreateVBO(Triangles, sizeof(Triangles), GL_DYNAMIC_DRAW);
 	}
 
-	// Text
+	// Textured quad
 	{
 		float Triangles[] = {
 			1.0f, 0.0f,
@@ -314,7 +314,7 @@ void _Graphics::BuildVertexBuffers() {
 			0.0f, 1.0f,
 		};
 
-		VertexBuffer[VBO_TEXT] = CreateVBO(Triangles, sizeof(Triangles), GL_STATIC_DRAW);
+		VertexBuffer[VBO_QUAD_UV] = CreateVBO(Triangles, sizeof(Triangles), GL_STATIC_DRAW);
 	}
 
 	// Cube
@@ -404,7 +404,7 @@ void _Graphics::DrawCenteredImage(const glm::ivec2 &Position, const _Texture *Te
 
 // Draw image in screen space
 void _Graphics::DrawImage(const _Bounds &Bounds, const _Texture *Texture, bool Stretch) {
-	SetVBO(VBO_TEXT);
+	SetVBO(VBO_QUAD_UV);
 	SetTextureID(Texture->ID);
 
 	// Get texture coordinates
@@ -432,7 +432,7 @@ void _Graphics::DrawImage(const _Bounds &Bounds, const _Texture *Texture, bool S
 
 // Draw image from a texture atlas
 void _Graphics::DrawAtlas(const _Bounds &Bounds, const _Texture *Texture, const glm::vec4 &TextureCoords) {
-	SetVBO(VBO_TEXT);
+	SetVBO(VBO_QUAD_UV);
 	SetTextureID(Texture->ID);
 
 	// Get vertices
@@ -651,7 +651,7 @@ void _Graphics::SetVBO(GLuint VBO) {
 		break;
 		case VBO_SPRITE:
 		case VBO_ATLAS:
-		case VBO_TEXT:
+		case VBO_QUAD_UV:
 			EnableAttribs(2);
 			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
 			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (GLvoid *)(sizeof(float) * 8));

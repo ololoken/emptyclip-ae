@@ -317,7 +317,7 @@ void _Font::DrawGlyph(glm::vec2 &Position, char Char, float Scale) const {
 // Draws a string
 float _Font::DrawText(const std::string &Text, glm::vec2 Position, const _Alignment &Alignment, const glm::vec4 &Color, float Scale) const {
 	Graphics.SetProgram(Program);
-	Graphics.SetVBO(VBO_TEXT);
+	Graphics.SetVBO(VBO_QUAD_UV);
 	Graphics.SetColor(Color);
 	Graphics.SetTextureID(Texture->ID);
 
@@ -348,7 +348,7 @@ float _Font::DrawText(const std::string &Text, glm::vec2 Position, const _Alignm
 // Draw formatted text with colors: "Example [c red]red[c white] text here"
 void _Font::DrawTextFormatted(const std::string &Text, glm::vec2 Position, const _Alignment &Alignment, float Scale) const {
 	Graphics.SetProgram(Program);
-	Graphics.SetVBO(VBO_TEXT);
+	Graphics.SetVBO(VBO_QUAD_UV);
 	Graphics.SetColor(glm::vec4(1.0f));
 	Graphics.SetTextureID(Texture->ID);
 	bool InTag = false;

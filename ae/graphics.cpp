@@ -404,47 +404,55 @@ void _Graphics::DrawCenteredImage(const glm::ivec2 &Position, const _Texture *Te
 
 // Draw image in screen space
 void _Graphics::DrawImage(const _Bounds &Bounds, const _Texture *Texture, bool Stretch) {
-	SetVBO(VBO_ATLAS);
+	SetVBO(VBO_TEXT);
 	SetTextureID(Texture->ID);
 
 	// Get texture coordinates
 	float S = Stretch ? 1.0f : (Bounds.End.x - Bounds.Start.x) / (float)(Texture->Size.x);
 	float T = Stretch ? 1.0f : (Bounds.End.y - Bounds.Start.y) / (float)(Texture->Size.y);
 
-	// Vertex data for quad
-	float Vertices[] = {
-		Bounds.End.x,   Bounds.Start.y,
-		Bounds.Start.x, Bounds.Start.y,
-		Bounds.End.x,   Bounds.End.y,
-		Bounds.Start.x, Bounds.End.y,
-		S,		        0.0f,
-		0.0f,           0.0f,
-		S,		        T,
-		0.0f,           T,
-	};
+	// Get vertices
+	glm::vec2 Size = Bounds.End - Bounds.Start;
 
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(Vertices), Vertices);
+	// Model transform
+	glm::mat4 Transform(1.0f);
+	Transform[3][0] = Bounds.Start.x;
+	Transform[3][1] = Bounds.Start.y;
+	Transform[0][0] = Size.x;
+	Transform[1][1] = Size.y;
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(Transform));
+
+	// Texture transform
+	glm::mat4 TextureTransform(1.0f);
+	TextureTransform[0][0] = S;
+	TextureTransform[1][1] = T;
+	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
 // Draw image from a texture atlas
 void _Graphics::DrawAtlas(const _Bounds &Bounds, const _Texture *Texture, const glm::vec4 &TextureCoords) {
-	SetVBO(VBO_ATLAS);
+	SetVBO(VBO_TEXT);
 	SetTextureID(Texture->ID);
 
-	// Vertex data for quad
-	float Vertices[] = {
-		Bounds.End.x,   Bounds.Start.y,
-		Bounds.Start.x, Bounds.Start.y,
-		Bounds.End.x,   Bounds.End.y,
-		Bounds.Start.x, Bounds.End.y,
-		TextureCoords[2], TextureCoords[1],
-		TextureCoords[0], TextureCoords[1],
-		TextureCoords[2], TextureCoords[3],
-		TextureCoords[0], TextureCoords[3],
-	};
+	// Get vertices
+	glm::vec2 Size = Bounds.End - Bounds.Start;
 
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(Vertices), Vertices);
+	// Model transform
+	glm::mat4 Transform(1.0f);
+	Transform[3][0] = Bounds.Start.x;
+	Transform[3][1] = Bounds.Start.y;
+	Transform[0][0] = Size.x;
+	Transform[1][1] = Size.y;
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(Transform));
+
+	// Texture transform
+	glm::mat4 TextureTransform(1.0f);
+	TextureTransform[3][0] = TextureCoords[0];
+	TextureTransform[3][1] = TextureCoords[1];
+	TextureTransform[0][0] = TextureCoords[2] - TextureCoords[0];
+	TextureTransform[1][1] = TextureCoords[3] - TextureCoords[1];
+	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 

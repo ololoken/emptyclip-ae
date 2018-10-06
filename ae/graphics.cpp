@@ -230,48 +230,58 @@ void _Graphics::SetStaticUniforms() {
 void _Graphics::BuildVertexBuffers() {
 	VertexBuffer[VBO_NONE] = 0;
 
+	// Line
+	{
+		float Vertices[] = {
+			0.0f, 0.0f,
+			1.0f, 1.0f,
+		};
+
+		VertexBuffer[VBO_LINE] = CreateVBO(Vertices, sizeof(Vertices), GL_STATIC_DRAW);
+	}
+
 	// Circle
 	{
-		float *Triangles = new float[CircleVertices * 2];
+		float *Vertices = new float[CircleVertices * 2];
 
 		// Get vertices
 		for(GLuint i = 0; i < CircleVertices; i++) {
 			float Radians = ((float)i / CircleVertices) * (glm::pi<float>() * 2.0f);
-			Triangles[i * 2] = std::cos(Radians);
-			Triangles[i * 2 + 1] = std::sin(Radians);
+			Vertices[i * 2] = std::cos(Radians);
+			Vertices[i * 2 + 1] = std::sin(Radians);
 		}
 
-		VertexBuffer[VBO_CIRCLE] = CreateVBO(Triangles, sizeof(float) * CircleVertices * 2, GL_STATIC_DRAW);
-		delete[] Triangles;
+		VertexBuffer[VBO_CIRCLE] = CreateVBO(Vertices, sizeof(float) * CircleVertices * 2, GL_STATIC_DRAW);
+		delete[] Vertices;
 	}
 
 	// Quad
 	{
-		float Triangles[] = {
+		float Vertices[] = {
 			1.0f, 0.0f,
 			0.0f, 0.0f,
 			1.0f, 1.0f,
 			0.0f, 1.0f,
 		};
 
-		VertexBuffer[VBO_QUAD] = CreateVBO(Triangles, sizeof(Triangles), GL_STATIC_DRAW);
+		VertexBuffer[VBO_QUAD] = CreateVBO(Vertices, sizeof(Vertices), GL_STATIC_DRAW);
 	}
 
 	// Rectangle
 	{
-		float Triangles[] = {
+		float Vertices[] = {
 			0.0f, 0.0f,
 			1.0f, 0.0f,
 			1.0f, 1.0f,
 			0.0f, 1.0f,
 		};
 
-		VertexBuffer[VBO_RECT] = CreateVBO(Triangles, sizeof(Triangles), GL_STATIC_DRAW);
+		VertexBuffer[VBO_RECT] = CreateVBO(Vertices, sizeof(Vertices), GL_STATIC_DRAW);
 	}
 
 	// Centered textured quad
 	{
-		float Triangles[] = {
+		float Vertices[] = {
 			-0.5f,  0.5f,
 			 0.5f,  0.5f,
 			-0.5f, -0.5f,
@@ -282,12 +292,12 @@ void _Graphics::BuildVertexBuffers() {
 			 1.0f,  0.0f,
 		};
 
-		VertexBuffer[VBO_SPRITE] = CreateVBO(Triangles, sizeof(Triangles), GL_STATIC_DRAW);
+		VertexBuffer[VBO_SPRITE] = CreateVBO(Vertices, sizeof(Vertices), GL_STATIC_DRAW);
 	}
 
 	// Dynamic vbo for drawing animations
 	{
-		float Triangles[] = {
+		float Vertices[] = {
 			-0.5f,  0.5f,
 			 0.5f,  0.5f,
 			-0.5f, -0.5f,
@@ -298,12 +308,12 @@ void _Graphics::BuildVertexBuffers() {
 			 0.0f,  1.0f,
 		};
 
-		VertexBuffer[VBO_ATLAS] = CreateVBO(Triangles, sizeof(Triangles), GL_DYNAMIC_DRAW);
+		VertexBuffer[VBO_ATLAS] = CreateVBO(Vertices, sizeof(Vertices), GL_DYNAMIC_DRAW);
 	}
 
 	// Textured quad
 	{
-		float Triangles[] = {
+		float Vertices[] = {
 			1.0f, 0.0f,
 			0.0f, 0.0f,
 			1.0f, 1.0f,
@@ -314,12 +324,12 @@ void _Graphics::BuildVertexBuffers() {
 			0.0f, 1.0f,
 		};
 
-		VertexBuffer[VBO_QUAD_UV] = CreateVBO(Triangles, sizeof(Triangles), GL_STATIC_DRAW);
+		VertexBuffer[VBO_QUAD_UV] = CreateVBO(Vertices, sizeof(Vertices), GL_STATIC_DRAW);
 	}
 
 	// Cube
 	{
-		float Triangles[] = {
+		float Vertices[] = {
 
 			// Top
 			1.0f,  0.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
@@ -352,7 +362,7 @@ void _Graphics::BuildVertexBuffers() {
 			1.0f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,  0.0f,
 		};
 
-		VertexBuffer[VBO_CUBE] = CreateVBO(Triangles, sizeof(Triangles), GL_STATIC_DRAW);
+		VertexBuffer[VBO_CUBE] = CreateVBO(Vertices, sizeof(Vertices), GL_STATIC_DRAW);
 	}
 }
 
@@ -380,16 +390,28 @@ void _Graphics::ClearScreen() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
+// Sets up the projection matrix for drawing 2D objects
+void _Graphics::Setup2D() {
+	glViewport(0, 0, CurrentSize.x, CurrentSize.y);
+}
+
 // Set up modelview matrix
 void _Graphics::Setup3D() {
 	glViewport(0, CurrentSize.y - ViewportSize.y, ViewportSize.x, ViewportSize.y);
 }
 
-// Sets up the projection matrix for drawing 2D objects
-void _Graphics::Setup2D() {
+// Draw line
+void _Graphics::DrawLine(const glm::vec2 &Start, const glm::vec2 &End) {
+	SetVBO(VBO_LINE);
+	glm::vec2 Size = End - Start;
 
-	// Set viewport
-	glViewport(0, 0, CurrentSize.x, CurrentSize.y);
+	glm::mat4 Transform(1.0f);
+	Transform[3][0] = Start.x;
+	Transform[3][1] = Start.y;
+	Transform[0][0] = Size.x;
+	Transform[1][1] = Size.y;
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(Transform));
+	glDrawArrays(GL_LINES, 0, 2);
 }
 
 // Draw image centered
@@ -411,7 +433,7 @@ void _Graphics::DrawImage(const _Bounds &Bounds, const _Texture *Texture, bool S
 	float S = Stretch ? 1.0f : (Bounds.End.x - Bounds.Start.x) / (float)(Texture->Size.x);
 	float T = Stretch ? 1.0f : (Bounds.End.y - Bounds.Start.y) / (float)(Texture->Size.y);
 
-	// Get vertices
+	// Get size
 	glm::vec2 Size = Bounds.End - Bounds.Start;
 
 	// Model transform
@@ -435,7 +457,7 @@ void _Graphics::DrawAtlas(const _Bounds &Bounds, const _Texture *Texture, const 
 	SetVBO(VBO_QUAD_UV);
 	SetTextureID(Texture->ID);
 
-	// Get vertices
+	// Get size
 	glm::vec2 Size = Bounds.End - Bounds.Start;
 
 	// Model transform
@@ -477,8 +499,7 @@ void _Graphics::DrawSprite(const glm::vec3 &Position, const _Texture *Texture, f
 
 // Draw 3d wall
 void _Graphics::DrawCube(const glm::vec3 &Start, const glm::vec3 &Scale, const _Texture *Texture) {
-	if(LastAttribLevel != 3)
-		throw std::runtime_error(std::string(__FUNCTION__) + " - LastAttribLevel mismatch");
+	SetVBO(VBO_CUBE);
 
 	SetTextureID(Texture->ID);
 
@@ -656,6 +677,7 @@ void _Graphics::SetVBO(GLuint VBO) {
 			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
 			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (GLvoid *)(sizeof(float) * 8));
 		break;
+		case VBO_LINE:
 		case VBO_RECT:
 		case VBO_QUAD:
 		case VBO_CIRCLE:

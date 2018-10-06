@@ -38,6 +38,7 @@ struct _Bounds;
 
 enum VertexBufferType {
 	VBO_NONE,
+	VBO_LINE,
 	VBO_CIRCLE,
 	VBO_QUAD,
 	VBO_RECT,
@@ -83,6 +84,7 @@ class _Graphics {
 		void Setup2D();
 		void Setup3D();
 
+		void DrawLine(const glm::vec2 &Start, const glm::vec2 &End);
 		void DrawCenteredImage(const glm::ivec2 &Position, const _Texture *Texture, const glm::vec4 &Color=glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 		void DrawImage(const _Bounds &Bounds, const _Texture *Texture, bool Stretch=false);
 		void DrawAtlas(const _Bounds &Bounds, const _Texture *Texture, const glm::vec4 &TextureCoords);

@@ -568,8 +568,6 @@ void _Graphics::DrawMask(const _Bounds &Bounds) {
 	if(LastAttribLevel != 1)
 		throw std::runtime_error(std::string(__FUNCTION__) + " - LastAttribLevel mismatch");
 
-	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0f)));
-
 	// Enable stencil
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 	glStencilMask(0x01);
@@ -578,15 +576,8 @@ void _Graphics::DrawMask(const _Bounds &Bounds) {
 	glStencilFunc(GL_ALWAYS, 0x01, 0x01);
 	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
 
-	float Vertices[] = {
-		Bounds.Start.x, Bounds.End.y,
-		Bounds.End.x, Bounds.End.y,
-		Bounds.Start.x, Bounds.Start.y,
-		Bounds.End.x, Bounds.Start.y,
-	};
-
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, Vertices);
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	// Draw region
+	DrawRectangle(Bounds.Start, Bounds.End, true);
 
 	// Then draw element only where stencil is 1
 	glStencilFunc(GL_EQUAL, 0x01, 0x01);
@@ -777,11 +768,34 @@ void _Graphics::CheckError() {
 		throw std::runtime_error("glGetError returned " + std::to_string(Error));
 }
 
-void _Graphics::SetDepthMask(bool Value) { glDepthMask(Value); }
-void _Graphics::EnableStencilTest() { glEnable(GL_STENCIL_TEST); }
-void _Graphics::DisableStencilTest() { glDisable(GL_STENCIL_TEST); }
-void _Graphics::EnableScissorTest() { glEnable(GL_SCISSOR_TEST); }
-void _Graphics::DisableScissorTest() { glDisable(GL_SCISSOR_TEST); }
-void _Graphics::ShowCursor(int Type) { SDL_SetCursor(Cursors[Type]); }
+// Set depth mask
+void _Graphics::SetDepthMask(bool Value) {
+	glDepthMask(Value);
+}
+
+// Enable stencil test
+void _Graphics::EnableStencilTest() {
+	glEnable(GL_STENCIL_TEST);
+}
+
+// Disable stencil tests
+void _Graphics::DisableStencilTest() {
+	glDisable(GL_STENCIL_TEST);
+}
+
+// Enable scissor test
+void _Graphics::EnableScissorTest() {
+	glEnable(GL_SCISSOR_TEST);
+}
+
+// Disable scissor test
+void _Graphics::DisableScissorTest() {
+	glDisable(GL_SCISSOR_TEST);
+}
+
+// Set mouse cursor icon
+void _Graphics::ShowCursor(int Type) {
+	SDL_SetCursor(Cursors[Type]);
+}
 
 }

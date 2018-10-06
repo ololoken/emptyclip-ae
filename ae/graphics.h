@@ -107,7 +107,7 @@ class _Graphics {
 		void ClearScreen();
 		void Flip(double FrameTime);
 
-		GLuint CreateVBO(float *Triangles, GLuint Size, GLenum Type);
+		GLuint CreateVBO(float *Vertices, GLuint Size, GLenum Type);
 		void UpdateVBOTextureCoords(int VBO, float *Data);
 		void SetVBO(GLuint Type);
 		void EnableAttribs(int AttribLevel);

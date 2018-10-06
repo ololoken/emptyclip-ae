@@ -367,13 +367,13 @@ void _Graphics::BuildVertexBuffers() {
 }
 
 // Create vertex buffer and return id
-GLuint _Graphics::CreateVBO(float *Triangles, GLuint Size, GLenum Type) {
+GLuint _Graphics::CreateVBO(float *Vertices, GLuint Size, GLenum Type) {
 
 	// Create buffer
 	GLuint BufferID;
 	glGenBuffers(1, &BufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, BufferID);
-	glBufferData(GL_ARRAY_BUFFER, Size, Triangles, Type);
+	glBufferData(GL_ARRAY_BUFFER, Size, Vertices, Type);
 
 	return BufferID;
 }
@@ -500,44 +500,48 @@ void _Graphics::DrawSprite(const glm::vec3 &Position, const _Texture *Texture, f
 // Draw 3d wall
 void _Graphics::DrawCube(const glm::vec3 &Start, const glm::vec3 &Scale, const _Texture *Texture) {
 	SetVBO(VBO_CUBE);
-
 	SetTextureID(Texture->ID);
 
-	glm::mat4 ModelTransform;
-	ModelTransform = glm::translate(glm::mat4(1.0f), Start);
+	glm::mat4 ModelTransform(1.0f);
+	ModelTransform = glm::translate(ModelTransform, Start);
 	ModelTransform = glm::scale(ModelTransform, Scale);
-
 	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(ModelTransform));
 
-	// Change texture
-	glMatrixMode(GL_TEXTURE);
+	glm::mat4 TextureTransform(1.0f);
 
 	// Draw top
-	glScalef(Scale.x, Scale.y, 1);
+	TextureTransform[0][0] = Scale.x;
+	TextureTransform[1][1] = Scale.y;
+	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	glLoadIdentity();
 
 	// Draw front
-	glScalef(Scale.x, Scale.z, 1);
+	TextureTransform[0][0] = Scale.x;
+	TextureTransform[1][1] = Scale.z;
+	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
 	glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
 	glLoadIdentity();
 
 	// Draw left
-	glScalef(Scale.y, Scale.z, 1);
+	TextureTransform[0][0] = Scale.y;
+	TextureTransform[1][1] = Scale.z;
+	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
 	glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
 	glLoadIdentity();
 
 	// Draw back
-	glScalef(Scale.x, Scale.z, 1);
+	TextureTransform[0][0] = Scale.x;
+	TextureTransform[1][1] = Scale.z;
+	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
 	glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
 	glLoadIdentity();
 
 	// Draw right
-	glScalef(Scale.y, Scale.z, 1);
+	TextureTransform[0][0] = Scale.y;
+	TextureTransform[1][1] = Scale.z;
+	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
 	glDrawArrays(GL_TRIANGLE_STRIP, 16, 4);
-	glLoadIdentity();
-
-	glMatrixMode(GL_MODELVIEW);
 }
 
 // Draw rectangle in screen space

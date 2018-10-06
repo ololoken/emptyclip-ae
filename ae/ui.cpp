@@ -418,7 +418,6 @@ void _Element::Render() const {
 		if(!Enabled)
 			RenderColor.a *= 0.5f;
 
-		Graphics.SetProgram(Assets.Programs["pos_uv"]);
 		if(Texts.size()) {
 
 			// Center box

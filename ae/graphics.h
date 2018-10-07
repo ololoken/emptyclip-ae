@@ -89,6 +89,7 @@ class _Graphics {
 		void DrawImage(const _Bounds &Bounds, const _Texture *Texture, bool Stretch=false);
 		void DrawAtlas(const _Bounds &Bounds, const _Texture *Texture, const glm::vec4 &TextureCoords);
 		void DrawSprite(const glm::vec3 &Position, const _Texture *Texture, float Rotation=0.0f, const glm::vec2 Scale=glm::vec2(1.0f));
+		void DrawAnimationFrame(const glm::vec3 &Position, const _Texture *Texture, const glm::vec4 &TextureCoords, float Rotation=0.0f, const glm::vec2 Scale=glm::vec2(1.0f));
 		void DrawCube(const glm::vec3 &Start, const glm::vec3 &Scale, const _Texture *Texture);
 		void DrawRectangle(const _Bounds &Bounds, bool Filled=false);
 		void DrawRectangle(const glm::vec2 &Start, const glm::vec2 &End, bool Filled=false);
@@ -108,7 +109,6 @@ class _Graphics {
 		void Flip(double FrameTime);
 
 		GLuint CreateVBO(float *Vertices, GLuint Size, GLenum Type);
-		void UpdateVBOTextureCoords(int VBO, float *Data);
 		void SetVBO(GLuint Type);
 		void EnableAttribs(int AttribLevel);
 

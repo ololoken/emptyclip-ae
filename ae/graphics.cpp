@@ -497,6 +497,31 @@ void _Graphics::DrawSprite(const glm::vec3 &Position, const _Texture *Texture, f
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
+// Draw frame from an animation
+void _Graphics::DrawAnimationFrame(const glm::vec3 &Position, const _Texture *Texture, const glm::vec4 &TextureCoords, float Rotation, const glm::vec2 Scale) {
+	SetVBO(VBO_ATLAS);
+	SetTextureID(Texture->ID);
+
+	// Set transform
+	glm::mat4 ModelTransform;
+	ModelTransform = glm::translate(glm::mat4(1.0f), Position);
+	Rotation = glm::radians(Rotation);
+	if(Rotation != 0.0f)
+		ModelTransform = glm::rotate(ModelTransform, Rotation, glm::vec3(0, 0, 1));
+	ModelTransform = glm::scale(ModelTransform, glm::vec3(Scale, 0.0f));
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(ModelTransform));
+
+	// Texture transform
+	glm::mat4 TextureTransform(1.0f);
+	TextureTransform[3][0] = TextureCoords[0];
+	TextureTransform[3][1] = TextureCoords[1];
+	TextureTransform[0][0] = TextureCoords[2] - TextureCoords[0];
+	TextureTransform[1][1] = TextureCoords[3] - TextureCoords[1];
+	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
 // Draw 3d wall
 void _Graphics::DrawCube(const glm::vec3 &Start, const glm::vec3 &Scale, const _Texture *Texture) {
 	SetVBO(VBO_CUBE);
@@ -652,12 +677,6 @@ void _Graphics::Flip(double FrameTime) {
 	#ifndef NDEBUG
 		CheckError();
 	#endif
-}
-
-// Update texture coordinates for a vbo
-void _Graphics::UpdateVBOTextureCoords(int VBO, float *Data) {
-	glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer[VBO]);
-	glBufferSubData(GL_ARRAY_BUFFER, sizeof(float) * 8, sizeof(float) * 8, (GLvoid *)(&Data[0]));
 }
 
 // Enable state for VBO

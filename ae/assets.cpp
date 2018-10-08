@@ -364,13 +364,17 @@ void _Assets::LoadStyles(const std::string &Path) {
 		std::getline(File, TextureName, '\t');
 		std::getline(File, TextureColorName, '\t');
 
-		// Check for color
+		// Check for background color
 		if(BackgroundColorName != "" && Colors.find(BackgroundColorName) == Colors.end())
-			throw std::runtime_error("Unable to find color: " + BackgroundColorName + " for style: " + Name);
+			throw std::runtime_error("Unable to find background color: " + BackgroundColorName + " for style: " + Name);
 
-		// Check for color
+		// Check for border color
 		if(BorderColorName != "" && Colors.find(BorderColorName) == Colors.end())
-			throw std::runtime_error("Unable to find color: " + BorderColorName + " for style: " + Name);
+			throw std::runtime_error("Unable to find border color: " + BorderColorName + " for style: " + Name);
+
+		// Check for texture color
+		if(TextureColorName != "" && Colors.find(TextureColorName) == Colors.end())
+			throw std::runtime_error("Unable to find texture color: " + TextureColorName + " for style: " + Name);
 
 		// Find program
 		if(Programs.find(ProgramName) == Programs.end())

@@ -445,6 +445,7 @@ void _Element::Render() const {
 				// Draw cursor
 				if(CursorTimer < 0.5 && (FocusedElement == this || FocusedElement == Parent)) {
 					Graphics.SetProgram(Assets.Programs["ortho_pos"]);
+					Graphics.SetColor(glm::vec4(1.0f));
 					Graphics.DrawRectangle(glm::vec2(StartPosition.x + TextBounds.Width+1, StartPosition.y - Font->MaxAbove - 1), glm::vec2(StartPosition.x + TextBounds.Width+2, StartPosition.y + Font->MaxBelow));
 				}
 			}

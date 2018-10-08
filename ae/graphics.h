@@ -155,7 +155,6 @@ class _Graphics {
 		GLuint LastVertexBufferID;
 		GLuint LastTextureID;
 		int LastAttribLevel;
-		glm::vec4 LastColor;
 		const _Program *LastProgram;
 		bool LastDepthTest;
 

@@ -754,11 +754,7 @@ void _Graphics::EnableAttribs(int AttribLevel) {
 
 // Set opengl color
 void _Graphics::SetColor(const glm::vec4 &Color) {
-	if(Color == LastColor)
-		return;
-
 	LastProgram->SetUniformVec4("color", Color);
-	LastColor = Color;
 }
 
 // Set texture id
@@ -814,7 +810,6 @@ void _Graphics::DirtyState() {
 	LastVertexBufferID = (GLuint)-1;
 	LastTextureID = (GLuint)-1;
 	LastAttribLevel = -1;
-	LastColor = glm::vec4(-1, -1, -1, -1);
 	LastProgram = nullptr;
 	LastDepthTest = false;
 }

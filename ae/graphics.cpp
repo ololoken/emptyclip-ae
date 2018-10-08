@@ -191,11 +191,11 @@ void _Graphics::SetupOpenGL() {
 
 	// Anisotropic filtering
 	if(SDL_GL_ExtensionSupported("GL_EXT_texture_filter_anisotropic")) {
-		GLfloat MaxAnisotropy;
-		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &MaxAnisotropy);
+		//GLfloat MaxAnisotropy;
+		//glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &MaxAnisotropy);
 
-		if(Anisotropy > (int)MaxAnisotropy)
-			Anisotropy = (int)MaxAnisotropy;
+		//if(Anisotropy > (int)MaxAnisotropy)
+		//	Anisotropy = (int)MaxAnisotropy;
 	}
 
 	// Default state
@@ -205,6 +205,7 @@ void _Graphics::SetupOpenGL() {
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glActiveTexture(GL_TEXTURE0);
 
 	// Create vertex array
 	glGenVertexArrays(1, &VertexArrayID);
@@ -545,28 +546,24 @@ void _Graphics::DrawCube(const glm::vec3 &Start, const glm::vec3 &Scale, const _
 	TextureTransform[1][1] = Scale.y;
 	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	glLoadIdentity();
 
 	// Draw front
 	TextureTransform[0][0] = Scale.x;
 	TextureTransform[1][1] = Scale.z;
 	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
 	glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
-	glLoadIdentity();
 
 	// Draw left
 	TextureTransform[0][0] = Scale.y;
 	TextureTransform[1][1] = Scale.z;
 	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
 	glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
-	glLoadIdentity();
 
 	// Draw back
 	TextureTransform[0][0] = Scale.x;
 	TextureTransform[1][1] = Scale.z;
 	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
 	glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
-	glLoadIdentity();
 
 	// Draw right
 	TextureTransform[0][0] = Scale.y;
@@ -762,7 +759,6 @@ void _Graphics::SetTextureID(GLuint TextureID) {
 	if(TextureID == LastTextureID)
 		return;
 
-	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, TextureID);
 
 	LastTextureID = TextureID;

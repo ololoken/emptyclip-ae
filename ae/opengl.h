@@ -29,6 +29,7 @@
 
 	#define WGL_WGLEXT_PROTOTYPES
 	#include <GL/glcorearb.h>
+	#include <GL/glext.h>
 	#include <GL/wglext.h>
 
 	#undef DrawText

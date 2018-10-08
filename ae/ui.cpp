@@ -393,13 +393,13 @@ void _Element::Render() const {
 			DrawStyle(Style);
 		}
 		else if(Atlas) {
-			Graphics.SetColor(Color);
 			Graphics.SetProgram(Assets.Programs["ortho_pos_uv"]);
+			Graphics.SetColor(Color);
 			Graphics.DrawAtlas(Bounds, Atlas->Texture, Atlas->GetTextureCoords(TextureIndex));
 		}
 		else if(Texture) {
-			Graphics.SetColor(Color);
 			Graphics.SetProgram(Assets.Programs["ortho_pos_uv"]);
+			Graphics.SetColor(Color);
 			Graphics.DrawImage(Bounds, Texture, Stretch);
 		}
 

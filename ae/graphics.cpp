@@ -44,6 +44,7 @@ void _Graphics::Init(const _WindowSettings &WindowSettings) {
 	FrameRateTimer = 0;
 	Context = 0;
 	Window = 0;
+	VertexArrayID = 0;
 	Enabled = true;
 	Element = nullptr;
 	DirtyState();
@@ -67,9 +68,9 @@ void _Graphics::Init(const _WindowSettings &WindowSettings) {
 	// Set opengl attributes
 	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 1);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 
 	// Load cursors
 	Cursors[CURSOR_MAIN] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
@@ -111,6 +112,8 @@ void _Graphics::Close() {
 	if(Context) {
 		for(int i = 1; i < VBO_COUNT; i++)
 			glDeleteBuffers(1, &VertexBuffer[i]);
+
+		glDeleteVertexArrays(1, &VertexArrayID);
 
 		SDL_GL_DeleteContext(Context);
 		Context = nullptr;
@@ -197,12 +200,15 @@ void _Graphics::SetupOpenGL() {
 
 	// Default state
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glCullFace(GL_BACK);
 	glEnable(GL_CULL_FACE);
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	// Create vertex array
+	glGenVertexArrays(1, &VertexArrayID);
+	glBindVertexArray(VertexArrayID);
 	glEnableVertexAttribArray(0);
 
 	// Set ortho matrix
@@ -751,7 +757,7 @@ void _Graphics::SetColor(const glm::vec4 &Color) {
 	if(Color == LastColor)
 		return;
 
-	glColor4f(Color.r, Color.g, Color.b, Color.a);
+	LastProgram->SetUniformVec4("color", Color);
 	LastColor = Color;
 }
 
@@ -760,7 +766,9 @@ void _Graphics::SetTextureID(GLuint TextureID) {
 	if(TextureID == LastTextureID)
 		return;
 
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, TextureID);
+
 	LastTextureID = TextureID;
 }
 

@@ -249,7 +249,7 @@ void _Font::CreateFontTexture(std::string SortedCharacters, uint32_t TextureWidt
 	}
 
 	// Load texture
-	Texture = new _Texture(Image, glm::ivec2(TextureWidth, TextureHeight), GL_ALPHA8, GL_ALPHA);
+	Texture = new _Texture(Image, glm::ivec2(TextureWidth, TextureHeight), GL_RED, GL_RED);
 
 	delete[] Image;
 }

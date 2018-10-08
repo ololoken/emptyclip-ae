@@ -38,6 +38,7 @@ class _Program {
 		~_Program();
 
 		void Use() const;
+		void SetUniformVec4(const std::string &Name, const glm::vec4 &Value) const;
 
 		std::string Name;
 

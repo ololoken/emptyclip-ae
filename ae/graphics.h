@@ -139,6 +139,7 @@ class _Graphics {
 
 		// Attributes
 		GLuint CircleVertices;
+		GLuint VertexArrayID;
 
 		// Data structures
 		bool Enabled;

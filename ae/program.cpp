@@ -67,12 +67,15 @@ _Program::_Program(const std::string &Name, const _Shader *VertexShader, const _
 	if(MaxLights)
 		Lights = new _Light[MaxLights]();
 
-	// Get uniforms
+	// Set attrib locations
 	glBindAttribLocation(ID, 0, "vertex_pos");
 	glBindAttribLocation(ID, 1, "vertex_uv");
 	glBindAttribLocation(ID, 2, "vertex_norm");
 
-	SamplerIDs[0] = glGetUniformLocation(ID, "sampler0");
+	// Get uniforms
+	for(int i = 0; i < SAMPLER_COUNT; i++)
+		SamplerIDs[i] = glGetUniformLocation(ID, std::string("sampler" + std::to_string(i)).c_str());
+
 	ViewProjectionTransformID = glGetUniformLocation(ID, "view_projection_transform");
 	ModelTransformID = glGetUniformLocation(ID, "model_transform");
 	TextureTransformID = glGetUniformLocation(ID, "texture_transform");
@@ -100,8 +103,10 @@ void _Program::Use() const {
 	glUseProgram(ID);
 
 	// Set uniforms
-	if(SamplerIDs[0] != -1)
-		glUniform1i(SamplerIDs[0], 0);
+	for(int i = 0; i < SAMPLER_COUNT; i++) {
+		if(SamplerIDs[i] != -1)
+			glUniform1i(SamplerIDs[i], i);
+	}
 
 	if(AmbientLightID != -1)
 		glUniform4fv(AmbientLightID, 1, &AmbientLight[0]);

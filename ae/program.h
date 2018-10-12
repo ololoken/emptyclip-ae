@@ -32,6 +32,8 @@ struct _Light;
 // Program
 class _Program {
 
+	static const int SAMPLER_COUNT = 4;
+
 	public:
 
 		_Program(const std::string &Name, const _Shader *VertexShader, const _Shader *FragmentShader, int Attribs, int MaxLights);
@@ -57,7 +59,7 @@ class _Program {
 
 	private:
 
-		GLint SamplerIDs[4];
+		GLint SamplerIDs[SAMPLER_COUNT];
 
 };
 

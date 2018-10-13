@@ -59,12 +59,18 @@ _Framebuffer::~_Framebuffer() {
 
 // Resize framebuffer
 void _Framebuffer::Resize(const glm::ivec2 &Size) {
+	if(!TextureID)
+		return;
+
 	glBindTexture(GL_TEXTURE_2D, TextureID);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Size.x, Size.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 }
 
 // Enable
 void _Framebuffer::Use() {
+	if(!ID)
+		return;
+
 	glBindFramebuffer(GL_FRAMEBUFFER, ID);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);

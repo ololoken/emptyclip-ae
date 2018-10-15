@@ -22,6 +22,7 @@
 #include <ae/opengl.h>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
+#include <glm/mat4x4.hpp>
 #include <string>
 
 namespace ae {
@@ -41,6 +42,7 @@ class _Program {
 
 		void Use() const;
 		void SetUniformVec4(const std::string &Name, const glm::vec4 &Value) const;
+		void SetUniformMat4(const std::string &Name, const glm::mat4 &Value) const;
 
 		std::string Name;
 
@@ -48,6 +50,7 @@ class _Program {
 		GLint ViewProjectionTransformID;
 		GLint ModelTransformID;
 		GLint TextureTransformID;
+		GLint ColorID;
 		GLint AmbientLightID;
 		GLint LightCountID;
 		int Attribs;

@@ -750,7 +750,7 @@ void _Graphics::EnableAttribs(int AttribLevel) {
 
 // Set opengl color
 void _Graphics::SetColor(const glm::vec4 &Color) {
-	LastProgram->SetUniformVec4("color", Color);
+	glUniform4fv(LastProgram->ColorID, 1, &Color[0]);
 }
 
 // Set texture id

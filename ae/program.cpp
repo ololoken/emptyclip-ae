@@ -33,6 +33,7 @@ _Program::_Program(const std::string &Name, const _Shader *VertexShader, const _
 	ViewProjectionTransformID(-1),
 	ModelTransformID(-1),
 	TextureTransformID(-1),
+	ColorID(-1),
 	AmbientLightID(-1),
 	LightCountID(-1),
 	Attribs(Attribs),
@@ -79,6 +80,7 @@ _Program::_Program(const std::string &Name, const _Shader *VertexShader, const _
 	ViewProjectionTransformID = glGetUniformLocation(ID, "view_projection_transform");
 	ModelTransformID = glGetUniformLocation(ID, "model_transform");
 	TextureTransformID = glGetUniformLocation(ID, "texture_transform");
+	ColorID = glGetUniformLocation(ID, "color");
 	AmbientLightID = glGetUniformLocation(ID, "ambient_light");
 	LightCountID = glGetUniformLocation(ID, "light_count");
 
@@ -124,6 +126,11 @@ void _Program::Use() const {
 // Set the value of a vec4 uniform
 void _Program::SetUniformVec4(const std::string &Name, const glm::vec4 &Value) const {
 	glUniform4fv(glGetUniformLocation(ID, Name.c_str()), 1, &Value[0]);
+}
+
+// Set the value of a mat4 uniform
+void _Program::SetUniformMat4(const std::string &Name, const glm::mat4 &Value) const {
+	glUniformMatrix4fv(glGetUniformLocation(ID, Name.c_str()), 1, GL_FALSE, glm::value_ptr(Value[0]));
 }
 
 // Loads a shader

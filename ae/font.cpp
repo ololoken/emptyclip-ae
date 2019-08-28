@@ -325,7 +325,6 @@ float _Font::DrawText(const std::string &Text, glm::vec2 Position, const _Alignm
 	AdjustPosition(Text, Position, false, Alignment, Scale);
 
 	// Draw string
-	glm::vec2 DrawPosition;
 	FT_UInt PreviousGlyphIndex = 0;
 	for(size_t i = 0; i < Text.size(); i++) {
 		FT_UInt GlyphIndex = FT_Get_Char_Index(Face, (FT_ULong)Text[i]);

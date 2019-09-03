@@ -125,7 +125,7 @@ class _Element {
 		void SetActive(bool Active);
 		void SetFade(float Fade);
 		void SetEnabled(bool Enabled);
-		void SetOffsetPercent(const glm::vec2 &Value) { Offset = Value * (Parent->Size - Size); CalculateBounds(false); }
+		void SetOffsetPercent(const glm::vec2 &Value) { BaseOffset = Value * (Parent->BaseSize - BaseSize); CalculateBounds(); }
 		void SetWidth(float Width) { BaseSize.x = Size.x = Width; CalculateBounds(false); }
 		void SetHeight(float Height) { BaseSize.y = Size.y = Height; CalculateBounds(false); }
 		void SetText(const std::string &Text) { this->Text = Text; CursorPosition = Text.length(); }

@@ -354,9 +354,9 @@ void _Element::Update(double FrameTime, const glm::vec2 &Mouse) {
 
 	// Handle dragging
 	if(Draggable && PressedElement && Parent) {
-		Offset = Mouse - Parent->Bounds.Start - PressedOffset;
-		Offset = glm::clamp(Offset, glm::vec2(0), Parent->Size - Size);
-		CalculateBounds(false);
+		BaseOffset = (Mouse - Parent->Bounds.Start - PressedOffset) / GetUIScale();
+		BaseOffset = glm::clamp(BaseOffset, glm::vec2(0), Parent->BaseSize - BaseSize);
+		CalculateBounds();
 	}
 
 	// Test element first

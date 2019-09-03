@@ -133,6 +133,7 @@ void _Assets::LoadFonts(const std::string &Path, bool LoadFonts) {
 
 			// Create empty font
 			_Font *Font = new _Font();
+			Font->ID = Name;
 			Fonts[Name] = Font;
 		}
 	}

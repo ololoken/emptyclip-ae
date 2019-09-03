@@ -73,14 +73,14 @@ class _Assets {
 		void LoadMusic(const std::string &Path);
 		void LoadMeshDirectory(const std::string &Path);
 		void LoadAnimations(const std::string &Path, bool IsServer);
-		void LoadFonts(const std::string &Path);
+		void LoadFonts(const std::string &Path, bool LoadFonts=true);
 		void LoadLayers(const std::string &Path);
 		void LoadPrograms(const std::string &Path);
 		void LoadStyles(const std::string &Path);
 		void LoadUI(const std::string &Path);
 		void SaveUI(const std::string &Path);
 
-		std::unordered_map<std::string, const _Font *> Fonts;
+		std::unordered_map<std::string, _Font *> Fonts;
 		std::unordered_map<std::string, _Layer> Layers;
 		std::unordered_map<std::string, const _Texture *> Textures;
 		std::unordered_map<std::string, const _Mesh *> Meshes;

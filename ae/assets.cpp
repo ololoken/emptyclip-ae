@@ -84,7 +84,7 @@ void _Assets::Close() {
 }
 
 // Loads the fonts
-void _Assets::LoadFonts(const std::string &Path) {
+void _Assets::LoadFonts(const std::string &Path, bool LoadFonts) {
 
 	// Load file
 	std::ifstream File(Path.c_str(), std::ios::in);
@@ -106,7 +106,7 @@ void _Assets::LoadFonts(const std::string &Path) {
 		std::getline(File, ProgramName, '\t');
 
 		// Check for duplicates
-		if(Fonts[Name])
+		if(!LoadFonts && Fonts[Name])
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Name);
 
 		// Find program
@@ -120,7 +120,21 @@ void _Assets::LoadFonts(const std::string &Path) {
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Load font
-		Fonts[Name] = new _Font(Name, FontFile, Programs[ProgramName], Size);
+		if(LoadFonts) {
+
+			// Check for font name
+			if(Fonts.find(Name) == Fonts.end())
+				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find font: " + Name);
+
+			// Load font
+			Fonts[Name]->Load(Name, FontFile, Programs[ProgramName], Size * _Element::GetUIScale());
+		}
+		else {
+
+			// Create empty font
+			_Font *Font = new _Font();
+			Fonts[Name] = Font;
+		}
 	}
 
 	File.close();

@@ -53,15 +53,17 @@ bool operator>(const _SortCharacter &A, const _SortCharacter &B) {
 	return A.Height < B.Height;
 }
 
-// Load a font file
-_Font::_Font(const std::string &ID, const std::string &FontFile, const _Program *Program, uint32_t FontSize, uint32_t TextureWidth) :
-	ID(ID),
+// Constructor
+_Font::_Font() :
+	ID(""),
 	MaxHeight(0.0f),
 	MaxAbove(0.0f),
 	MaxBelow(0.0f),
-	Program(Program),
+	Program(nullptr),
 	Texture(nullptr),
-	HasKerning(false) {
+	HasKerning(false),
+	Library(nullptr),
+	Face(nullptr) {
 
 	// Zero out glyphs
 	for(int i = 0; i < 256; i++) {
@@ -77,19 +79,45 @@ _Font::_Font(const std::string &ID, const std::string &FontFile, const _Program 
 	}
 
 	// Initialize library
-	if(FT_Init_FreeType(&Library) != 0) {
+	if(FT_Init_FreeType(&Library) != 0)
 		throw std::runtime_error("Error initializing FreeType");
-	}
+}
+
+// Destructor
+_Font::~_Font() {
+	Close();
+
+	// Close freetype
+	FT_Done_FreeType(Library);
+}
+
+// Reset internal variables
+void _Font::Close() {
+
+	// Free OpenGL texture
+	delete Texture;
+	Texture = nullptr;
+
+	// Close face
+	FT_Done_Face(Face);
+}
+
+// Load the font
+void _Font::Load(const std::string &ID, const std::string &FontFile, const _Program *Program, uint32_t FontSize, uint32_t TextureWidth) {
+
+	// Delete existing font
+	Close();
+
+	this->ID = ID;
+	this->Program = Program;
 
 	// Load the font
-	if(FT_New_Face(Library, FontFile.c_str(), 0, &Face) != 0) {
+	if(FT_New_Face(Library, FontFile.c_str(), 0, &Face) != 0)
 		throw std::runtime_error("Error loading font file: " + FontFile);
-	}
 
 	// Set font size
-	if(FT_Set_Pixel_Sizes(Face, 0, FontSize)) {
+	if(FT_Set_Pixel_Sizes(Face, 0, FontSize))
 		throw std::runtime_error("Error setting pixel size");
-	}
 
 	HasKerning = !!FT_HAS_KERNING(Face);
 	LoadFlags = FT_LOAD_RENDER;
@@ -107,21 +135,13 @@ _Font::_Font(const std::string &ID, const std::string &FontFile, const _Program 
 	CreateFontTexture(SortedCharacters, TextureWidth);
 }
 
-// Destructor
-_Font::~_Font() {
-
-	// Close face
-	FT_Done_Face(Face);
-
-	// Close freetype
-	FT_Done_FreeType(Library);
-
-	// Free OpenGL texture
-	delete Texture;
-}
-
 // Sorts characters by vertical size
 void _Font::SortCharacters(FT_Face &Face, const std::string &Characters, std::string &SortedCharacters) {
+
+	// Reset
+	MaxHeight = 0.0f;
+	MaxAbove = 0.0f;
+	MaxBelow = 0.0f;
 
 	// Build queue
 	std::priority_queue<int, std::vector<_SortCharacter>, std::greater<_SortCharacter> > CharacterList;

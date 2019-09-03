@@ -66,7 +66,7 @@ _Console::_Console(const _Program *Program, const _Font *Font) :
 	TextboxBackgroundElement->Parent = Element;
 	TextboxBackgroundElement->Style = InputStyle;
 	TextboxBackgroundElement->Alignment = LEFT_BOTTOM;
-	TextboxBackgroundElement->Size = glm::vec2(Graphics.Element->Size.x, RowHeight + PADDING);
+	TextboxBackgroundElement->BaseSize = glm::vec2(Graphics.Element->Size.x, RowHeight + PADDING);
 	Element->Children.push_back(TextboxBackgroundElement);
 
 	// Add textbox element
@@ -74,7 +74,7 @@ _Console::_Console(const _Program *Program, const _Font *Font) :
 	TextboxElement->Parent = TextboxBackgroundElement;
 	TextboxElement->Alignment = LEFT_BASELINE;
 	TextboxElement->MaxLength = 255;
-	TextboxElement->Offset = glm::vec2(PADDING, RowHeight - 1);
+	TextboxElement->BaseOffset = glm::vec2(PADDING, RowHeight - 1);
 	TextboxElement->Font = Font;
 	TextboxBackgroundElement->Children.push_back(TextboxElement);
 
@@ -222,7 +222,7 @@ void _Console::Toggle() {
 // Update size of console based on parent element
 void _Console::UpdateSize() {
 	Element->Size = glm::vec2(Element->Parent->Size.x, Element->Parent->Size.y / 2.0f);
-	Element->CalculateBounds();
+	Element->CalculateBounds(false);
 }
 
 // Add message to console

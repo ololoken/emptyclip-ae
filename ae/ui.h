@@ -102,13 +102,15 @@ class _Element {
 		_Element(tinyxml2::XMLElement *Node, _Element *Parent);
 		~_Element();
 
+		static float GetUIScale();
+
 		void SerializeElement(tinyxml2::XMLDocument &Document, tinyxml2::XMLElement *ParentNode);
 
 		void Update(double FrameTime, const glm::vec2 &Mouse);
 		void Render() const;
 		bool HandleKey(const _KeyEvent &KeyEvent);
 		void HandleMouseButton(bool Pressed);
-		void CalculateBounds();
+		void CalculateBounds(bool Scale=true);
 		_Element *GetClickedElement();
 
 		void RemoveChild(_Element *Element);
@@ -123,10 +125,9 @@ class _Element {
 		void SetActive(bool Active);
 		void SetFade(float Fade);
 		void SetEnabled(bool Enabled);
-		void SetOffset(const glm::vec2 &Offset) { this->Offset = Offset; CalculateBounds(); }
-		void SetOffsetPercent(const glm::vec2 &Value) { Offset = Value * (Parent->Size - Size); CalculateBounds(); }
-		void SetWidth(float Width) { Size.x = Width; CalculateBounds(); }
-		void SetHeight(float Height) { Size.y = Height; CalculateBounds(); }
+		void SetOffsetPercent(const glm::vec2 &Value) { Offset = Value * (Parent->Size - Size); CalculateBounds(false); }
+		void SetWidth(float Width) { BaseSize.x = Size.x = Width; CalculateBounds(false); }
+		void SetHeight(float Height) { BaseSize.y = Size.y = Height; CalculateBounds(false); }
 		void SetText(const std::string &Text) { this->Text = Text; CursorPosition = Text.length(); }
 		void SetWrap(float Width);
 
@@ -160,7 +161,10 @@ class _Element {
 
 		// Layout
 		_Bounds Bounds;
+		_Bounds ScaledBounds;
 		_Alignment Alignment;
+		glm::vec2 BaseOffset;
+		glm::vec2 BaseSize;
 		glm::vec2 Size;
 		glm::vec2 Offset;
 

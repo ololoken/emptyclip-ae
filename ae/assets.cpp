@@ -432,7 +432,7 @@ void _Assets::LoadUI(const std::string &Path) {
 	Graphics.Element->Alignment = LEFT_TOP;
 	Graphics.Element->Active = true;
 	Graphics.Element->Size = Graphics.CurrentSize;
-	Graphics.Element->CalculateBounds();
+	Graphics.Element->CalculateBounds(false);
 }
 
 // Save UI to xml

@@ -43,6 +43,7 @@ const glm::vec4 DebugColors[] = {
 	{ 0.0f, 0.0f, 1.0f, 1.0f }
 };
 const int DebugColorCount = sizeof(DebugColors) / sizeof(glm::vec4);
+static int BaseHeight = 1080;
 
 // Constructor
 _Element::_Element() :
@@ -55,7 +56,7 @@ _Element::_Element() :
 	Clickable(true),
 	Draggable(false),
 	MaskOutside(false),
-	Stretch(false),
+	Stretch(true),
 	Debug(0),
 	Color(1.0f),
 	Style(nullptr),
@@ -65,6 +66,8 @@ _Element::_Element() :
 	Atlas(nullptr),
 	TextureIndex(0),
 	Fade(1.0f),
+	BaseOffset(0.0f, 0.0f),
+	BaseSize(0.0f, 0.0f),
 	Size(0.0f, 0.0f),
 	Offset(0.0f, 0.0f),
 	HitElement(nullptr),
@@ -100,10 +103,10 @@ _Element::_Element(tinyxml2::XMLElement *Node, _Element *Parent) :
 	AssignAttributeString(Node, "font", FontName);
 	AssignAttributeString(Node, "text", Text);
 	Node->QueryUnsignedAttribute("maxlength", (uint32_t *)&MaxLength);
-	Node->QueryFloatAttribute("offset_x", &Offset.x);
-	Node->QueryFloatAttribute("offset_y", &Offset.y);
-	Node->QueryFloatAttribute("size_x", &Size.x);
-	Node->QueryFloatAttribute("size_y", &Size.y);
+	Node->QueryFloatAttribute("offset_x", &BaseOffset.x);
+	Node->QueryFloatAttribute("offset_y", &BaseOffset.y);
+	Node->QueryFloatAttribute("size_x", &BaseSize.x);
+	Node->QueryFloatAttribute("size_y", &BaseSize.y);
 	Node->QueryIntAttribute("alignment_x", &Alignment.Horizontal);
 	Node->QueryIntAttribute("alignment_y", &Alignment.Vertical);
 	Node->QueryBoolAttribute("clickable", &Clickable);
@@ -112,6 +115,9 @@ _Element::_Element(tinyxml2::XMLElement *Node, _Element *Parent) :
 	Node->QueryIntAttribute("index", &Index);
 	Node->QueryIntAttribute("debug", &Debug);
 	Node->QueryBoolAttribute("enabled", &Enabled);
+	Node->QueryIntAttribute("base_height", &BaseHeight);
+	Offset = BaseOffset * GetUIScale();
+	Size = BaseSize * GetUIScale();
 
 	// Check ids
 	if(Assets.Elements.find(Name) != Assets.Elements.end())
@@ -160,6 +166,11 @@ _Element::~_Element() {
 	}
 }
 
+// Get UI scale factor
+float _Element::GetUIScale() {
+	return Graphics.CurrentSize.y / (float)BaseHeight;
+}
+
 // Serialize element and children to xml node
 void _Element::SerializeElement(tinyxml2::XMLDocument &Document, tinyxml2::XMLElement *ParentNode) {
 
@@ -183,14 +194,14 @@ void _Element::SerializeElement(tinyxml2::XMLDocument &Document, tinyxml2::XMLEl
 			Node->SetAttribute("font", Font->ID.c_str());
 		if(Text.size())
 			Node->SetAttribute("text", Text.c_str());
-		if(Offset.x != 0.0f)
-			Node->SetAttribute("offset_x", Offset.x);
-		if(Offset.y != 0.0f)
-			Node->SetAttribute("offset_y", Offset.y);
-		if(Size.x != 0.0f)
-			Node->SetAttribute("size_x", Size.x);
-		if(Size.y != 0.0f)
-			Node->SetAttribute("size_y", Size.y);
+		if(BaseOffset.x != 0.0f)
+			Node->SetAttribute("offset_x", BaseOffset.x);
+		if(BaseOffset.y != 0.0f)
+			Node->SetAttribute("offset_y", BaseOffset.y);
+		if(BaseSize.x != 0.0f)
+			Node->SetAttribute("size_x", BaseSize.x);
+		if(BaseSize.y != 0.0f)
+			Node->SetAttribute("size_y", BaseSize.y);
 		if(Alignment.Horizontal != _Alignment::CENTER)
 			Node->SetAttribute("alignment_x", Alignment.Horizontal);
 		if(Alignment.Vertical != _Alignment::MIDDLE)
@@ -201,7 +212,7 @@ void _Element::SerializeElement(tinyxml2::XMLDocument &Document, tinyxml2::XMLEl
 			Node->SetAttribute("clickable", Clickable);
 		if(Draggable)
 			Node->SetAttribute("draggable", Draggable);
-		if(Stretch)
+		if(!Stretch)
 			Node->SetAttribute("stretch", Stretch);
 		if(Index != -1)
 			Node->SetAttribute("index", Index);
@@ -210,8 +221,10 @@ void _Element::SerializeElement(tinyxml2::XMLDocument &Document, tinyxml2::XMLEl
 
 		ParentNode->InsertEndChild(Node);
 	}
-	else
+	else {
+		Node->SetAttribute("base_height", BaseHeight);
 		Document.InsertEndChild(Node);
+	}
 
 	// Add children
 	for(const auto &Child : Children)
@@ -343,7 +356,7 @@ void _Element::Update(double FrameTime, const glm::vec2 &Mouse) {
 	if(Draggable && PressedElement && Parent) {
 		Offset = Mouse - Parent->Bounds.Start - PressedOffset;
 		Offset = glm::clamp(Offset, glm::vec2(0), Parent->Size - Size);
-		CalculateBounds();
+		CalculateBounds(false);
 	}
 
 	// Test element first
@@ -388,6 +401,7 @@ void _Element::Render() const {
 		Graphics.DrawMask(Bounds);
 	}
 
+	// Draw enabled state
 	if(Enabled) {
 		if(Style) {
 			DrawStyle(Style);
@@ -409,15 +423,20 @@ void _Element::Render() const {
 		}
 	}
 	else if(DisabledStyle) {
+
+		// Draw disabled state
 		DrawStyle(DisabledStyle);
 	}
 
-	// Set color
+	// Draw textbox or label
 	if(Texts.size() || Text != "" || MaxLength) {
+
+		// Set color
 		glm::vec4 RenderColor(Color.r, Color.g, Color.b, Color.a*Fade);
 		if(!Enabled)
 			RenderColor.a *= 0.5f;
 
+		// Draw multiple lines
 		if(Texts.size()) {
 
 			// Center box
@@ -432,6 +451,7 @@ void _Element::Render() const {
 		else {
 			std::string RenderText = Password ? std::string(Text.length(), '*') : Text;
 
+			// Draw textbox
 			if(MaxLength) {
 
 				// Get width at cursor position
@@ -449,8 +469,11 @@ void _Element::Render() const {
 					Graphics.DrawRectangle(glm::vec2(StartPosition.x + TextBounds.Width+1, StartPosition.y - Font->MaxAbove - 1), glm::vec2(StartPosition.x + TextBounds.Width+2, StartPosition.y + Font->MaxBelow));
 				}
 			}
-			else
+			else {
+
+				// Draw label
 				Font->DrawText(RenderText, Bounds.Start, Alignment, RenderColor);
+			}
 		}
 	}
 
@@ -495,7 +518,15 @@ void _Element::DrawStyle(const _Style *DrawStyle) const {
 }
 
 // Calculate the screen space bounds for the element
-void _Element::CalculateBounds() {
+void _Element::CalculateBounds(bool Scale) {
+
+	// Scale element
+	if(Scale) {
+		Offset = BaseOffset * GetUIScale();
+		Size = BaseSize * GetUIScale();
+	}
+
+	// Set start position
 	Bounds.Start = Offset;
 
 	// Handle horizontal alignment
@@ -530,7 +561,7 @@ void _Element::CalculateBounds() {
 	if(Parent)
 		Bounds.Start += Parent->Bounds.Start + Parent->ChildrenOffset;
 
-	// Set end
+	// Set end position
 	Bounds.End = Bounds.Start + Size;
 
 	// Update children
@@ -595,7 +626,6 @@ void _Element::SetEnabled(bool Enabled) {
 
 // Break up text into multiple strings
 void _Element::SetWrap(float Width) {
-
 	Texts.clear();
 	Font->BreakupString(Text, Width, Texts);
 }

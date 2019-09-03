@@ -85,8 +85,8 @@ class _Graphics {
 		void Setup3D();
 
 		void DrawLine(const glm::vec2 &Start, const glm::vec2 &End);
-		void DrawCenteredImage(const glm::ivec2 &Position, const _Texture *Texture, const glm::vec4 &Color=glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-		void DrawImage(const _Bounds &Bounds, const _Texture *Texture, bool Stretch=false);
+		void DrawScaledImage(const glm::vec2 &Position, const _Texture *Texture, const glm::vec4 &Color=glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+		void DrawImage(const _Bounds &Bounds, const _Texture *Texture, bool Stretch=true);
 		void DrawAtlas(const _Bounds &Bounds, const _Texture *Texture, const glm::vec4 &TextureCoords);
 		void DrawSprite(const glm::vec3 &Position, const _Texture *Texture, float Rotation=0.0f, const glm::vec2 Scale=glm::vec2(1.0f));
 		void DrawAnimationFrame(const glm::vec3 &Position, const _Texture *Texture, const glm::vec4 &TextureCoords, float Rotation=0.0f, const glm::vec2 Scale=glm::vec2(1.0f));

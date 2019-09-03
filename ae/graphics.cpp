@@ -154,7 +154,7 @@ void _Graphics::ChangeWindowSize(const glm::ivec2 &Size) {
 
 	// Update UI elements
 	Element->Size = Size;
-	Element->CalculateBounds();
+	Element->CalculateBounds(false);
 
 	// Update actual window
 	SDL_SetWindowSize(Window, Size.x, Size.y);
@@ -421,13 +421,15 @@ void _Graphics::DrawLine(const glm::vec2 &Start, const glm::vec2 &End) {
 }
 
 // Draw image centered
-void _Graphics::DrawCenteredImage(const glm::ivec2 &Position, const _Texture *Texture, const glm::vec4 &Color) {
+void _Graphics::DrawScaledImage(const glm::vec2 &Position, const _Texture *Texture, const glm::vec4 &Color) {
 	Graphics.SetColor(Color);
 
-	_Bounds Bounds;
-	Bounds.Start = Position - Texture->Size / 2;
-	Bounds.End = Position + Texture->Size / 2;
-	DrawImage(Bounds, Texture, false);
+	// Scale texture by UI scale
+	glm::vec2 TextureSize = glm::vec2(Texture->Size) * 0.5f * ae::_Element::GetUIScale();
+
+	// Draw image
+	_Bounds Bounds(Position - TextureSize, Position + TextureSize);
+	DrawImage(Bounds, Texture, true);
 }
 
 // Draw image in screen space

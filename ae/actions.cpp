@@ -73,7 +73,7 @@ void _Actions::AddInputMap(int Rank, int InputType, int Input, size_t Action, fl
 	if(Action >= State.size() || Input < 0 || Input >= ACTIONS_MAXINPUTS)
 		return;
 
-	if(!IfNone || (IfNone && GetInputForAction(InputType, Action) == -1))
+	if(!IfNone || (IfNone && !HasInputForAction(Action)))
 		InputMap[InputType][Input].push_back(_ActionMap(Rank, Action, Scale, DeadZone));
 }
 
@@ -89,6 +89,16 @@ int _Actions::GetInputForAction(int InputType, size_t Action, int Rank) {
 	}
 
 	return -1;
+}
+
+// Return true if an input exists for an action
+bool _Actions::HasInputForAction(size_t Action) {
+	for(int i = 0; i < _Input::INPUT_COUNT; i++) {
+		if(GetInputForAction(i, Action) != -1)
+			return true;
+	}
+
+	return false;
 }
 
 // Get name of input key/button for a given action

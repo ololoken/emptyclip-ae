@@ -66,6 +66,7 @@ class _Actions {
 		void ClearMappingsForAction(int InputType, size_t Action, int Rank);
 		void AddInputMap(int Rank, int InputType, int Input, size_t Action, float Scale=1.0f, float DeadZone=-1.0f, bool IfNone=true);
 		int GetInputForAction(int InputType, size_t Action, int Rank=0);
+		bool HasInputForAction(size_t Action);
 		std::string GetInputNameForAction(size_t Action, int Rank=0);
 
 		// Handlers

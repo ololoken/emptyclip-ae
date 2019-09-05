@@ -45,8 +45,12 @@ _Texture::_Texture(const std::string &Path, bool IsServer, bool Repeat, bool Mip
 	// Determine OpenGL format
 	GLint ColorFormat;
 	switch(Image->format->BitsPerPixel) {
-		case 24: ColorFormat = GL_RGB; break;
-		case 32: ColorFormat = GL_RGBA; break;
+		case 24:
+			ColorFormat = GL_RGB;
+		break;
+		case 32:
+			ColorFormat = GL_RGBA;
+		break;
 		default:
 			throw std::runtime_error("Unsupported bpp " + std::to_string(Image->format->BitsPerPixel) + " for texture " + Path);
 	}

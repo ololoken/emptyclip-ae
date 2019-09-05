@@ -426,17 +426,17 @@ void _Font::DrawTextFormatted(const std::string &Text, glm::vec2 Position, const
 }
 
 // Get width and height of a string
-void _Font::GetStringDimensions(const std::string &Text, _TextBounds &TestBounds, bool UseFormatting) const {
+void _Font::GetStringDimensions(const std::string &Text, _TextBounds &TextBounds, bool UseFormatting) const {
 	if(Text.size() == 0) {
-		TestBounds.Width = 0;
-		TestBounds.AboveBase = 0;
-		TestBounds.BelowBase = 0;
+		TextBounds.Width = 0;
+		TextBounds.AboveBase = 0;
+		TextBounds.BelowBase = 0;
 		return;
 	}
 
 	bool InTag = false;
 
-	TestBounds.Width = TestBounds.AboveBase = TestBounds.BelowBase = 0;
+	TextBounds.Width = TextBounds.AboveBase = TextBounds.BelowBase = 0;
 	const _Glyph *Glyph = nullptr;
 	FT_UInt PreviousGlyphIndex = 0;
 	for(size_t i = 0; i < Text.size(); i++) {
@@ -452,7 +452,7 @@ void _Font::GetStringDimensions(const std::string &Text, _TextBounds &TestBounds
 			if(HasKerning && i) {
 				FT_Vector Delta;
 				FT_Get_Kerning(Face, PreviousGlyphIndex, GlyphIndex, FT_KERNING_DEFAULT, &Delta);
-				TestBounds.Width += (float)(Delta.x >> 6);
+				TextBounds.Width += (float)(Delta.x >> 6);
 			}
 			PreviousGlyphIndex = GlyphIndex;
 
@@ -460,16 +460,16 @@ void _Font::GetStringDimensions(const std::string &Text, _TextBounds &TestBounds
 			Glyph = &Glyphs[(FT_Byte)Text[i]];
 
 			// Update width
-			TestBounds.Width += (int)Glyph->Advance;
+			TextBounds.Width += (int)Glyph->Advance;
 
 			// Get number of pixels below baseline
 			int BelowBase = (int)(-Glyph->OffsetY + Glyph->Height);
-			if(BelowBase > TestBounds.BelowBase)
-				TestBounds.BelowBase = BelowBase;
+			if(BelowBase > TextBounds.BelowBase)
+				TextBounds.BelowBase = BelowBase;
 
 			// Get number of pixels above baseline
-			if(Glyph->OffsetY > (int)TestBounds.AboveBase)
-				TestBounds.AboveBase = (int)Glyph->OffsetY;
+			if(Glyph->OffsetY > (int)TextBounds.AboveBase)
+				TextBounds.AboveBase = (int)Glyph->OffsetY;
 		}
 	}
 }

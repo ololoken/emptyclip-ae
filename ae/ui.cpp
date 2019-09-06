@@ -443,7 +443,7 @@ void _Element::Render() const {
 			float LineHeight = Font->MaxHeight + 2;
 			float Y = Bounds.Start.y - (int)((LineHeight * Texts.size() - LineHeight) / 2);
 			for(const auto &Token : Texts) {
-				Font->DrawText(Token, glm::vec2(Bounds.Start.x, Y), Alignment, RenderColor);
+				Font->DrawText(Token, glm::ivec2(Bounds.Start.x, Y), Alignment, RenderColor);
 
 				Y += LineHeight;
 			}
@@ -459,7 +459,7 @@ void _Element::Render() const {
 				Font->GetStringDimensions(RenderText.substr(0, CursorPosition), TextBounds);
 
 				// Draw text
-				glm::vec2 StartPosition = glm::vec2(Bounds.Start);
+				glm::vec2 StartPosition = glm::ivec2(Bounds.Start);
 				Font->DrawText(RenderText, StartPosition, Alignment, RenderColor);
 
 				// Draw cursor
@@ -472,7 +472,7 @@ void _Element::Render() const {
 			else {
 
 				// Draw label
-				Font->DrawText(RenderText, Bounds.Start, Alignment, RenderColor);
+				Font->DrawText(RenderText, glm::ivec2(Bounds.Start), Alignment, RenderColor);
 			}
 		}
 	}

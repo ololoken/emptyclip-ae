@@ -115,7 +115,7 @@ class _Element {
 
 		void RemoveChild(_Element *Element);
 		void UpdateChildrenOffset(const glm::vec2 &Update) { ChildrenOffset += Update; CalculateChildrenBounds(); }
-		void CalculateChildrenBounds();
+		void CalculateChildrenBounds(bool Scale=true);
 
 		void Clear() { CursorTimer = 0; Text = ""; CursorPosition = 0; }
 		void ResetCursor() { CursorTimer = 0; }

@@ -569,11 +569,11 @@ void _Element::CalculateBounds(bool Scale) {
 }
 
 // Update children bounds
-void _Element::CalculateChildrenBounds() {
+void _Element::CalculateChildrenBounds(bool Scale) {
 
 	// Update children
 	for(auto &Child : Children)
-		Child->CalculateBounds();
+		Child->CalculateBounds(Scale);
 }
 
 // Set the debug flag, and increment for children

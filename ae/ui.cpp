@@ -394,11 +394,14 @@ void _Element::Render() const {
 	if(!Active)
 		return;
 
+	// Remove fractions
+	_Bounds DrawBounds(glm::ivec2(Bounds.Start), glm::ivec2(Bounds.End));
+
 	// Mask outside bounds of element
 	if(MaskOutside) {
 		Graphics.SetProgram(Assets.Programs["ortho_pos"]);
 		Graphics.EnableStencilTest();
-		Graphics.DrawMask(Bounds);
+		Graphics.DrawMask(DrawBounds);
 	}
 
 	// Draw enabled state
@@ -409,12 +412,12 @@ void _Element::Render() const {
 		else if(Atlas) {
 			Graphics.SetProgram(Assets.Programs["ortho_pos_uv"]);
 			Graphics.SetColor(Color);
-			Graphics.DrawAtlas(Bounds, Atlas->Texture, Atlas->GetTextureCoords(TextureIndex));
+			Graphics.DrawAtlas(DrawBounds, Atlas->Texture, Atlas->GetTextureCoords(TextureIndex));
 		}
 		else if(Texture) {
 			Graphics.SetProgram(Assets.Programs["ortho_pos_uv"]);
 			Graphics.SetColor(Color);
-			Graphics.DrawImage(Bounds, Texture, Stretch);
+			Graphics.DrawImage(DrawBounds, Texture, Stretch);
 		}
 
 		// Draw hover texture
@@ -459,7 +462,7 @@ void _Element::Render() const {
 				Font->GetStringDimensions(RenderText.substr(0, CursorPosition), TextBounds);
 
 				// Draw text
-				glm::vec2 StartPosition = glm::ivec2(Bounds.Start);
+				glm::vec2 StartPosition = DrawBounds.Start;
 				Font->DrawText(RenderText, StartPosition, Alignment, RenderColor);
 
 				// Draw cursor
@@ -472,7 +475,7 @@ void _Element::Render() const {
 			else {
 
 				// Draw label
-				Font->DrawText(RenderText, glm::ivec2(Bounds.Start), Alignment, RenderColor);
+				Font->DrawText(RenderText, DrawBounds.Start, Alignment, RenderColor);
 			}
 		}
 	}
@@ -490,29 +493,34 @@ void _Element::Render() const {
 	if(Debug && Debug-1 < DebugColorCount) {
 		Graphics.SetProgram(Assets.Programs["ortho_pos"]);
 		Graphics.SetColor(DebugColors[Debug-1]);
-		Graphics.DrawRectangle(Bounds.Start, Bounds.End);
+		Graphics.DrawRectangle(DrawBounds.Start, DrawBounds.End);
 	}
 }
 
 // Draw an element using a style
 void _Element::DrawStyle(const _Style *DrawStyle) const {
+
+	// Remove fractions
+	_Bounds DrawBounds(glm::ivec2(Bounds.Start), glm::ivec2(Bounds.End));
+
+	// Render
 	Graphics.SetProgram(DrawStyle->Program);
 	if(DrawStyle->Texture) {
 		Graphics.SetColor(DrawStyle->TextureColor);
-		Graphics.DrawImage(Bounds, DrawStyle->Texture, DrawStyle->Stretch);
+		Graphics.DrawImage(DrawBounds, DrawStyle->Texture, DrawStyle->Stretch);
 	}
 	else {
 		if(DrawStyle->HasBackgroundColor) {
 			glm::vec4 RenderColor(DrawStyle->BackgroundColor);
 			RenderColor.a *= Fade;
 			Graphics.SetColor(RenderColor);
-			Graphics.DrawRectangle(Bounds, true);
+			Graphics.DrawRectangle(DrawBounds, true);
 		}
 		if(DrawStyle->HasBorderColor) {
 			glm::vec4 RenderColor(DrawStyle->BorderColor);
 			RenderColor.a *= Fade;
 			Graphics.SetColor(RenderColor);
-			Graphics.DrawRectangle(Bounds, false);
+			Graphics.DrawRectangle(DrawBounds, false);
 		}
 	}
 }

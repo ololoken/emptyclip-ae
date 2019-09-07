@@ -161,7 +161,6 @@ class _Element {
 
 		// Layout
 		_Bounds Bounds;
-		_Bounds ScaledBounds;
 		_Alignment Alignment;
 		glm::vec2 BaseOffset;
 		glm::vec2 BaseSize;

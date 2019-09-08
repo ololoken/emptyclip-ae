@@ -30,6 +30,7 @@
 #include <tinyxml2.h>
 #include <glm/common.hpp>
 #include <algorithm>
+#include <sstream>
 #include <iostream>
 
 namespace ae {
@@ -57,6 +58,7 @@ _Element::_Element() :
 	Draggable(false),
 	MaskOutside(false),
 	Stretch(true),
+	SizePercent{false, false},
 	Debug(0),
 	Color(1.0f),
 	Style(nullptr),
@@ -88,12 +90,14 @@ _Element::_Element() :
 _Element::_Element(tinyxml2::XMLElement *Node, _Element *Parent) :
 	_Element() {
 
+	// Load attributes
 	this->Parent = Parent;
 	std::string TextureName;
 	std::string StyleName;
 	std::string HoverStyleName;
 	std::string DisabledStyleName;
 	std::string FontName;
+	std::string BaseSizeString[2];
 	AssignAttributeString(Node, "id", Name);
 	AssignAttributeString(Node, "texture", TextureName);
 	AssignAttributeString(Node, "style", StyleName);
@@ -102,11 +106,11 @@ _Element::_Element(tinyxml2::XMLElement *Node, _Element *Parent) :
 	AssignAttributeString(Node, "color", ColorName);
 	AssignAttributeString(Node, "font", FontName);
 	AssignAttributeString(Node, "text", Text);
+	AssignAttributeString(Node, "size_x", BaseSizeString[0]);
+	AssignAttributeString(Node, "size_y", BaseSizeString[1]);
 	Node->QueryUnsignedAttribute("maxlength", (uint32_t *)&MaxLength);
 	Node->QueryFloatAttribute("offset_x", &BaseOffset.x);
 	Node->QueryFloatAttribute("offset_y", &BaseOffset.y);
-	Node->QueryFloatAttribute("size_x", &BaseSize.x);
-	Node->QueryFloatAttribute("size_y", &BaseSize.y);
 	Node->QueryIntAttribute("alignment_x", &Alignment.Horizontal);
 	Node->QueryIntAttribute("alignment_y", &Alignment.Vertical);
 	Node->QueryBoolAttribute("clickable", &Clickable);
@@ -116,8 +120,23 @@ _Element::_Element(tinyxml2::XMLElement *Node, _Element *Parent) :
 	Node->QueryIntAttribute("debug", &Debug);
 	Node->QueryBoolAttribute("enabled", &Enabled);
 	Node->QueryIntAttribute("base_height", &BaseHeight);
+
+	// Handle size
+	for(int i = 0; i < 2; i++) {
+
+		// Check for percent sign
+		if(BaseSizeString[i].find('%') != std::string::npos)
+			SizePercent[i] = true;
+
+		// Convert to number
+		if(BaseSizeString[i] != "") {
+			BaseSize[i] = std::stoi(BaseSizeString[i]);
+			Size[i] = BaseSize[i] * GetUIScale();
+		}
+	}
+
+	// Scale offset
 	Offset = BaseOffset * GetUIScale();
-	Size = BaseSize * GetUIScale();
 
 	// Check ids
 	if(Assets.Elements.find(Name) != Assets.Elements.end())
@@ -179,6 +198,8 @@ void _Element::SerializeElement(tinyxml2::XMLDocument &Document, tinyxml2::XMLEl
 
 	// Set attributes
 	if(ParentNode) {
+		std::stringstream Buffer;
+
 		Node->SetAttribute("id", Name.c_str());
 		if(Texture)
 			Node->SetAttribute("texture", Texture->Name.c_str());
@@ -198,10 +219,20 @@ void _Element::SerializeElement(tinyxml2::XMLDocument &Document, tinyxml2::XMLEl
 			Node->SetAttribute("offset_x", BaseOffset.x);
 		if(BaseOffset.y != 0.0f)
 			Node->SetAttribute("offset_y", BaseOffset.y);
-		if(BaseSize.x != 0.0f)
-			Node->SetAttribute("size_x", BaseSize.x);
-		if(BaseSize.y != 0.0f)
-			Node->SetAttribute("size_y", BaseSize.y);
+		if(BaseSize.x != 0.0f) {
+			Buffer << BaseSize.x;
+			if(SizePercent[0])
+				Buffer << "%";
+			Node->SetAttribute("size_x", Buffer.str().c_str());
+			Buffer.str("");
+		}
+		if(BaseSize.y != 0.0f) {
+			Buffer << BaseSize.y;
+			if(SizePercent[1])
+				Buffer << "%";
+			Node->SetAttribute("size_y", Buffer.str().c_str());
+			Buffer.str("");
+		}
 		if(Alignment.Horizontal != _Alignment::CENTER)
 			Node->SetAttribute("alignment_x", Alignment.Horizontal);
 		if(Alignment.Vertical != _Alignment::MIDDLE)
@@ -532,6 +563,14 @@ void _Element::CalculateBounds(bool Scale) {
 	if(Scale) {
 		Offset = BaseOffset * GetUIScale();
 		Size = BaseSize * GetUIScale();
+	}
+
+	// Handle percents
+	if(Parent) {
+		if(SizePercent[0])
+			Size.x = Parent->Size.x * BaseSize[0] * 0.01f;
+		if(SizePercent[1])
+			Size.y = Parent->Size.y * BaseSize[1] * 0.01f;
 	}
 
 	// Set start position

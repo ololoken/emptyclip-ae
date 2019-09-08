@@ -146,6 +146,7 @@ class _Element {
 		bool Draggable;
 		bool MaskOutside;
 		bool Stretch;
+		bool SizePercent[2];
 		int Debug;
 
 		// Graphics

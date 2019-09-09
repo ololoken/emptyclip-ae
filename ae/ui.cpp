@@ -54,7 +54,7 @@ _Element::_Element() :
 	Active(false),
 	Enabled(true),
 	Checked(false),
-	Clickable(true),
+	Clickable(false),
 	Draggable(false),
 	MaskOutside(false),
 	Stretch(true),
@@ -239,16 +239,16 @@ void _Element::SerializeElement(tinyxml2::XMLDocument &Document, tinyxml2::XMLEl
 			Node->SetAttribute("alignment_y", Alignment.Vertical);
 		if(MaxLength)
 			Node->SetAttribute("maxlength", (uint32_t)MaxLength);
+		if(!Stretch)
+			Node->SetAttribute("stretch", Stretch);
 		if(Clickable != 1)
 			Node->SetAttribute("clickable", Clickable);
 		if(Draggable)
 			Node->SetAttribute("draggable", Draggable);
-		if(!Stretch)
-			Node->SetAttribute("stretch", Stretch);
-		if(Index != -1)
-			Node->SetAttribute("index", Index);
 		if(Enabled != 1)
 			Node->SetAttribute("enabled", Enabled);
+		if(Index != -1)
+			Node->SetAttribute("index", Index);
 
 		ParentNode->InsertEndChild(Node);
 	}

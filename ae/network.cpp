@@ -26,8 +26,9 @@
 namespace ae {
 
 // Constructor
-_Network::_Network()
-:	Connection(nullptr),
+_Network::_Network() :
+	Connection(nullptr),
+	PingSocket(-1),
 	Time(0.0),
 	UpdateTimer(0.0),
 	UpdatePeriod(1 / 20.0),
@@ -35,6 +36,9 @@ _Network::_Network()
 	ReceiveSpeed(0),
 	SecondTimer(0.0),
 	FakeLag(0.0) {
+
+	// Create ping socket
+	PingSocket = enet_socket_create(ENET_SOCKET_TYPE_DATAGRAM);
 }
 
 // Destructor
@@ -45,6 +49,9 @@ _Network::~_Network() {
 		delete NetworkEvents.front().Data;
 		NetworkEvents.pop();
 	}
+
+	// Destroy socket
+	enet_socket_destroy(PingSocket);
 
 	// Destroy connection
 	if(Connection)
@@ -111,6 +118,43 @@ void _Network::Update(double FrameTime) {
 		Connection->totalReceivedData = 0;
 		SecondTimer -= 1.0;
 	}
+}
+
+// Check for pings
+bool _Network::CheckPings(_Buffer &Data, ENetAddress *Address) {
+	if(PingSocket == -1)
+		return false;
+
+	// Handle sockets
+	ENetBuffer SocketBuffer;
+	char Buffer[1024];
+	SocketBuffer.data = &Buffer;
+	SocketBuffer.dataLength = 1024;
+
+	// Check for messages
+	int SocketReceived = enet_socket_receive(PingSocket, Address, &SocketBuffer, 1);
+	if(SocketReceived > 0) {
+		Data.Load((char *)SocketBuffer.data, SocketReceived);
+
+		return true;
+	}
+
+	return false;
+}
+
+// Broadcast packet on ping port
+void _Network::BroadcastPing(const _Buffer &Buffer, uint16_t Port) {
+
+	// Set address
+	ENetAddress Address;
+	Address.host = ENET_HOST_BROADCAST;
+	Address.port = Port;
+
+	// Send data
+	ENetBuffer SocketBuffer;
+	SocketBuffer.data = (void *)Buffer.GetData();
+	SocketBuffer.dataLength = Buffer.GetCurrentSize();
+	enet_socket_send(PingSocket, &Address, &SocketBuffer, 1);
 }
 
 }

@@ -27,8 +27,10 @@ _Buffer::_Buffer(size_t InitialSize) :
 	CurrentByte(0),
 	CurrentBit(0) {
 
-	AllocatedSize = InitialSize;
-	Data = new char[AllocatedSize];
+	if(InitialSize) {
+		AllocatedSize = InitialSize;
+		Data = new char[AllocatedSize];
+	}
 }
 
 // Constructor for an existing buffer
@@ -36,16 +38,21 @@ _Buffer::_Buffer(const char *ExistingBuffer, size_t Length) :
 	CurrentByte(0),
 	CurrentBit(0) {
 
-	AllocatedSize = Length;
-	Data = new char[AllocatedSize];
-
-	memcpy(Data, ExistingBuffer, AllocatedSize);
+	Load(ExistingBuffer, Length);
 }
 
 // Destructor
 _Buffer::~_Buffer() {
 
 	delete[] Data;
+}
+
+// Load buffer with existing data
+void _Buffer::Load(const char *ExistingBuffer, size_t Length) {
+	AllocatedSize = Length;
+	Data = new char[AllocatedSize];
+
+	memcpy(Data, ExistingBuffer, AllocatedSize);
 }
 
 // Resize the buffer

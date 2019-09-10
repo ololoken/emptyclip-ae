@@ -26,13 +26,27 @@
 namespace ae {
 
 // Constructor
-_ServerNetwork::_ServerNetwork(size_t MaxPeers, uint16_t NetworkPort) {
+_ServerNetwork::_ServerNetwork(size_t MaxPeers, uint16_t NetworkPort, uint16_t PingPort) {
 	ENetAddress Address;
 	Address.host = ENET_HOST_ANY;
 	Address.port = NetworkPort;
 
 	// Create listener connection
 	Connection = enet_host_create(&Address, MaxPeers, 0, 0, 0);
+
+	// Set up ping socket
+	if(PingPort) {
+
+		// Set ping socket options
+		enet_socket_set_option(PingSocket, ENET_SOCKOPT_REUSEADDR, 1);
+		enet_socket_set_option(PingSocket, ENET_SOCKOPT_NONBLOCK, 1);
+
+		// Bind socket
+		ENetAddress PingAddress;
+		PingAddress.host = ENET_HOST_ANY;
+		PingAddress.port = PingPort;
+		enet_socket_bind(PingSocket, &PingAddress);
+	}
 }
 
 // Destructor

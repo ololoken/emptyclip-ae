@@ -25,8 +25,11 @@
 #include <queue>
 #include <cstdint>
 
+// Forward Declarations
 typedef struct _ENetEvent ENetEvent;
 typedef struct _ENetHost ENetHost;
+typedef struct _ENetAddress ENetAddress;
+typedef int ENetSocket;
 
 namespace ae {
 
@@ -66,9 +69,13 @@ class _Network {
 		virtual ~_Network();
 
 		void Update(double FrameTime);
+		bool CheckPings(_Buffer &Data, ENetAddress *Address);
 
 		// Settings
 		void SetFakeLag(double Value) { FakeLag = Value; }
+
+		// Sockets
+		void BroadcastPing(const _Buffer &Buffer, uint16_t Port);
 
 		// Updates
 		bool GetNetworkEvent(_NetworkEvent &NetworkEvent);
@@ -100,6 +107,7 @@ class _Network {
 
 		// State
 		ENetHost *Connection;
+		ENetSocket PingSocket;
 		double Time;
 
 		// Updates

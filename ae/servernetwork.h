@@ -32,7 +32,7 @@ class _ServerNetwork : public _Network {
 
 	public:
 
-		_ServerNetwork(size_t MaxPeers, uint16_t NetworkPort);
+		_ServerNetwork(size_t MaxPeers, uint16_t NetworkPort, uint16_t PingPort=0);
 		~_ServerNetwork();
 
 		// Connections

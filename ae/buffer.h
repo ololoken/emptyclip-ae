@@ -33,6 +33,8 @@ class _Buffer {
 		_Buffer(const char *ExistingBuffer, size_t Length);
 		~_Buffer();
 
+		void Load(const char *ExistingBuffer, size_t Length);
+
 		// Write data
 		template<typename T> T *Write(const T &Value) {
 			AlignAndExpand(sizeof(T));

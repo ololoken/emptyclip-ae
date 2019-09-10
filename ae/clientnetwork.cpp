@@ -26,14 +26,18 @@
 namespace ae {
 
 // Constructor
-_ClientNetwork::_ClientNetwork()
-:	ConnectionState(State::DISCONNECTED),
+_ClientNetwork::_ClientNetwork() :
+	ConnectionState(State::DISCONNECTED),
 	Peer(nullptr) {
 
 	// Create client connection
 	Connection = enet_host_create(nullptr, 1, 0, 0, 0);
 	if(!Connection)
 		throw std::runtime_error("enet_host_create failed");
+
+	// Set ping socket options
+	enet_socket_set_option(PingSocket, ENET_SOCKOPT_NONBLOCK, 1);
+	enet_socket_set_option(PingSocket, ENET_SOCKOPT_BROADCAST, 1);
 
 	Peer = new _Peer(nullptr);
 }

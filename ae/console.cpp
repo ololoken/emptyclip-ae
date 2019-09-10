@@ -27,20 +27,16 @@
 
 namespace ae {
 
-const float PADDING = 5.0f;
+const float PADDING_X = 5.0f;
+const float PADDING_Y = 2.0f;
+const float SPACING_Y = 2.0f;
 const glm::vec4 CONSOLE_BG_COLOR = glm::vec4(0.0f, 0.0f, 0.0f, 0.95f);
 const glm::vec4 TEXTBOX_BG_COLOR = glm::vec4(0.05f, 0.05f, 0.05f, 0.5f);
 
 // Initialize
 _Console::_Console(const _Program *Program, const _Font *Font) :
 	Element(nullptr),
-	Font(Font),
-	RowHeight(0.0f),
-	BelowBase(0.0f) {
-
-	// Get font dimensions
-	RowHeight = Font->MaxAbove + Font->MaxBelow + PADDING;
-	BelowBase = Font->MaxBelow;
+	Font(Font) {
 
 	// Add style
 	Style = new _Style();
@@ -59,6 +55,9 @@ _Console::_Console(const _Program *Program, const _Font *Font) :
 	Element->Parent = Graphics.Element;
 	Element->Style = Style;
 	Element->Alignment = LEFT_TOP;
+	Element->BaseSize = glm::vec2(100, 50);
+	Element->SizePercent[0] = true;
+	Element->SizePercent[1] = true;
 	Graphics.Element->Children.push_back(Element);
 
 	// Add textbox background element
@@ -66,7 +65,6 @@ _Console::_Console(const _Program *Program, const _Font *Font) :
 	TextboxBackgroundElement->Parent = Element;
 	TextboxBackgroundElement->Style = InputStyle;
 	TextboxBackgroundElement->Alignment = LEFT_BOTTOM;
-	TextboxBackgroundElement->BaseSize = glm::vec2(Graphics.Element->Size.x, RowHeight + PADDING);
 	Element->Children.push_back(TextboxBackgroundElement);
 
 	// Add textbox element
@@ -74,8 +72,8 @@ _Console::_Console(const _Program *Program, const _Font *Font) :
 	TextboxElement->Parent = TextboxBackgroundElement;
 	TextboxElement->Alignment = LEFT_BASELINE;
 	TextboxElement->MaxLength = 255;
-	TextboxElement->BaseOffset = glm::vec2(PADDING, RowHeight - 1);
 	TextboxElement->Font = Font;
+	TextboxElement->Text = "";
 	TextboxBackgroundElement->Children.push_back(TextboxElement);
 
 	// Update size of main element
@@ -86,6 +84,22 @@ _Console::_Console(const _Program *Program, const _Font *Font) :
 _Console::~_Console() {
 	delete Style;
 	delete InputStyle;
+}
+
+// Update size of console based on parent element
+void _Console::UpdateSize() {
+
+	// Update element
+	Element->CalculateBounds();
+
+	// Update textbox bg size
+	Element->Children.front()->Size.x = Element->Parent->Size.x;
+	Element->Children.front()->Size.y = Font->MaxAbove + Font->MaxBelow + PADDING_Y;
+	Element->Children.front()->CalculateBounds(false);
+
+	// Update textbox offset
+	Element->Children.front()->Children.front()->Offset = glm::vec2(PADDING_X, Font->MaxAbove + PADDING_Y / 2);
+	Element->Children.front()->Children.front()->CalculateBounds(false);
 }
 
 // Update
@@ -192,12 +206,12 @@ void _Console::Render(double BlendFactor) {
 	Element->Render();
 
 	// Draw messages
-	glm::vec2 DrawPosition(PADDING, Element->Bounds.End.y - TextboxElement->Parent->Size.y - BelowBase - PADDING);
+	glm::vec2 DrawPosition(PADDING_X * ae::_Element::GetUIScale(), Element->Bounds.End.y - TextboxElement->Parent->Size.y - Font->MaxBelow - SPACING_Y);
 	for(auto Iterator = Messages.rbegin(); Iterator != Messages.rend(); ++Iterator) {
 		_Message &Message = (*Iterator);
 		Font->DrawText(Message.Text, DrawPosition, LEFT_BASELINE, Message.Color);
-		DrawPosition.y -= RowHeight;
 
+		DrawPosition.y -= Font->MaxAbove + Font->MaxBelow + SPACING_Y;
 		if(DrawPosition.y < 0)
 			break;
 	}
@@ -217,12 +231,6 @@ void _Console::Toggle() {
 		ae::FocusedElement = nullptr;
 		TextboxElement->Text = "";
 	}
-}
-
-// Update size of console based on parent element
-void _Console::UpdateSize() {
-	Element->Size = glm::vec2(Element->Parent->Size.x, Element->Parent->Size.y / 2.0f);
-	Element->CalculateBounds(false);
 }
 
 // Add message to console

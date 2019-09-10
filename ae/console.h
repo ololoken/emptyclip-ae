@@ -47,12 +47,12 @@ class _Console {
 		_Console(const _Program *Program, const _Font *Font);
 		~_Console();
 
+		void UpdateSize();
 		void Update(double FrameTime);
 		void Render(double BlendFactor);
 
 		bool IsOpen();
 		void Toggle();
-		void UpdateSize();
 		void AddMessage(const std::string &Text, const glm::vec4 &Color=glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
 		void UpdateHistory(int Direction);
 
@@ -76,8 +76,6 @@ class _Console {
 		_Style *Style;
 		_Style *InputStyle;
 		const _Font *Font;
-		float RowHeight;
-		float BelowBase;
 
 };
 

@@ -1,5 +1,5 @@
 /******************************************************************************
-* Copyright (c) 2018 Alan Witkowski
+* Copyright (c) 2019 Alan Witkowski
 *
 * This software is provided 'as-is', without any express or implied
 * warranty. In no event will the authors be held liable for any damages

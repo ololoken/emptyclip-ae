@@ -62,6 +62,14 @@ uint16_t _ServerNetwork::GetListenPort() {
 	return Connection->address.port;
 }
 
+// Get max number of peers
+size_t _ServerNetwork::GetMaxPeers() {
+	if(!Connection)
+		return 0;
+
+	return Connection->peerCount;
+}
+
 // Delete a peer and remove from the list
 void _ServerNetwork::DeletePeer(_Peer *Peer) {
 

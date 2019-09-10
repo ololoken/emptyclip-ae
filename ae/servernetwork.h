@@ -40,6 +40,7 @@ class _ServerNetwork : public _Network {
 
 		// Connections
 		uint16_t GetListenPort();
+		size_t GetMaxPeers();
 		void DisconnectAll();
 
 		// Packets

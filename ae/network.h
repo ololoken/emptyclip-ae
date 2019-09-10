@@ -29,7 +29,6 @@
 typedef struct _ENetEvent ENetEvent;
 typedef struct _ENetHost ENetHost;
 typedef struct _ENetAddress ENetAddress;
-typedef int ENetSocket;
 
 namespace ae {
 
@@ -107,7 +106,7 @@ class _Network {
 
 		// State
 		ENetHost *Connection;
-		ENetSocket PingSocket;
+		int PingSocket;
 		double Time;
 
 		// Updates

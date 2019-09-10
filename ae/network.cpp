@@ -125,16 +125,15 @@ bool _Network::CheckPings(_Buffer &Data, ENetAddress *Address) {
 	if(PingSocket == -1)
 		return false;
 
-	// Handle sockets
+	// Set buffer
 	ENetBuffer SocketBuffer;
-	char Buffer[1024];
-	SocketBuffer.data = &Buffer;
-	SocketBuffer.dataLength = 1024;
+	SocketBuffer.data = &Data[0];
+	SocketBuffer.dataLength = Data.GetAllocatedSize();
 
 	// Check for messages
-	int SocketReceived = enet_socket_receive(PingSocket, Address, &SocketBuffer, 1);
-	if(SocketReceived > 0) {
-		Data.Load((char *)SocketBuffer.data, SocketReceived);
+	int Received = enet_socket_receive(PingSocket, Address, &SocketBuffer, 1);
+	if(Received > 0) {
+		Data.SetAllocatedSize(Received);
 
 		return true;
 	}

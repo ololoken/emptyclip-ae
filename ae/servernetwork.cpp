@@ -26,32 +26,32 @@
 namespace ae {
 
 // Constructor
-_ServerNetwork::_ServerNetwork(size_t MaxPeers, uint16_t NetworkPort, uint16_t PingPort) {
+_ServerNetwork::_ServerNetwork(size_t MaxPeers, uint16_t Port) {
 	ENetAddress Address;
 	Address.host = ENET_HOST_ANY;
-	Address.port = NetworkPort;
+	Address.port = Port;
 
 	// Create listener connection
 	Connection = enet_host_create(&Address, MaxPeers, 0, 0, 0);
-
-	// Set up ping socket
-	if(PingPort) {
-
-		// Set ping socket options
-		enet_socket_set_option(PingSocket, ENET_SOCKOPT_REUSEADDR, 1);
-		enet_socket_set_option(PingSocket, ENET_SOCKOPT_NONBLOCK, 1);
-
-		// Bind socket
-		ENetAddress PingAddress;
-		PingAddress.host = ENET_HOST_ANY;
-		PingAddress.port = PingPort;
-		enet_socket_bind(PingSocket, &PingAddress);
-	}
 }
 
 // Destructor
 _ServerNetwork::~_ServerNetwork() {
 	ClearPeers();
+}
+
+// Create ping socket
+void _ServerNetwork::CreatePingSocket(uint16_t Port) {
+
+	// Set ping socket options
+	enet_socket_set_option(PingSocket, ENET_SOCKOPT_REUSEADDR, 1);
+	enet_socket_set_option(PingSocket, ENET_SOCKOPT_NONBLOCK, 1);
+
+	// Bind socket
+	ENetAddress Address;
+	Address.host = ENET_HOST_ANY;
+	Address.port = Port;
+	enet_socket_bind(PingSocket, &Address);
 }
 
 // Delete a peer and remove from the list

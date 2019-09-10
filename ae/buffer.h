@@ -33,8 +33,6 @@ class _Buffer {
 		_Buffer(const char *ExistingBuffer, size_t Length);
 		~_Buffer();
 
-		void Load(const char *ExistingBuffer, size_t Length);
-
 		// Write data
 		template<typename T> T *Write(const T &Value) {
 			AlignAndExpand(sizeof(T));
@@ -67,6 +65,7 @@ class _Buffer {
 		char operator[](size_t Index) const { return Data[Index]; }
 
 		void Shrink();
+		void SetAllocatedSize(size_t Size) { AllocatedSize = Size; }
 		size_t GetAllocatedSize() const { return AllocatedSize; }
 		size_t GetCurrentSize() const { return CurrentByte + (CurrentBit != 0); }
 		bool End() const { return CurrentByte == AllocatedSize; }

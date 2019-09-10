@@ -32,8 +32,11 @@ class _ServerNetwork : public _Network {
 
 	public:
 
-		_ServerNetwork(size_t MaxPeers, uint16_t NetworkPort, uint16_t PingPort=0);
+		_ServerNetwork(size_t MaxPeers, uint16_t Port);
 		~_ServerNetwork();
+
+		// Sockets
+		void CreatePingSocket(uint16_t Port);
 
 		// Connections
 		void DisconnectAll();

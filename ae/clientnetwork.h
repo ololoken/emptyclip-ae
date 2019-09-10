@@ -21,6 +21,7 @@
 
 // Libraries
 #include <ae/network.h>
+#include <string>
 
 namespace ae {
 

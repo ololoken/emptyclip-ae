@@ -39,6 +39,7 @@ class _ServerNetwork : public _Network {
 		void CreatePingSocket(uint16_t Port);
 
 		// Connections
+		uint16_t GetListenPort();
 		void DisconnectAll();
 
 		// Packets

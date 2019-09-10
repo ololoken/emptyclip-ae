@@ -54,6 +54,14 @@ void _ServerNetwork::CreatePingSocket(uint16_t Port) {
 	enet_socket_bind(PingSocket, &Address);
 }
 
+// Get port server is listening on
+uint16_t _ServerNetwork::GetListenPort() {
+	if(!Connection)
+		return 0;
+
+	return Connection->address.port;
+}
+
 // Delete a peer and remove from the list
 void _ServerNetwork::DeletePeer(_Peer *Peer) {
 

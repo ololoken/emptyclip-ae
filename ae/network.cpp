@@ -121,7 +121,7 @@ void _Network::Update(double FrameTime) {
 }
 
 // Check for pings
-bool _Network::CheckPings(_Buffer &Data, ENetAddress *Address) {
+bool _Network::CheckPings(_Buffer &Data, _NetworkAddress &NetworkAddress) {
 	if(PingSocket == -1)
 		return false;
 
@@ -131,9 +131,12 @@ bool _Network::CheckPings(_Buffer &Data, ENetAddress *Address) {
 	SocketBuffer.dataLength = Data.GetAllocatedSize();
 
 	// Check for messages
-	int Received = enet_socket_receive(PingSocket, Address, &SocketBuffer, 1);
+	ENetAddress EAddress;
+	int Received = enet_socket_receive(PingSocket, &EAddress, &SocketBuffer, 1);
 	if(Received > 0) {
 		Data.SetAllocatedSize(Received);
+		NetworkAddress.Host = EAddress.host;
+		NetworkAddress.Port = EAddress.port;
 
 		return true;
 	}
@@ -141,19 +144,24 @@ bool _Network::CheckPings(_Buffer &Data, ENetAddress *Address) {
 	return false;
 }
 
-// Broadcast packet on ping port
-void _Network::BroadcastPing(const _Buffer &Buffer, uint16_t Port) {
+// Send packet on ping socket
+void _Network::SendPingPacket(const _Buffer &Buffer, const _NetworkAddress &NetworkAddress) {
 
 	// Set address
 	ENetAddress Address;
-	Address.host = ENET_HOST_BROADCAST;
-	Address.port = Port;
+	Address.host = NetworkAddress.Host;
+	Address.port = NetworkAddress.Port;
 
 	// Send data
 	ENetBuffer SocketBuffer;
 	SocketBuffer.data = (void *)Buffer.GetData();
 	SocketBuffer.dataLength = Buffer.GetCurrentSize();
 	enet_socket_send(PingSocket, &Address, &SocketBuffer, 1);
+}
+
+// Convert host address to string
+void _NetworkAddress::GetIP(char *IP) {
+	enet_address_get_host_ip((ENetAddress *)this, &IP[0], 16);
 }
 
 }

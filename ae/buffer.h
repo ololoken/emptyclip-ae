@@ -70,7 +70,7 @@ class _Buffer {
 		size_t GetCurrentSize() const { return CurrentByte + (CurrentBit != 0); }
 		bool End() const { return CurrentByte == AllocatedSize; }
 
-		void StartRead() { CurrentByte = 0; }
+		void StartRead() { CurrentByte = 0; CurrentBit = 0; }
 
 	private:
 

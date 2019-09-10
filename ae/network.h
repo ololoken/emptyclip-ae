@@ -20,7 +20,6 @@
 #pragma once
 
 // Libraries
-#include <string>
 #include <list>
 #include <queue>
 #include <cstdint>
@@ -32,9 +31,22 @@ typedef struct _ENetAddress ENetAddress;
 
 namespace ae {
 
+const uint32_t NETWORK_BROADCAST = 0xFFFFFFFFU;
+
 // Forward Declarations
 class _Buffer;
 class _Peer;
+
+// Network address
+struct _NetworkAddress {
+	_NetworkAddress() : Host(0), Port(0) { }
+	_NetworkAddress(uint32_t Host, uint16_t Port) : Host(Host), Port(Port) { }
+
+	void GetIP(char *IP);
+
+	uint32_t Host;
+	uint16_t Port;
+};
 
 // Network Event
 struct _NetworkEvent {
@@ -68,13 +80,13 @@ class _Network {
 		virtual ~_Network();
 
 		void Update(double FrameTime);
-		bool CheckPings(_Buffer &Data, ENetAddress *Address);
+		bool CheckPings(_Buffer &Data, _NetworkAddress &NetworkAddress);
 
 		// Settings
 		void SetFakeLag(double Value) { FakeLag = Value; }
 
 		// Sockets
-		void BroadcastPing(const _Buffer &Buffer, uint16_t Port);
+		void SendPingPacket(const _Buffer &Buffer, const _NetworkAddress &NetworkAddress);
 
 		// Updates
 		bool GetNetworkEvent(_NetworkEvent &NetworkEvent);

@@ -24,6 +24,7 @@ namespace ae {
 
 // Constructor for a new buffer
 _Buffer::_Buffer(size_t InitialSize) :
+	Data(nullptr),
 	CurrentByte(0),
 	CurrentBit(0) {
 

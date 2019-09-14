@@ -107,7 +107,7 @@ template <class T>
 T *_Manager<T>::Create() {
 
 	// Search for an empty slot
-	for(NetworkIDType i = 0; i <= std::numeric_limits<NetworkIDType>::max(); i++) {
+	for(NetworkIDType i = 0; i < std::numeric_limits<NetworkIDType>::max(); i++) {
 		if(!IDMap[NextID]) {
 			T *Object = new T;
 			Object->NetworkID = NextID;

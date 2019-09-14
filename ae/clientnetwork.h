@@ -43,7 +43,7 @@ class _ClientNetwork : public _Network {
 		};
 
 		_ClientNetwork();
-		~_ClientNetwork();
+		~_ClientNetwork() override;
 
 		// Connections
 		void Connect(const std::string &HostAddress, uint16_t Port);
@@ -63,7 +63,7 @@ class _ClientNetwork : public _Network {
 
 	private:
 
-		void CreateEvent(_NetworkEvent &Event, double Time, ENetEvent &EEvent) override;
+		void CreateEvent(_NetworkEvent &Event, double EventTime, ENetEvent &EEvent) override;
 		void HandleEvent(_NetworkEvent &Event, ENetEvent &EEvent) override;
 
 		// State

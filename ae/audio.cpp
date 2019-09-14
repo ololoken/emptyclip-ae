@@ -47,7 +47,7 @@ _AudioSource::_AudioSource(const _Sound *Sound, float Volume) {
 	alGenSources(1, &ID);
 
 	// Assign buffer to source
-	alSourcei(ID, AL_BUFFER, Sound->ID);
+	alSourcei(ID, AL_BUFFER, (ALint)Sound->ID);
 	alSourcef(ID, AL_GAIN, Volume);
 }
 

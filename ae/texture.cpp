@@ -88,7 +88,7 @@ _Texture::_Texture(const std::string &Path, bool IsServer, bool Repeat, bool Mip
 }
 
 // Initialize from buffer
-_Texture::_Texture(unsigned char *Data, const glm::ivec2 &Size, GLint InternalFormat, int Format) :
+_Texture::_Texture(unsigned char *Data, const glm::ivec2 &Size, GLint InternalFormat, GLenum Format) :
 	Size(Size) {
 
 	// Create texture

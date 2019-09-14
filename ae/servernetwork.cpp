@@ -102,8 +102,8 @@ void _ServerNetwork::DisconnectAll() {
 }
 
 // Create a _NetworkEvent from an enet event
-void _ServerNetwork::CreateEvent(_NetworkEvent &Event, double Time, ENetEvent &EEvent) {
-	Event.Time = Time;
+void _ServerNetwork::CreateEvent(_NetworkEvent &Event, double EventTime, ENetEvent &EEvent) {
+	Event.Time = EventTime;
 	Event.Type = _NetworkEvent::EventType(EEvent.type-1);
 	if(EEvent.peer->data)
 		Event.Peer = (_Peer *)EEvent.peer->data;

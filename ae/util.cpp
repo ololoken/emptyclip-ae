@@ -31,13 +31,13 @@ const char *LoadFileIntoMemory(const char *Path) {
 	// Open file
 	std::ifstream File(Path, std::ios::binary);
 	if(!File)
-		return 0;
+		return nullptr;
 
 	// Get file size
 	File.seekg(0, std::ios::end);
 	std::ifstream::pos_type Size = File.tellg();
 	if(!Size)
-		return 0;
+		return nullptr;
 
 	File.seekg(0, std::ios::beg);
 

@@ -35,9 +35,9 @@ struct _PackedVertex {
 		return memcmp((void *)this, (void *)&PackedVertex, sizeof(_PackedVertex)) > 0;
 	}
 
-	static const void *GetPositionOffset() { return (void *)&(((_PackedVertex *)0)->Position); }
-	static const void *GetUVOffset() { return (void *)&(((_PackedVertex *)0)->UV); }
-	static const void *GetNormalOffset() { return (void *)&(((_PackedVertex *)0)->Normal); }
+	static const void *GetPositionOffset() { return (void *)&(((_PackedVertex *)nullptr)->Position); }
+	static const void *GetUVOffset() { return (void *)&(((_PackedVertex *)nullptr)->UV); }
+	static const void *GetNormalOffset() { return (void *)&(((_PackedVertex *)nullptr)->Normal); }
 
 	glm::vec3 Position;
 	glm::vec2 UV;

@@ -33,9 +33,10 @@ class _State {
 	public:
 
 		// Setup
+		_State();
+		virtual ~_State();
 		virtual void Init() { }
 		virtual void Close() { }
-		virtual ~_State() { }
 
 		// Input
 		virtual bool HandleAction(int InputType, size_t Action, int Value) { return false; }

@@ -57,7 +57,7 @@ _Database::~_Database() {
 void _Database::RunQuery(const std::string &Query) {
 
 	sqlite3_stmt *NewQueryHandle;
-	int Result = sqlite3_prepare_v2(Database, Query.c_str(), -1, &NewQueryHandle, 0);
+	int Result = sqlite3_prepare_v2(Database, Query.c_str(), -1, &NewQueryHandle, nullptr);
 	if(Result != SQLITE_OK)
 		throw std::runtime_error(std::string(sqlite3_errmsg(Database)));
 
@@ -76,7 +76,7 @@ void _Database::PrepareQuery(const std::string &Query, int Handle) {
 		throw std::runtime_error("Query handle already exists!");
 
 	// Prepare query
-	int Result = sqlite3_prepare_v2(Database, Query.c_str(), -1, &QueryHandle[Handle], 0);
+	int Result = sqlite3_prepare_v2(Database, Query.c_str(), -1, &QueryHandle[Handle], nullptr);
 	if(Result != SQLITE_OK)
 		throw std::runtime_error(std::string(sqlite3_errmsg(Database)));
 

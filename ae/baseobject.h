@@ -29,8 +29,8 @@ class _BaseObject {
 
 	public:
 
-		_BaseObject() : NetworkID(0), Deleted(false) { }
-		virtual ~_BaseObject() { }
+		_BaseObject();
+		virtual ~_BaseObject();
 
 		virtual void Update(double FrameTime) = 0;
 

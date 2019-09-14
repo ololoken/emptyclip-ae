@@ -42,8 +42,8 @@ void _Graphics::Init(const _WindowSettings &WindowSettings) {
 	FramesPerSecond = 0;
 	FrameCount = 0;
 	FrameRateTimer = 0;
-	Context = 0;
-	Window = 0;
+	Context = nullptr;
+	Window = nullptr;
 	VertexArrayID = 0;
 	Enabled = true;
 	Element = nullptr;
@@ -251,13 +251,13 @@ void _Graphics::BuildVertexBuffers() {
 		float *Vertices = new float[CircleVertices * 2];
 
 		// Get vertices
-		for(GLuint i = 0; i < CircleVertices; i++) {
+		for(int i = 0; i < CircleVertices; i++) {
 			float Radians = ((float)i / CircleVertices) * (glm::pi<float>() * 2.0f);
 			Vertices[i * 2] = std::cos(Radians);
 			Vertices[i * 2 + 1] = std::sin(Radians);
 		}
 
-		VertexBuffer[VBO_CIRCLE] = CreateVBO(Vertices, sizeof(float) * CircleVertices * 2, GL_STATIC_DRAW);
+		VertexBuffer[VBO_CIRCLE] = CreateVBO(Vertices, sizeof(float) * (unsigned)CircleVertices * 2, GL_STATIC_DRAW);
 		delete[] Vertices;
 	}
 
@@ -373,7 +373,7 @@ void _Graphics::BuildVertexBuffers() {
 }
 
 // Create vertex buffer and return id
-GLuint _Graphics::CreateVBO(float *Vertices, GLuint Size, GLenum Type) {
+GLuint _Graphics::CreateVBO(float *Vertices, GLsizeiptr Size, GLenum Type) {
 
 	// Create buffer
 	GLuint BufferID;
@@ -693,7 +693,7 @@ void _Graphics::SetVBO(GLuint VBO) {
 	switch(VBO) {
 		case VBO_CUBE:
 			EnableAttribs(3);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, 0);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, nullptr);
 			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (GLvoid *)(sizeof(glm::vec3)));
 			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (GLvoid *)(sizeof(glm::vec3) + sizeof(glm::vec2)));
 		break;
@@ -701,7 +701,7 @@ void _Graphics::SetVBO(GLuint VBO) {
 		case VBO_ATLAS:
 		case VBO_QUAD_UV:
 			EnableAttribs(2);
-			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
+			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr);
 			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (GLvoid *)(sizeof(float) * 8));
 		break;
 		case VBO_LINE:
@@ -709,7 +709,7 @@ void _Graphics::SetVBO(GLuint VBO) {
 		case VBO_QUAD:
 		case VBO_CIRCLE:
 			EnableAttribs(1);
-			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
+			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr);
 		break;
 	}
 
@@ -813,7 +813,7 @@ void _Graphics::DirtyState() {
 
 // Throw opengl error
 void _Graphics::CheckError() {
-	int Error = glGetError();
+	GLenum Error = glGetError();
 	if(Error)
 		throw std::runtime_error("glGetError returned " + std::to_string(Error));
 }

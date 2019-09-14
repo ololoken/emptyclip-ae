@@ -108,7 +108,7 @@ class _Graphics {
 		void ClearScreen();
 		void Flip(double FrameTime);
 
-		GLuint CreateVBO(float *Vertices, GLuint Size, GLenum Type);
+		GLuint CreateVBO(float *Vertices, GLsizeiptr Size, GLenum Type);
 		void SetVBO(GLuint Type);
 		void EnableAttribs(int AttribLevel);
 
@@ -138,7 +138,7 @@ class _Graphics {
 		void SetupOpenGL();
 
 		// Attributes
-		GLuint CircleVertices;
+		int CircleVertices;
 		GLuint VertexArrayID;
 
 		// Data structures

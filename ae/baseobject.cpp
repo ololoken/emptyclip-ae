@@ -17,50 +17,22 @@
 *    misrepresented as being the original software.
 * 3. This notice may not be removed or altered from any source distribution.
 *******************************************************************************/
-#pragma once
 
 // Libraries
-#include <ae/network.h>
+#include <ae/baseobject.h>
 
 namespace ae {
 
-// Forward Declarations
-class _Buffer;
-class _Peer;
+// Constructor
+_BaseObject::_BaseObject() :
+	NetworkID(0),
+	Deleted(false) {
 
-class _ServerNetwork : public _Network {
+}
 
-	public:
+// Destructor
+_BaseObject::~_BaseObject() {
 
-		_ServerNetwork(size_t MaxPeers, uint16_t Port);
-		~_ServerNetwork() override;
-
-		// Sockets
-		void CreatePingSocket(uint16_t Port);
-
-		// Connections
-		uint16_t GetListenPort();
-		size_t GetMaxPeers();
-		void DisconnectAll();
-
-		// Packets
-		void SendPacket(const _Buffer &Buffer, const _Peer *Peer, SendType Type=RELIABLE, uint8_t Channel=0);
-		void BroadcastPacket(const _Buffer &Buffer, _Peer *ExceptionPeer, SendType Type=RELIABLE, uint8_t Channel=0);
-
-		// Peers
-		const std::list<_Peer *> &GetPeers() const { return Peers; }
-		void DeletePeer(_Peer *Peer);
-
-	private:
-
-		void CreateEvent(_NetworkEvent &Event, double EventTime, ENetEvent &EEvent) override;
-		void HandleEvent(_NetworkEvent &Event, ENetEvent &EEvent) override;
-
-		// Delete peers and empty list
-		void ClearPeers();
-
-		// Peers
-		std::list<_Peer *> Peers;
-};
+}
 
 }

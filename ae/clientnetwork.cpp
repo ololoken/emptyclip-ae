@@ -85,10 +85,10 @@ void _ClientNetwork::Disconnect(bool Force) {
 }
 
 // Create a _NetworkEvent from an enet event
-void _ClientNetwork::CreateEvent(_NetworkEvent &Event, double Time, ENetEvent &EEvent) {
+void _ClientNetwork::CreateEvent(_NetworkEvent &Event, double EventTime, ENetEvent &EEvent) {
 
 	// Create network event
-	Event.Time = Time;
+	Event.Time = EventTime;
 	Event.Type = _NetworkEvent::EventType(EEvent.type-1);
 }
 

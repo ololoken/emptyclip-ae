@@ -32,8 +32,8 @@ _Mesh::_Mesh(const std::string &Path) :
 	IndexCount(0),
 	Flags(0),
 	Version(0),
-	VertexBufferID(-1),
-	ElementBufferID(-1) {
+	VertexBufferID(0),
+	ElementBufferID(0) {
 
 	// Open file
 	std::ifstream File(Path.c_str(), std::ios_base::binary);
@@ -64,12 +64,12 @@ _Mesh::_Mesh(const std::string &Path) :
 	// Create vertex buffer
 	glGenBuffers(1, &VertexBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, VertexBufferID);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(_PackedVertex) * PackedVertices.size(), PackedVertices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)(sizeof(_PackedVertex) * PackedVertices.size()), PackedVertices.data(), GL_STATIC_DRAW);
 
 	// Create index buffer
 	glGenBuffers(1, &ElementBufferID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ElementBufferID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * PackedIndices.size(), PackedIndices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, (GLsizeiptr)(sizeof(GLuint) * PackedIndices.size()), PackedIndices.data(), GL_STATIC_DRAW);
 }
 
 // Destructor
@@ -192,8 +192,8 @@ void _Mesh::ConvertOBJ(const std::string &Path) {
 		const auto &Iterator = PackedVertexMap.find(PackedVertex);
 		if(Iterator == PackedVertexMap.end()) {
 			PackedVertices.push_back(PackedVertex);
-			PackedVertexMap[PackedVertex] = PackedVertices.size() - 1;
-			PackedIndices.push_back(PackedVertices.size() - 1);
+			PackedVertexMap[PackedVertex] = (GLuint)PackedVertices.size() - 1;
+			PackedIndices.push_back((GLuint)PackedVertices.size() - 1);
 		}
 		else {
 			PackedIndices.push_back(Iterator->second);

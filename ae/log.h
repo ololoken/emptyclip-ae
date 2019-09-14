@@ -100,7 +100,7 @@ class _LogFile {
 
 // Get ISO 8601 timestamp
 inline void _LogFile::GetDateString(char *Buffer) {
-	time_t Now = time(0);
+	time_t Now = time(nullptr);
 	tm *LocalTime = localtime(&Now);
 	strftime(Buffer, 64, "%Y-%m-%dT%H:%M:%S%z", LocalTime);
 }

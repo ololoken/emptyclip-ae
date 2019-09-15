@@ -732,6 +732,11 @@ void _Graphics::EnableAttribs(int AttribLevel) {
 				glDisableVertexAttribArray(1);
 				glDisableVertexAttribArray(2);
 			break;
+			case 4:
+				glDisableVertexAttribArray(1);
+				glDisableVertexAttribArray(2);
+				glDisableVertexAttribArray(3);
+			break;
 		}
 	}
 
@@ -744,6 +749,11 @@ void _Graphics::EnableAttribs(int AttribLevel) {
 		case 3:
 			glEnableVertexAttribArray(1);
 			glEnableVertexAttribArray(2);
+		break;
+		case 4:
+			glEnableVertexAttribArray(1);
+			glEnableVertexAttribArray(2);
+			glEnableVertexAttribArray(3);
 		break;
 	}
 

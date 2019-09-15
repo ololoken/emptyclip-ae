@@ -717,45 +717,17 @@ void _Graphics::SetVBO(GLuint VBO) {
 }
 
 // Enable vertex attrib arrays
-void _Graphics::EnableAttribs(int AttribLevel) {
+void _Graphics::EnableAttribs(GLuint AttribLevel) {
 	if(AttribLevel == LastAttribLevel)
 		return;
 
-	if(AttribLevel < LastAttribLevel) {
-		switch(LastAttribLevel) {
-			case 1:
-			break;
-			case 2:
-				glDisableVertexAttribArray(1);
-			break;
-			case 3:
-				glDisableVertexAttribArray(1);
-				glDisableVertexAttribArray(2);
-			break;
-			case 4:
-				glDisableVertexAttribArray(1);
-				glDisableVertexAttribArray(2);
-				glDisableVertexAttribArray(3);
-			break;
-		}
+	if(AttribLevel < LastAttribLevel && LastAttribLevel != (GLuint)-1) {
+		for(GLuint i = 1; i < LastAttribLevel; i++)
+			glDisableVertexAttribArray(i);
 	}
 
-	switch(AttribLevel) {
-		case 1:
-		break;
-		case 2:
-			glEnableVertexAttribArray(1);
-		break;
-		case 3:
-			glEnableVertexAttribArray(1);
-			glEnableVertexAttribArray(2);
-		break;
-		case 4:
-			glEnableVertexAttribArray(1);
-			glEnableVertexAttribArray(2);
-			glEnableVertexAttribArray(3);
-		break;
-	}
+	for(GLuint i = 1; i < AttribLevel; i++)
+		glEnableVertexAttribArray(i);
 
 	LastAttribLevel = AttribLevel;
 }

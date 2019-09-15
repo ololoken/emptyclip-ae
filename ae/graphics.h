@@ -110,7 +110,7 @@ class _Graphics {
 
 		GLuint CreateVBO(float *Vertices, GLsizeiptr Size, GLenum Type);
 		void SetVBO(GLuint Type);
-		void EnableAttribs(int AttribLevel);
+		void EnableAttribs(GLuint AttribLevel);
 
 		void SetColor(const glm::vec4 &Color);
 		void SetTextureID(GLuint TextureID);
@@ -154,7 +154,7 @@ class _Graphics {
 		// State changes
 		GLuint LastVertexBufferID;
 		GLuint LastTextureID;
-		int LastAttribLevel;
+		GLuint LastAttribLevel;
 		const _Program *LastProgram;
 		bool LastDepthTest;
 

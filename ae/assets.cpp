@@ -22,6 +22,7 @@
 #include <ae/program.h>
 #include <ae/font.h>
 #include <ae/texture.h>
+#include <ae/atlas.h>
 #include <ae/mesh.h>
 #include <ae/files.h>
 #include <ae/graphics.h>
@@ -54,6 +55,9 @@ void _Assets::Close() {
 	for(const auto &Texture : Textures)
 		delete Texture.second;
 
+	for(const auto &Atlas : Atlases)
+		delete Atlas.second;
+
 	for(const auto &Mesh : Meshes)
 		delete Mesh.second;
 
@@ -75,6 +79,7 @@ void _Assets::Close() {
 	Fonts.clear();
 	Layers.clear();
 	Textures.clear();
+	Atlases.clear();
 	Meshes.clear();
 	Styles.clear();
 	AnimationTemplates.clear();
@@ -261,6 +266,20 @@ void _Assets::LoadTextureDirectory(const std::string &Path, bool IsServer, bool 
 		std::string Name = Path + File;
 		if(!Assets.Textures[Name])
 			Assets.Textures[Name] = new _Texture(Name, IsServer, Repeat, MipMaps);
+	}
+}
+
+// Load atlases
+void _Assets::LoadAtlasDirectory(const std::string &Path, const glm::ivec2 &Size, float Padding) {
+
+	// Get files
+	_Files Files(Path);
+
+	// Create atlases
+	for(const auto &File : Files.Nodes) {
+		std::string Name = Path + File;
+		if(!Assets.Atlases[Name])
+			Assets.Atlases[Name] = new _Atlas(Assets.Textures[Name], Size, Padding);
 	}
 }
 

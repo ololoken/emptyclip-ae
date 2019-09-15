@@ -31,6 +31,7 @@ namespace ae {
 class _Font;
 class _Element;
 class _Texture;
+class _Atlas;
 class _Mesh;
 class _Program;
 class _Shader;
@@ -69,6 +70,7 @@ class _Assets {
 
 		void LoadColors(const std::string &Path);
 		void LoadTextureDirectory(const std::string &Path, bool IsServer=false, bool Repeat=false, bool MipMaps=false);
+		void LoadAtlasDirectory(const std::string &Path, const glm::ivec2 &Size, float Padding);
 		void LoadSounds(const std::string &Path);
 		void LoadMusic(const std::string &Path);
 		void LoadMeshDirectory(const std::string &Path);
@@ -83,6 +85,7 @@ class _Assets {
 		std::unordered_map<std::string, _Font *> Fonts;
 		std::unordered_map<std::string, _Layer> Layers;
 		std::unordered_map<std::string, const _Texture *> Textures;
+		std::unordered_map<std::string, const _Atlas *> Atlases;
 		std::unordered_map<std::string, const _Mesh *> Meshes;
 		std::unordered_map<std::string, _Program *> Programs;
 		std::unordered_map<std::string, const _AnimationTemplate *> AnimationTemplates;

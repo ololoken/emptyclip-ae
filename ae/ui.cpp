@@ -463,7 +463,7 @@ void _Element::Render() const {
 	}
 
 	// Draw textbox or label
-	if(Texts.size() || Text != "" || MaxLength) {
+	if(Font && (Texts.size() || Text != "" || MaxLength)) {
 
 		// Set color
 		glm::vec4 RenderColor(Color.r, Color.g, Color.b, Color.a*Fade);

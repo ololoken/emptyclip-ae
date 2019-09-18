@@ -28,7 +28,7 @@
 namespace ae {
 
 // Load a program from two shaders
-_Program::_Program(const std::string &Name, const _Shader *VertexShader, const _Shader *FragmentShader, int Attribs, int MaxLights) :
+_Program::_Program(const std::string &Name, const _Shader *VertexShader, const _Shader *FragmentShader, GLuint Attribs, int MaxLights) :
 	Name(Name),
 	ViewProjectionTransformID(-1),
 	ModelTransformID(-1),

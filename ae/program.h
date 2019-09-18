@@ -37,7 +37,7 @@ class _Program {
 
 	public:
 
-		_Program(const std::string &Name, const _Shader *VertexShader, const _Shader *FragmentShader, int Attribs, int MaxLights);
+		_Program(const std::string &Name, const _Shader *VertexShader, const _Shader *FragmentShader, GLuint Attribs, int MaxLights);
 		~_Program();
 
 		void Use() const;
@@ -53,7 +53,7 @@ class _Program {
 		GLint ColorID;
 		GLint AmbientLightID;
 		GLint LightCountID;
-		int Attribs;
+		GLuint Attribs;
 
 		int MaxLights;
 		int LightCount;

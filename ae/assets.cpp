@@ -112,11 +112,11 @@ void _Assets::LoadFonts(const std::string &Path, bool LoadFonts) {
 
 		// Check for duplicates
 		if(!LoadFonts && Fonts[Name])
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Name);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Name);
 
 		// Find program
 		if(Programs.find(ProgramName) == Programs.end())
-		   throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find program: " + ProgramName);
+		   throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find program: " + ProgramName);
 
 		// Get size
 		uint32_t Size;
@@ -129,7 +129,7 @@ void _Assets::LoadFonts(const std::string &Path, bool LoadFonts) {
 
 			// Check for font name
 			if(Fonts.find(Name) == Fonts.end())
-				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find font: " + Name);
+				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find font: " + Name);
 
 			// Load font
 			Fonts[Name]->Load(Name, FontFile, Programs[ProgramName], Size * _Element::GetUIScale());
@@ -204,7 +204,7 @@ void _Assets::LoadPrograms(const std::string &Path) {
 
 		// Check for duplicates
 		if(Programs[Name])
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Name);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Name);
 
 		// Load vertex shader
 		if(Shaders.find(VertexPath) == Shaders.end())
@@ -247,7 +247,7 @@ void _Assets::LoadColors(const std::string &Path) {
 
 		// Check for duplicates
 		if(Colors.find(Name) != Colors.end())
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Name);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Name);
 
 		Colors[Name] = Color;
 	}
@@ -342,7 +342,7 @@ void _Assets::LoadAnimations(const std::string &Path, bool IsServer) {
 
 		// Check for duplicates
 		if(AnimationTemplates[Name])
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Name);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Name);
 
 		// Create template
 		_AnimationTemplate *Template = new _AnimationTemplate();

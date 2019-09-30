@@ -32,7 +32,7 @@ class _Texture;
 struct _TileData {
 	std::string ID;
 	uint32_t Index;
-	int Z;
+	int Hierarchy;
 };
 
 // Classes

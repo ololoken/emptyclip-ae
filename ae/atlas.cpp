@@ -55,7 +55,7 @@ void _Atlas::LoadTileMap(const std::string &Path) {
 
 		// Read data
 		std::getline(File, TileData.ID, '\t');
-		File >> TileData.Index >> TileData.Z;
+		File >> TileData.Index >> TileData.Hierarchy;
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for duplicates

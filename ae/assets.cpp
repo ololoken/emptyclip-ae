@@ -22,6 +22,7 @@
 #include <ae/program.h>
 #include <ae/font.h>
 #include <ae/texture.h>
+#include <ae/texture_array.h>
 #include <ae/atlas.h>
 #include <ae/mesh.h>
 #include <ae/files.h>
@@ -55,6 +56,9 @@ void _Assets::Close() {
 	for(const auto &Texture : Textures)
 		delete Texture.second;
 
+	for(const auto &TextureArray : TextureArrays)
+		delete TextureArray.second;
+
 	for(const auto &Atlas : Atlases)
 		delete Atlas.second;
 
@@ -79,6 +83,7 @@ void _Assets::Close() {
 	Fonts.clear();
 	Layers.clear();
 	Textures.clear();
+	TextureArrays.clear();
 	Atlases.clear();
 	Meshes.clear();
 	Styles.clear();
@@ -196,7 +201,7 @@ void _Assets::LoadPrograms(const std::string &Path) {
 		std::getline(File, FragmentPath, '\t');
 
 		// Get integer parameters
-		int Attribs;
+		GLuint Attribs;
 		int MaxLights;
 		File >> Attribs >> MaxLights;
 

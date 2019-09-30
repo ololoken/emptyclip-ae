@@ -17,36 +17,41 @@
 *    misrepresented as being the original software.
 * 3. This notice may not be removed or altered from any source distribution.
 *******************************************************************************/
-#include <ae/atlas.h>
-#include <ae/texture.h>
+#include <ae/tilemap.h>
 #include <fstream>
+#include <stdexcept>
 
 namespace ae {
 
 // Constructor
-_Atlas::_Atlas(const _Texture *Texture, const glm::vec2 &Size, float Padding) :
-	Texture(Texture),
-	Size(Size),
-	TexelSize(1.0f / (glm::vec2)Texture->Size),
-	TextureSizeInTexels(Size / (glm::vec2)Texture->Size),
-	Padding(Padding) {
+_TileMap::_TileMap(const std::string &Path) {
 
-	Columns = (uint32_t)(Texture->Size.x / Size.x);
-}
+	// Load file
+	std::ifstream File(Path.c_str(), std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
 
-// Destructor
-_Atlas::~_Atlas() {
-}
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-// Returns coords given a texture index
-glm::vec4 _Atlas::GetTextureCoords(uint32_t Index) const {
-	float X = Index % Columns;
-	float Y = Index / Columns;
+	// Read table
+	while(!File.eof() && File.peek() != EOF) {
+		_TileData TileData;
 
-	float TexelOffsetX = TexelSize.x + X * (Size.x + Padding * 2.0f) * TexelSize.x;
-	float TexelOffsetY = TexelSize.y + Y * (Size.y + Padding * 2.0f) * TexelSize.y;
+		// Read data
+		std::getline(File, TileData.ID, '\t');
+		File >> TileData.Index >> TileData.Hierarchy;
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-	return glm::vec4(TexelOffsetX, TexelOffsetY, TexelOffsetX + TextureSizeInTexels.x, TexelOffsetY + TextureSizeInTexels.y);
+		// Check for duplicates
+		if(Data.find(TileData.ID) != Data.end())
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + TileData.ID);
+
+		Data[TileData.ID] = TileData;
+		Index[TileData.Index] = &Data[TileData.ID];
+	}
+
+	File.close();
 }
 
 }

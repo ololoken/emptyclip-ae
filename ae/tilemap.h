@@ -17,36 +17,31 @@
 *    misrepresented as being the original software.
 * 3. This notice may not be removed or altered from any source distribution.
 *******************************************************************************/
-#include <ae/atlas.h>
-#include <ae/texture.h>
-#include <fstream>
+#pragma once
+
+#include <unordered_map>
+#include <string>
 
 namespace ae {
 
-// Constructor
-_Atlas::_Atlas(const _Texture *Texture, const glm::vec2 &Size, float Padding) :
-	Texture(Texture),
-	Size(Size),
-	TexelSize(1.0f / (glm::vec2)Texture->Size),
-	TextureSizeInTexels(Size / (glm::vec2)Texture->Size),
-	Padding(Padding) {
+// Hold information about tile hierarchy and index
+class _TileMap {
 
-	Columns = (uint32_t)(Texture->Size.x / Size.x);
-}
+	public:
 
-// Destructor
-_Atlas::~_Atlas() {
-}
+		struct _TileData {
+			std::string ID;
+			uint32_t Index;
+			int Hierarchy;
+		};
 
-// Returns coords given a texture index
-glm::vec4 _Atlas::GetTextureCoords(uint32_t Index) const {
-	float X = Index % Columns;
-	float Y = Index / Columns;
+		_TileMap(const std::string &Path);
 
-	float TexelOffsetX = TexelSize.x + X * (Size.x + Padding * 2.0f) * TexelSize.x;
-	float TexelOffsetY = TexelSize.y + Y * (Size.y + Padding * 2.0f) * TexelSize.y;
+		std::unordered_map<std::string, _TileData> Data;
+		std::unordered_map<uint32_t, const _TileData *> Index;
 
-	return glm::vec4(TexelOffsetX, TexelOffsetY, TexelOffsetX + TextureSizeInTexels.x, TexelOffsetY + TextureSizeInTexels.y);
-}
+	private:
+
+};
 
 }

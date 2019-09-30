@@ -29,12 +29,6 @@ namespace ae {
 // Forward Declarations
 class _Texture;
 
-struct _TileData {
-	std::string ID;
-	uint32_t Index;
-	int Hierarchy;
-};
-
 // Classes
 class _Atlas {
 
@@ -51,12 +45,6 @@ class _Atlas {
 
 		// Dimension for a single texture in the atlas
 		glm::vec2 Size;
-
-		// Describes tile hierarchy and id map
-		std::unordered_map<std::string, _TileData> TileMap;
-
-		// Reverse index
-		std::unordered_map<uint32_t, const _TileData *> TileMapIndex;
 
 	private:
 

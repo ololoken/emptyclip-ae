@@ -23,6 +23,7 @@
 #include <ae/font.h>
 #include <ae/texture.h>
 #include <ae/texture_array.h>
+#include <ae/tilemap.h>
 #include <ae/atlas.h>
 #include <ae/mesh.h>
 #include <ae/files.h>
@@ -59,6 +60,9 @@ void _Assets::Close() {
 	for(const auto &TextureArray : TextureArrays)
 		delete TextureArray.second;
 
+	for(const auto &TileMap : TileMaps)
+		delete TileMap.second;
+
 	for(const auto &Atlas : Atlases)
 		delete Atlas.second;
 
@@ -84,6 +88,7 @@ void _Assets::Close() {
 	Layers.clear();
 	Textures.clear();
 	TextureArrays.clear();
+	TileMaps.clear();
 	Atlases.clear();
 	Meshes.clear();
 	Styles.clear();

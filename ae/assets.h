@@ -32,6 +32,7 @@ class _Font;
 class _Element;
 class _Texture;
 class _TextureArray;
+class _TileMap;
 class _Atlas;
 class _Mesh;
 class _Program;
@@ -88,6 +89,7 @@ class _Assets {
 		std::unordered_map<std::string, const _Texture *> Textures;
 		std::unordered_map<std::string, _Atlas *> Atlases;
 		std::unordered_map<std::string, _TextureArray *> TextureArrays;
+		std::unordered_map<std::string, _TileMap *> TileMaps;
 		std::unordered_map<std::string, const _Mesh *> Meshes;
 		std::unordered_map<std::string, _Program *> Programs;
 		std::unordered_map<std::string, const _AnimationTemplate *> AnimationTemplates;

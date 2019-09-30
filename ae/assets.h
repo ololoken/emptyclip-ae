@@ -85,7 +85,7 @@ class _Assets {
 		std::unordered_map<std::string, _Font *> Fonts;
 		std::unordered_map<std::string, _Layer> Layers;
 		std::unordered_map<std::string, const _Texture *> Textures;
-		std::unordered_map<std::string, const _Atlas *> Atlases;
+		std::unordered_map<std::string, _Atlas *> Atlases;
 		std::unordered_map<std::string, const _Mesh *> Meshes;
 		std::unordered_map<std::string, _Program *> Programs;
 		std::unordered_map<std::string, const _AnimationTemplate *> AnimationTemplates;

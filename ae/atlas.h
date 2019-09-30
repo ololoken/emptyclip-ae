@@ -21,11 +21,19 @@
 
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
+#include <string>
+#include <unordered_map>
 
 namespace ae {
 
 // Forward Declarations
 class _Texture;
+
+struct _TileData {
+	std::string ID;
+	uint32_t Index;
+	int Z;
+};
 
 // Classes
 class _Atlas {
@@ -35,6 +43,7 @@ class _Atlas {
 		_Atlas(const _Texture *Texture, const glm::vec2 &Size, float Padding);
 		~_Atlas();
 
+		void LoadTileMap(const std::string &Path);
 		glm::vec4 GetTextureCoords(uint32_t Index) const;
 
 		// Attributes
@@ -42,6 +51,12 @@ class _Atlas {
 
 		// Dimension for a single texture in the atlas
 		glm::vec2 Size;
+
+		// Describes tile hierarchy and id map
+		std::unordered_map<std::string, _TileData> TileMap;
+
+		// Reverse index
+		std::unordered_map<uint32_t, const _TileData *> TileMapIndex;
 
 	private:
 

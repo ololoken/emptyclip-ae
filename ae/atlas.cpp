@@ -19,6 +19,7 @@
 *******************************************************************************/
 #include <ae/atlas.h>
 #include <ae/texture.h>
+#include <fstream>
 
 namespace ae {
 
@@ -35,6 +36,37 @@ _Atlas::_Atlas(const _Texture *Texture, const glm::vec2 &Size, float Padding) :
 
 // Destructor
 _Atlas::~_Atlas() {
+}
+
+// Load tile map that describes tile hierarchy and id map
+void _Atlas::LoadTileMap(const std::string &Path) {
+
+	// Load file
+	std::ifstream File(Path.c_str(), std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
+
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+	// Read table
+	while(!File.eof() && File.peek() != EOF) {
+		_TileData TileData;
+
+		// Read data
+		std::getline(File, TileData.ID, '\t');
+		File >> TileData.Index >> TileData.Z;
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+		// Check for duplicates
+		if(TileMap.find(TileData.ID) != TileMap.end())
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + TileData.ID);
+
+		TileMap[TileData.ID] = TileData;
+		TileMapIndex[TileData.Index] = &TileMap[TileData.ID];
+	}
+
+	File.close();
 }
 
 // Returns coords given a texture index

@@ -123,6 +123,11 @@ void _Program::Use() const {
 	}
 }
 
+// Set the value of a float uniform
+void _Program::SetUniformFloat(const std::string &Name, float Value) const {
+	glUniform1f(glGetUniformLocation(ID, Name.c_str()), Value);
+}
+
 // Set the value of a vec4 uniform
 void _Program::SetUniformVec4(const std::string &Name, const glm::vec4 &Value) const {
 	glUniform4fv(glGetUniformLocation(ID, Name.c_str()), 1, &Value[0]);

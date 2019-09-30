@@ -788,7 +788,7 @@ void _Graphics::SetScissor(const _Bounds &Bounds) {
 void _Graphics::DirtyState() {
 	LastVertexBufferID = (GLuint)-1;
 	LastTextureID = (GLuint)-1;
-	LastAttribLevel = -1;
+	LastAttribLevel = (GLuint)-1;
 	LastProgram = nullptr;
 	LastDepthTest = false;
 }

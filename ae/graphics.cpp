@@ -21,6 +21,7 @@
 #include <ae/assets.h>
 #include <ae/program.h>
 #include <ae/texture.h>
+#include <ae/texture_array.h>
 #include <ae/ui.h>
 #include <SDL.h>
 #include <SDL_mouse.h>
@@ -461,7 +462,7 @@ void _Graphics::DrawImage(const _Bounds &Bounds, const _Texture *Texture, bool S
 }
 
 // Draw image from a texture atlas
-void _Graphics::DrawAtlas(const _Bounds &Bounds, const _Texture *Texture, const glm::vec4 &TextureCoords) {
+void _Graphics::DrawAtlasTexture(const _Bounds &Bounds, const _Texture *Texture, const glm::vec4 &TextureCoords) {
 	SetVBO(VBO_QUAD_UV);
 	SetTextureID(Texture->ID);
 
@@ -483,6 +484,25 @@ void _Graphics::DrawAtlas(const _Bounds &Bounds, const _Texture *Texture, const 
 	TextureTransform[0][0] = TextureCoords[2] - TextureCoords[0];
 	TextureTransform[1][1] = TextureCoords[3] - TextureCoords[1];
 	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
+// Draw image from texture array
+void _Graphics::DrawTextureArray(const _Bounds &Bounds, const _TextureArray *Texture, uint32_t Index) {
+	SetVBO(VBO_QUAD_UV);
+	SetTextureID(Texture->ID, GL_TEXTURE_2D_ARRAY);
+	LastProgram->SetUniformFloat("texture_index", Index);
+
+	// Get size
+	glm::vec2 Size = Bounds.End - Bounds.Start;
+
+	// Model transform
+	glm::mat4 Transform(1.0f);
+	Transform[3][0] = Bounds.Start.x;
+	Transform[3][1] = Bounds.Start.y;
+	Transform[0][0] = Size.x;
+	Transform[1][1] = Size.y;
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(Transform));
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
@@ -738,11 +758,11 @@ void _Graphics::SetColor(const glm::vec4 &Color) {
 }
 
 // Set texture id
-void _Graphics::SetTextureID(GLuint TextureID) {
+void _Graphics::SetTextureID(GLuint TextureID, GLenum Type) {
 	if(TextureID == LastTextureID)
 		return;
 
-	glBindTexture(GL_TEXTURE_2D, TextureID);
+	glBindTexture(Type, TextureID);
 
 	LastTextureID = TextureID;
 }

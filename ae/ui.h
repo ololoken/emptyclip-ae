@@ -37,7 +37,7 @@ namespace ae {
 // Forward Declarations
 class _Font;
 class _Texture;
-class _Atlas;
+class _TextureArray;
 class _Program;
 struct _KeyEvent;
 
@@ -156,7 +156,7 @@ class _Element {
 		const _Style *HoverStyle;
 		const _Style *DisabledStyle;
 		const _Texture *Texture;
-		const _Atlas *Atlas;
+		const _TextureArray *TextureArray;
 		uint32_t TextureIndex;
 		float Fade;
 

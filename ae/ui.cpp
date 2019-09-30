@@ -24,7 +24,7 @@
 #include <ae/assets.h>
 #include <ae/font.h>
 #include <ae/texture.h>
-#include <ae/atlas.h>
+#include <ae/texture_array.h>
 #include <constants.h>
 #include <SDL_keycode.h>
 #include <tinyxml2.h>
@@ -65,7 +65,7 @@ _Element::_Element() :
 	HoverStyle(nullptr),
 	DisabledStyle(nullptr),
 	Texture(nullptr),
-	Atlas(nullptr),
+	TextureArray(nullptr),
 	TextureIndex(0),
 	Fade(1.0f),
 	BaseOffset(0.0f, 0.0f),
@@ -440,10 +440,10 @@ void _Element::Render() const {
 		if(Style) {
 			DrawStyle(Style);
 		}
-		else if(Atlas) {
-			Graphics.SetProgram(Assets.Programs["ortho_pos_uv"]);
+		else if(TextureArray) {
+			Graphics.SetProgram(Assets.Programs["ortho_pos_uv_array"]);
 			Graphics.SetColor(Color);
-			Graphics.DrawAtlas(DrawBounds, Atlas->Texture, Atlas->GetTextureCoords(TextureIndex));
+			Graphics.DrawTextureArray(DrawBounds, TextureArray, TextureIndex);
 		}
 		else if(Texture) {
 			Graphics.SetProgram(Assets.Programs["ortho_pos_uv"]);

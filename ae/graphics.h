@@ -32,6 +32,7 @@ namespace ae {
 
 // Forward Declarations
 class _Texture;
+class _TextureArray;
 class _Program;
 class _Element;
 struct _Bounds;
@@ -87,7 +88,8 @@ class _Graphics {
 		void DrawLine(const glm::vec2 &Start, const glm::vec2 &End);
 		void DrawScaledImage(const glm::vec2 &Position, const _Texture *Texture, const glm::vec4 &Color=glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 		void DrawImage(const _Bounds &Bounds, const _Texture *Texture, bool Stretch=true);
-		void DrawAtlas(const _Bounds &Bounds, const _Texture *Texture, const glm::vec4 &TextureCoords);
+		void DrawAtlasTexture(const _Bounds &Bounds, const _Texture *Texture, const glm::vec4 &TextureCoords);
+		void DrawTextureArray(const _Bounds &Bounds, const _TextureArray *Texture, uint32_t Index);
 		void DrawSprite(const glm::vec3 &Position, const _Texture *Texture, float Rotation=0.0f, const glm::vec2 Scale=glm::vec2(1.0f));
 		void DrawAnimationFrame(const glm::vec3 &Position, const _Texture *Texture, const glm::vec4 &TextureCoords, float Rotation=0.0f, const glm::vec2 Scale=glm::vec2(1.0f));
 		void DrawCube(const glm::vec3 &Start, const glm::vec3 &Scale, const _Texture *Texture);
@@ -113,7 +115,7 @@ class _Graphics {
 		void EnableAttribs(GLuint AttribLevel);
 
 		void SetColor(const glm::vec4 &Color);
-		void SetTextureID(GLuint TextureID);
+		void SetTextureID(GLuint TextureID, GLenum Type=GL_TEXTURE_2D);
 		void SetVertexBufferID(GLuint VertexBufferID);
 		void SetProgram(const _Program *Program);
 		void SetDepthTest(bool DepthTest);

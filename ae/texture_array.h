@@ -37,11 +37,9 @@ class _TextureArray {
 
 		GLuint ID;
 		glm::ivec2 Size;
-
-	private:
-
 		int Count;
 
+	private:
 };
 
 }

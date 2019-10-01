@@ -40,7 +40,7 @@ _TextureArray::~_TextureArray() {
 }
 
 // Add texture to array
-void _TextureArray::AddTexture(const std::string &Path) {
+void _TextureArray::AddTexture(const std::string &Path, GLfloat RepeatMode) {
 
 	// Open file
 	SDL_Surface *Image = IMG_Load(Path.c_str());
@@ -63,8 +63,8 @@ void _TextureArray::AddTexture(const std::string &Path) {
 
 	// Copy pixel data to texture array slice
 	glBindTexture(GL_TEXTURE_2D_ARRAY, ID);
-	glTexParameterf(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameterf(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameterf(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, RepeatMode);
+	glTexParameterf(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, RepeatMode);
 	glTexParameterf(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, Count, Size.x, Size.y, 1, (GLenum)ColorFormat, GL_UNSIGNED_BYTE, Image->pixels);

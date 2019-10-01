@@ -33,7 +33,7 @@ class _TextureArray {
 		_TextureArray(const glm::ivec2 &Size, int Layers);
 		~_TextureArray();
 
-		void AddTexture(const std::string &Path);
+		void AddTexture(const std::string &Path, GLfloat RepeatMode=GL_REPEAT);
 
 		GLuint ID;
 		glm::ivec2 Size;

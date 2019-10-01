@@ -20,6 +20,7 @@
 #pragma once
 
 #include <unordered_map>
+#include <map>
 #include <string>
 
 namespace ae {
@@ -38,7 +39,7 @@ class _TileMap {
 		_TileMap(const std::string &Path);
 
 		std::unordered_map<std::string, _TileData> Data;
-		std::unordered_map<uint32_t, const _TileData *> Index;
+		std::map<uint32_t, const _TileData *> Index;
 
 	private:
 

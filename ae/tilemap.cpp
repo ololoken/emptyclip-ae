@@ -35,17 +35,20 @@ _TileMap::_TileMap(const std::string &Path) {
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 	// Read table
+	uint32_t i = 0;
 	while(!File.eof() && File.peek() != EOF) {
 		_TileData TileData;
 
 		// Read data
 		std::getline(File, TileData.ID, '\t');
-		File >> TileData.Index >> TileData.Hierarchy;
+		File >> TileData.Hierarchy;
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for duplicates
 		if(Data.find(TileData.ID) != Data.end())
 			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + TileData.ID);
+
+		TileData.Index = i++;
 
 		Data[TileData.ID] = TileData;
 		Index[TileData.Index] = &Data[TileData.ID];

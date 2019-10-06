@@ -42,6 +42,7 @@ class _Program {
 
 		void Use() const;
 		void SetUniformFloat(const std::string &Name, float Value) const;
+		void SetUniformVec2(const std::string &Name, const glm::vec2 &Value) const;
 		void SetUniformVec4(const std::string &Name, const glm::vec4 &Value) const;
 		void SetUniformMat4(const std::string &Name, const glm::mat4 &Value) const;
 

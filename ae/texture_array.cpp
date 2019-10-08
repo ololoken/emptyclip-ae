@@ -54,6 +54,9 @@ void _TextureArray::AddTexture(const std::string &Path, GLfloat RepeatMode, GLin
 	// Determine OpenGL format
 	GLint ColorFormat;
 	switch(Image->format->BitsPerPixel) {
+		case 8:
+			ColorFormat = GL_RED;
+		break;
 		case 24:
 			ColorFormat = GL_RGB;
 		break;

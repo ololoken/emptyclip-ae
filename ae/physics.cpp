@@ -82,18 +82,18 @@ glm::vec4 _Shape::GetAABB(const glm::vec2 &Position) {
 
 	if(IsAABB()) {
 		return glm::vec4(
-			Position.x - HalfWidth.x,
-			Position.y - HalfWidth.y,
-			Position.x + HalfWidth.x,
-			Position.y + HalfWidth.y
+			Position.x - HalfSize.x,
+			Position.y - HalfSize.y,
+			Position.x + HalfSize.x,
+			Position.y + HalfSize.y
 		);
 	}
 	else {
 		return glm::vec4(
-			Position.x - HalfWidth.x,
-			Position.y - HalfWidth.x,
-			Position.x + HalfWidth.x,
-			Position.y + HalfWidth.x
+			Position.x - HalfSize.x,
+			Position.y - HalfSize.x,
+			Position.x + HalfSize.x,
+			Position.y + HalfSize.x
 		);
 	}
 }

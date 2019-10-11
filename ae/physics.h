@@ -31,14 +31,14 @@ class _Shape {
 
 	public:
 
-		_Shape() : HalfWidth(0.0f, 0.0f) { }
+		_Shape() : HalfSize(0.0f, 0.0f) { }
 
 		// AABB
-		bool IsAABB() const { return HalfWidth[1] != 0.0f; }
+		bool IsAABB() const { return HalfSize[1] != 0.0f; }
 		glm::vec4 GetAABB(const glm::vec2 &Position);
 
 		// Properties
-		glm::vec2 HalfWidth;
+		glm::vec2 HalfSize;
 };
 
 // Physics response

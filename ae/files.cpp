@@ -29,46 +29,62 @@ namespace ae {
 	#include <dirent.h>
 #endif
 
-// Get a list of files in a directory
+// Constructor
 _Files::_Files(const std::string &Path) : Path(Path) {
+	Load(Path);
+}
 
-	#ifdef _WIN32
+// Get a list of files in a directory
+void _Files::Load(const std::string &Path, bool PrependPath) {
 
-		// Get file handle
-		WIN32_FIND_DATA FindFileData;
-		HANDLE FindHandle = FindFirstFile((Path + "*").c_str(), &FindFileData);
-		if(FindHandle == INVALID_HANDLE_VALUE) {
-			return;
-		}
+#ifdef _WIN32
 
-		// Add first value
-		if(!(FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+	// Get file handle
+	WIN32_FIND_DATA FindFileData;
+	HANDLE FindHandle = FindFirstFile((Path + "*").c_str(), &FindFileData);
+	if(FindHandle == INVALID_HANDLE_VALUE) {
+		return;
+	}
+
+	// Add first value
+	if(!(FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+		if(PrependPath)
+			Nodes.push_back(Path + FindFileData.cFileName);
+		else
 			Nodes.push_back(FindFileData.cFileName);
+	}
 
-		// Get the other files
-		while(FindNextFile(FindHandle, &FindFileData)) {
-			if(!(FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+	// Get the other files
+	while(FindNextFile(FindHandle, &FindFileData)) {
+		if(!(FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+			if(PrependPath)
+				Nodes.push_back(Path + FindFileData.cFileName);
+			else
 				Nodes.push_back(FindFileData.cFileName);
 		}
+	}
 
-		// Close
-		FindClose(FindHandle);
-	#else
+	// Close
+	FindClose(FindHandle);
+#else
 
-		DIR *Directory;
-		struct dirent *Entry;
-		Directory = opendir(Path.c_str());
-		if(Directory) {
-			while((Entry = readdir(Directory)) != nullptr) {
-				if(Entry->d_type == DT_REG) {
+	DIR *Directory;
+	struct dirent *Entry;
+	Directory = opendir(Path.c_str());
+	if(Directory) {
+		while((Entry = readdir(Directory)) != nullptr) {
+			if(Entry->d_type == DT_REG) {
+				if(PrependPath)
+					Nodes.push_back(Path + Entry->d_name);
+				else
 					Nodes.push_back(Entry->d_name);
-				}
 			}
-
-			closedir(Directory);
 		}
 
-	#endif
+		closedir(Directory);
+	}
+
+#endif
 }
 
 }

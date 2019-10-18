@@ -33,7 +33,7 @@ struct _Light;
 // Program
 class _Program {
 
-	static const int SAMPLER_COUNT = 4;
+	static const int SAMPLER_COUNT = 16;
 
 	public:
 

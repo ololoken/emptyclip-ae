@@ -590,7 +590,7 @@ void _Element::CalculateBounds(bool Scale) {
 		case _Alignment::CENTER:
 			if(Parent)
 				Bounds.Start.x += Parent->Size.x / 2;
-			Bounds.Start.x -= (int)(Size.x / 2);
+			Bounds.Start.x -= Size.x / 2;
 		break;
 		case _Alignment::RIGHT:
 			if(Parent)
@@ -604,7 +604,7 @@ void _Element::CalculateBounds(bool Scale) {
 		case _Alignment::MIDDLE:
 			if(Parent)
 				Bounds.Start.y += Parent->Size.y / 2;
-			Bounds.Start.y -= (int)(Size.y / 2);
+			Bounds.Start.y -= Size.y / 2;
 		break;
 		case _Alignment::BOTTOM:
 			if(Parent)

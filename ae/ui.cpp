@@ -473,12 +473,21 @@ void _Element::Render() const {
 		// Draw multiple lines
 		if(Texts.size()) {
 
-			// Center box
+			// Handle alignment
 			float LineHeight = Font->MaxHeight + 2;
-			float Y = Bounds.Start.y - (int)((LineHeight * Texts.size() - LineHeight) / 2);
+			float Y = Bounds.Start.y;
+			switch(Alignment.Vertical) {
+				case _Alignment::MIDDLE:
+					Y -= (LineHeight * Texts.size() - LineHeight) / 2;
+				break;
+				case _Alignment::BOTTOM:
+					Y -= LineHeight * Texts.size() - LineHeight;
+				break;
+			}
+
+			// Draw text lines
 			for(const auto &Token : Texts) {
 				Font->DrawText(Token, glm::ivec2(Bounds.Start.x, Y), Alignment, RenderColor);
-
 				Y += LineHeight;
 			}
 		}

@@ -502,7 +502,7 @@ void _Element::Render() const {
 				Font->GetStringDimensions(RenderText.substr(0, CursorPosition), TextBounds);
 
 				// Draw text
-				glm::vec2 StartPosition = DrawBounds.Start;
+				glm::ivec2 StartPosition = DrawBounds.Start;
 				Font->DrawText(RenderText, StartPosition, Alignment, RenderColor);
 
 				// Draw cursor
@@ -515,7 +515,7 @@ void _Element::Render() const {
 			else {
 
 				// Draw label
-				Font->DrawText(RenderText, DrawBounds.Start, Alignment, RenderColor);
+				Font->DrawText(RenderText, glm::ivec2(DrawBounds.Start), Alignment, RenderColor);
 			}
 		}
 	}

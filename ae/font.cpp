@@ -491,6 +491,17 @@ void _Font::BreakupString(const std::string &Text, float Width, std::list<std::s
 			InTag = false;
 		else if(!InTag) {
 
+			// Handle line breaks
+			if(Text[i] == '\\' && i+1 < Text.size() && Text[i+1] == 'n') {
+				i++;
+				X = 0;
+				PreviousGlyphIndex = 0;
+				LastSpace = std::string::npos;
+				Strings.push_back(Text.substr(StartCut, i-1 - StartCut));
+				StartCut = i+1;
+				continue;
+			}
+
 			// Remember last space position
 			if(Text[i] == ' ')
 				LastSpace = i;
@@ -510,6 +521,8 @@ void _Font::BreakupString(const std::string &Text, float Width, std::list<std::s
 
 			// Check for max width
 			if(X >= Width) {
+
+				// Determine if next cut should start after a space
 				size_t Adjust = 0;
 				if(LastSpace == std::string::npos)
 					LastSpace = i;

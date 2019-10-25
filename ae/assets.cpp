@@ -463,7 +463,7 @@ void _Assets::LoadStyles(const std::string &Path) {
 }
 
 // Load the UI xml file
-void _Assets::LoadUI(const std::string &Path) {
+void _Assets::LoadUI(const std::string &Path, bool CalculateBounds) {
 
 	// Load file
 	tinyxml2::XMLDocument Document;
@@ -476,7 +476,8 @@ void _Assets::LoadUI(const std::string &Path) {
 	Graphics.Element->Alignment = LEFT_TOP;
 	Graphics.Element->Active = true;
 	Graphics.Element->Size = Graphics.CurrentSize;
-	Graphics.Element->CalculateBounds(false);
+	if(CalculateBounds)
+		Graphics.Element->CalculateBounds(false);
 }
 
 // Save UI to xml

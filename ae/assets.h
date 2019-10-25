@@ -81,7 +81,7 @@ class _Assets {
 		void LoadLayers(const std::string &Path);
 		void LoadPrograms(const std::string &Path);
 		void LoadStyles(const std::string &Path);
-		void LoadUI(const std::string &Path);
+		void LoadUI(const std::string &Path, bool CalculateBounds=true);
 		void SaveUI(const std::string &Path);
 
 		std::unordered_map<std::string, _Font *> Fonts;

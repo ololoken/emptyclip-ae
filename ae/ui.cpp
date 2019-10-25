@@ -58,6 +58,8 @@ _Element::_Element() :
 	Draggable(false),
 	MaskOutside(false),
 	Stretch(true),
+	Wrap(false),
+	Format(false),
 	SizePercent{false, false},
 	Debug(0),
 	Color(1.0f),
@@ -113,6 +115,8 @@ _Element::_Element(tinyxml2::XMLElement *Node, _Element *Parent) :
 	Node->QueryFloatAttribute("offset_y", &BaseOffset.y);
 	Node->QueryIntAttribute("alignment_x", &Alignment.Horizontal);
 	Node->QueryIntAttribute("alignment_y", &Alignment.Vertical);
+	Node->QueryBoolAttribute("wrap", &Wrap);
+	Node->QueryBoolAttribute("format", &Format);
 	Node->QueryBoolAttribute("clickable", &Clickable);
 	Node->QueryBoolAttribute("draggable", &Draggable);
 	Node->QueryBoolAttribute("stretch", &Stretch);
@@ -241,6 +245,10 @@ void _Element::SerializeElement(tinyxml2::XMLDocument &Document, tinyxml2::XMLEl
 			Node->SetAttribute("maxlength", (uint32_t)MaxLength);
 		if(!Stretch)
 			Node->SetAttribute("stretch", Stretch);
+		if(Wrap)
+			Node->SetAttribute("wrap", Wrap);
+		if(Format)
+			Node->SetAttribute("format", Format);
 		if(Clickable != 1)
 			Node->SetAttribute("clickable", Clickable);
 		if(Draggable)
@@ -487,7 +495,12 @@ void _Element::Render() const {
 
 			// Draw text lines
 			for(const auto &Token : Texts) {
-				Font->DrawText(Token, glm::ivec2(Bounds.Start.x, Y), Alignment, RenderColor);
+				glm::ivec2 DrawPosition(Bounds.Start.x, Y);
+				if(Format)
+					Font->DrawTextFormatted(Token, DrawPosition, Alignment);
+				else
+					Font->DrawText(Token, DrawPosition, Alignment, RenderColor);
+
 				Y += LineHeight;
 			}
 		}
@@ -515,7 +528,10 @@ void _Element::Render() const {
 			else {
 
 				// Draw label
-				Font->DrawText(RenderText, glm::ivec2(DrawBounds.Start), Alignment, RenderColor);
+				if(Format)
+					Font->DrawTextFormatted(RenderText, glm::ivec2(DrawBounds.Start), Alignment);
+				else
+					Font->DrawText(RenderText, glm::ivec2(DrawBounds.Start), Alignment, RenderColor);
 			}
 		}
 	}
@@ -620,6 +636,10 @@ void _Element::CalculateBounds(bool Scale) {
 	// Set end position
 	Bounds.End = Bounds.Start + Size;
 
+	// Set text wrapping
+	if(Wrap)
+		SetWrap(Size.x);
+
 	// Update children
 	CalculateChildrenBounds();
 }
@@ -683,7 +703,7 @@ void _Element::SetEnabled(bool Enabled) {
 // Break up text into multiple strings
 void _Element::SetWrap(float Width) {
 	Texts.clear();
-	Font->BreakupString(Text, Width, Texts);
+	Font->BreakupString(Text, Width, Texts, Format);
 }
 
 // Assign a string from xml attribute

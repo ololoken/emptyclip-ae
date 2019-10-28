@@ -497,7 +497,7 @@ void _Element::Render() const {
 			for(const auto &Token : Texts) {
 				glm::ivec2 DrawPosition(Bounds.Start.x, Y);
 				if(Format)
-					Font->DrawTextFormatted(Token, DrawPosition, Alignment);
+					Font->DrawTextFormatted(Token, DrawPosition, Alignment, Fade);
 				else
 					Font->DrawText(Token, DrawPosition, Alignment, RenderColor);
 
@@ -529,7 +529,7 @@ void _Element::Render() const {
 
 				// Draw label
 				if(Format)
-					Font->DrawTextFormatted(RenderText, glm::ivec2(DrawBounds.Start), Alignment);
+					Font->DrawTextFormatted(RenderText, glm::ivec2(DrawBounds.Start), Alignment, Fade);
 				else
 					Font->DrawText(RenderText, glm::ivec2(DrawBounds.Start), Alignment, RenderColor);
 			}

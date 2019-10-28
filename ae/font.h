@@ -59,7 +59,7 @@ class _Font {
 		void Load(const std::string &ID, const std::string &FontFile, const _Program *Program, uint32_t FontSize, uint32_t TextureWidth=256);
 
 		float DrawText(const std::string &Text, glm::vec2 Position, const _Alignment &Alignment=LEFT_BASELINE, const glm::vec4 &Color=glm::vec4(1.0f), float Scale=1.0f) const;
-		void DrawTextFormatted(const std::string &Text, glm::vec2 Position, const _Alignment &Alignment=LEFT_BASELINE, float Scale=1.0f) const;
+		void DrawTextFormatted(const std::string &Text, glm::vec2 Position, const _Alignment &Alignment=LEFT_BASELINE, float Alpha=1.0f, float Scale=1.0f) const;
 		void GetStringDimensions(const std::string &Text, _TextBounds &TextBounds, bool UseFormatting=false) const;
 		void BreakupString(const std::string &Text, float Width, std::list<std::string> &Strings, bool UseFormatting=false) const;
 

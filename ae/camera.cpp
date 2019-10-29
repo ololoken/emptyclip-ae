@@ -104,7 +104,10 @@ void _Camera::Update(double FrameTime) {
 
 // Interpolate between position and last position
 void _Camera::GetDrawPosition(double BlendFactor, glm::vec3 &DrawPosition) {
-	DrawPosition = Position * (float)BlendFactor + LastPosition * (1.0f - (float)BlendFactor);
+	if(Position == LastPosition)
+		DrawPosition = Position;
+	else
+		DrawPosition = Position * (float)BlendFactor + LastPosition * (1.0f - (float)BlendFactor);
 }
 
 }

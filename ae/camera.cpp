@@ -26,8 +26,8 @@
 namespace ae {
 
 // Initialize
-_Camera::_Camera(const glm::vec3 &Position, float UpdateDivisor, float Fovy, float Near, float Far)
-:	LastPosition(Position),
+_Camera::_Camera(const glm::vec3 &Position, float UpdateDivisor, float Fovy, float Near, float Far) :
+	LastPosition(Position),
 	Position(Position),
 	TargetPosition(Position),
 	UpdateDivisor(UpdateDivisor),

@@ -806,6 +806,9 @@ void _Graphics::SetScissor(const _Bounds &Bounds) {
 
 // Resets all the last used variables
 void _Graphics::DirtyState() {
+	EnableAttribs(1);
+	glUseProgram(0);
+	glActiveTexture(GL_TEXTURE0);
 	LastVertexBufferID = (GLuint)-1;
 	LastTextureID = (GLuint)-1;
 	LastAttribLevel = (GLuint)-1;

@@ -20,6 +20,7 @@
 #include <ae/tilemap.h>
 #include <fstream>
 #include <stdexcept>
+#include <limits>
 
 namespace ae {
 

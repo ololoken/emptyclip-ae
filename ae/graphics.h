@@ -120,7 +120,7 @@ class _Graphics {
 		void SetProgram(const _Program *Program);
 		void SetDepthTest(bool DepthTest);
 
-		void DirtyState();
+		void ResetState();
 		void CheckError();
 
 		// State

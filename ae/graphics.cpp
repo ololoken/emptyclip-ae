@@ -48,7 +48,6 @@ void _Graphics::Init(const _WindowSettings &WindowSettings) {
 	VertexArrayID = 0;
 	Enabled = true;
 	Element = nullptr;
-	DirtyState();
 
 	// Set sizes
 	SDL_DisplayMode DisplayMode;
@@ -217,6 +216,9 @@ void _Graphics::SetupOpenGL() {
 
 	// Build vertex buffers
 	BuildVertexBuffers();
+
+	// Reset internal state
+	ResetState();
 
 	// Clear screen
 	ClearScreen();
@@ -805,8 +807,8 @@ void _Graphics::SetScissor(const _Bounds &Bounds) {
 }
 
 // Resets all the last used variables
-void _Graphics::DirtyState() {
-	EnableAttribs(1);
+void _Graphics::ResetState() {
+	EnableAttribs(0);
 	glUseProgram(0);
 	glActiveTexture(GL_TEXTURE0);
 	LastVertexBufferID = (GLuint)-1;

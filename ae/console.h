@@ -23,6 +23,7 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <fstream>
 #include <glm/vec4.hpp>
 
 namespace ae {
@@ -47,13 +48,14 @@ class _Console {
 		_Console(const _Program *Program, const _Font *Font);
 		~_Console();
 
+		void LoadHistory(const std::string &Path);
 		void UpdateSize();
 		void Update(double FrameTime);
 		void Render(double BlendFactor);
 
 		bool IsOpen();
 		void Toggle();
-		void AddMessage(const std::string &Text, const glm::vec4 &Color=glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
+		void AddMessage(const std::string &Text, bool Log=false, const glm::vec4 &Color=glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
 		void UpdateHistory(int Direction);
 
 		// Commands
@@ -67,6 +69,7 @@ class _Console {
 		std::vector<_Message> Messages;
 
 		// Commands
+		std::fstream HistoryFile;
 		std::list<std::string> CommandHistory;
 		std::list<std::string>::iterator CommandHistoryIterator;
 

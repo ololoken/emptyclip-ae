@@ -82,8 +82,24 @@ _Console::_Console(const _Program *Program, const _Font *Font) :
 
 // Destructor
 _Console::~_Console() {
+	HistoryFile.close();
 	delete Style;
 	delete InputStyle;
+}
+
+// Load history file
+void _Console::LoadHistory(const std::string &Path) {
+	HistoryFile.open(Path, std::ios::in | std::ios::app);
+	if(!HistoryFile.is_open())
+		return;
+
+	// Prepopulate command history
+	std::string Line;
+	while(std::getline(HistoryFile, Line))
+		CommandHistory.push_back(Line);
+
+	HistoryFile.clear();
+	CommandHistoryIterator = CommandHistory.end();
 }
 
 // Update size of console based on parent element
@@ -123,13 +139,14 @@ void _Console::Update(double FrameTime) {
 					Parameters = TrimString(TextboxElement->Text.substr(SpaceIndex + 1));
 
 				// Add command to history if not a repeat
-				if(CommandHistory.size() == 0 || (CommandHistory.size() > 0 && CommandHistory.back() != TextboxElement->Text))
+				bool Repeat = CommandHistory.size() > 0 && CommandHistory.back() == TextboxElement->Text;
+				if(CommandHistory.size() == 0 || !Repeat)
 					CommandHistory.push_back(TextboxElement->Text);
 
 				CommandHistoryIterator = CommandHistory.end();
 
 				// Add to console
-				AddMessage(TextboxElement->Text, glm::vec4(1.0f));
+				AddMessage(TextboxElement->Text, !Repeat, glm::vec4(1.0f));
 			}
 
 			TextboxElement->Text = "";
@@ -234,11 +251,17 @@ void _Console::Toggle() {
 }
 
 // Add message to console
-void _Console::AddMessage(const std::string &Text, const glm::vec4 &Color) {
+void _Console::AddMessage(const std::string &Text, bool Log, const glm::vec4 &Color) {
+
+	// Append to messages
 	_Message Message;
 	Message.Text = Text;
 	Message.Color = Color;
 	Messages.push_back(Message);
+
+	// Log to file
+	if(Log && HistoryFile.is_open())
+		HistoryFile << Text << std::endl;
 }
 
 // Set command textbox string based on history

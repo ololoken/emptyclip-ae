@@ -18,6 +18,7 @@
 * 3. This notice may not be removed or altered from any source distribution.
 *******************************************************************************/
 #include <ae/files.h>
+#include <algorithm>
 
 namespace ae {
 
@@ -68,10 +69,13 @@ void _Files::Load(const std::string &Path, bool PrependPath) {
 	FindClose(FindHandle);
 #else
 
+	// Read directory
 	DIR *Directory;
 	struct dirent *Entry;
 	Directory = opendir(Path.c_str());
 	if(Directory) {
+
+		// Iterate through files
 		while((Entry = readdir(Directory)) != nullptr) {
 			if(Entry->d_type == DT_REG) {
 				if(PrependPath)
@@ -81,10 +85,13 @@ void _Files::Load(const std::string &Path, bool PrependPath) {
 			}
 		}
 
+		// Close handle
 		closedir(Directory);
 	}
-
 #endif
+
+	// Sort files
+	std::sort(Nodes.begin(), Nodes.end());
 }
 
 }

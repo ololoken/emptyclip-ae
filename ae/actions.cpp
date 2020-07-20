@@ -42,8 +42,13 @@ void _Actions::ClearMappings(int InputType) {
 }
 
 // Remove all actions for an input
-void _Actions::ClearMappingForInput(int InputType, int Input) {
-	InputMap[InputType][Input].clear();
+void _Actions::ClearMappingForInputAction(int InputType, int Input, size_t Action) {
+	for(auto MapIterator = InputMap[InputType][Input].begin(); MapIterator != InputMap[InputType][Input].end(); ) {
+		if(MapIterator->Action == Action)
+			MapIterator = InputMap[InputType][Input].erase(MapIterator);
+		else
+			++MapIterator;
+	}
 }
 
 // Remove a mapping for an action

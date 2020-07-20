@@ -21,8 +21,6 @@
 
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
-#include <string>
-#include <unordered_map>
 
 namespace ae {
 
@@ -37,7 +35,6 @@ class _Atlas {
 		_Atlas(const _Texture *Texture, const glm::vec2 &Size, float Padding);
 		~_Atlas();
 
-		void LoadTileMap(const std::string &Path);
 		glm::vec4 GetTextureCoords(uint32_t Index) const;
 
 		// Attributes

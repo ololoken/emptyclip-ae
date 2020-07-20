@@ -19,7 +19,6 @@
 *******************************************************************************/
 #include <ae/atlas.h>
 #include <ae/texture.h>
-#include <fstream>
 
 namespace ae {
 

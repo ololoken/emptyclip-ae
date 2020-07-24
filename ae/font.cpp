@@ -48,11 +48,6 @@ struct _SortCharacter {
 	FT_UInt Height;
 };
 
-// Comparison operator for priority queue
-bool operator>(const _SortCharacter &A, const _SortCharacter &B) {
-	return A.Height < B.Height;
-}
-
 // Constructor
 _Font::_Font() :
 	ID(""),
@@ -143,8 +138,9 @@ void _Font::SortCharacters(FT_Face &Face, const std::string &Characters, std::st
 	MaxAbove = 0.0f;
 	MaxBelow = 0.0f;
 
-	// Build queue
-	std::priority_queue<int, std::vector<_SortCharacter>, std::greater<_SortCharacter> > CharacterList;
+	// Build priority queue
+	auto CharacterCompare = [](_SortCharacter &Left, _SortCharacter &Right) { return Left.Height < Right.Height; };
+	std::priority_queue<_SortCharacter, std::vector<_SortCharacter>, decltype(CharacterCompare)> CharacterList(CharacterCompare);
 	_SortCharacter Character;
 	for(size_t i = 0; i < Characters.size(); i++) {
 

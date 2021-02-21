@@ -47,10 +47,12 @@ class _ClientNetwork : public _Network {
 
 		// Connections
 		void Connect(const std::string &HostAddress, uint16_t Port);
-		void Disconnect(bool Force=false);
+		void Disconnect(bool Force=false, int Data=0);
 
 		// Stats
 		uint32_t GetRTT();
+		uint32_t GetPacketsSent();
+		uint32_t GetPacketsLost();
 
 		// Packets
 		void SendPacket(_Buffer &Buffer, SendType Type=RELIABLE, uint8_t Channel=0);

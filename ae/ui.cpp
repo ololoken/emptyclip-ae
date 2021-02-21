@@ -25,6 +25,7 @@
 #include <ae/font.h>
 #include <ae/texture.h>
 #include <ae/texture_array.h>
+#include <ae/atlas.h>
 #include <constants.h>
 #include <SDL_keycode.h>
 #include <tinyxml2.h>
@@ -32,6 +33,7 @@
 #include <algorithm>
 #include <sstream>
 #include <iostream>
+#include <regex>
 
 namespace ae {
 
@@ -68,6 +70,7 @@ _Element::_Element() :
 	DisabledStyle(nullptr),
 	Texture(nullptr),
 	TextureArray(nullptr),
+	Atlas(nullptr),
 	TextureIndex(0),
 	Fade(1.0f),
 	BaseOffset(0.0f, 0.0f),
@@ -110,6 +113,7 @@ _Element::_Element(tinyxml2::XMLElement *Node, _Element *Parent) :
 	AssignAttributeString(Node, "text", Text);
 	AssignAttributeString(Node, "size_x", BaseSizeString[0]);
 	AssignAttributeString(Node, "size_y", BaseSizeString[1]);
+	AssignAttributeString(Node, "allowed", AllowedCharacters);
 	Node->QueryUnsignedAttribute("maxlength", (uint32_t *)&MaxLength);
 	Node->QueryFloatAttribute("offset_x", &BaseOffset.x);
 	Node->QueryFloatAttribute("offset_y", &BaseOffset.y);
@@ -219,6 +223,8 @@ void _Element::SerializeElement(tinyxml2::XMLDocument &Document, tinyxml2::XMLEl
 			Node->SetAttribute("font", Font->ID.c_str());
 		if(Text.size())
 			Node->SetAttribute("text", Text.c_str());
+		if(AllowedCharacters.size())
+			Node->SetAttribute("allowed", AllowedCharacters.c_str());
 		if(BaseOffset.x != 0.0f)
 			Node->SetAttribute("offset_x", BaseOffset.x);
 		if(BaseOffset.y != 0.0f)
@@ -280,6 +286,14 @@ bool _Element::HandleKey(const _KeyEvent &KeyEvent) {
 		if(FocusedElement == this && Active && KeyEvent.Pressed) {
 			LastKeyPressed = KeyEvent.Scancode;
 			if(Text.length() < MaxLength && KeyEvent.Text[0] >= 32 && KeyEvent.Text[0] <= 126) {
+
+				// Check against allowed characters regex
+				if(AllowedCharacters.size()) {
+					std::regex Regex(AllowedCharacters);
+					if(!std::regex_match(std::string(1, KeyEvent.Text[0]), Regex))
+						return false;
+				}
+
 				if(CursorPosition > Text.length())
 					CursorPosition = Text.length();
 
@@ -341,12 +355,12 @@ void _Element::HandleMouseButton(bool Pressed) {
 
 	// Handle text boxes
 	if(MaxLength && Enabled) {
-	   if(HitElement || (Parent && Parent->HitElement)) {
-		   ResetCursor();
-		   FocusedElement = this;
-	   }
+		if(HitElement || (Parent && Parent->HitElement)) {
+			ResetCursor();
+			FocusedElement = this;
+		}
 
-	   return;
+		return;
 	}
 
 	// Pass event to children
@@ -447,6 +461,11 @@ void _Element::Render() const {
 	if(Enabled) {
 		if(Style) {
 			DrawStyle(Style);
+		}
+		else if(Atlas) {
+			Graphics.SetProgram(Assets.Programs["ortho_pos_uv"]);
+			Graphics.SetColor(Color);
+			Graphics.DrawAtlasTexture(DrawBounds, Atlas->Texture, Atlas->GetTextureCoords(TextureIndex));
 		}
 		else if(TextureArray) {
 			Graphics.SetProgram(Assets.Programs["ortho_pos_uv_array"]);

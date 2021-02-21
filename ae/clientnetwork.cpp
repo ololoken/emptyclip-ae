@@ -67,14 +67,14 @@ void _ClientNetwork::Connect(const std::string &HostAddress, uint16_t Port) {
 }
 
 // Disconnect from the host
-void _ClientNetwork::Disconnect(bool Force) {
+void _ClientNetwork::Disconnect(bool Force, int Data) {
 
 	// Soft disconnect
 	if(IsConnected() || Force) {
 
 		// Disconnect from host
 		if(Peer->ENetPeer)
-			enet_peer_disconnect(Peer->ENetPeer, 0);
+			enet_peer_disconnect(Peer->ENetPeer, Data);
 
 		// Force disconnection state
 		if(Force)
@@ -89,6 +89,7 @@ void _ClientNetwork::CreateEvent(_NetworkEvent &Event, double EventTime, ENetEve
 
 	// Create network event
 	Event.Time = EventTime;
+	Event.EventData = (int)EEvent.data;
 	Event.Type = _NetworkEvent::EventType(EEvent.type-1);
 }
 
@@ -119,8 +120,6 @@ void _ClientNetwork::SendPacket(_Buffer &Buffer, SendType Type, uint8_t Channel)
 	// Send packet
 	if(enet_peer_send(Peer->ENetPeer, Channel, EPacket) != 0)
 		enet_packet_destroy(EPacket);
-
-	//enet_host_flush(Connection);
 }
 
 // Get round trip time
@@ -129,6 +128,22 @@ uint32_t _ClientNetwork::GetRTT() {
 		return 0;
 
 	return Peer->ENetPeer->roundTripTime;
+}
+
+// Get packets sent
+uint32_t _ClientNetwork::GetPacketsSent() {
+	if(!Peer)
+		return 0;
+
+	return Peer->ENetPeer->packetsSent;
+}
+
+// Get packets lost
+uint32_t _ClientNetwork::GetPacketsLost() {
+	if(!Peer)
+		return 0;
+
+	return Peer->ENetPeer->packetsLost;
 }
 
 }

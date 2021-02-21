@@ -21,6 +21,7 @@
 #include <alc.h>
 #include <stdexcept>
 #include <vector>
+#include <cstddef>
 
 namespace ae {
 
@@ -38,6 +39,48 @@ static void RunThread(void *Arguments) {
 		// Sleep thread
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
+}
+
+// Custom file seek
+int AudioFileSeek(void *Source, ogg_int64_t Offset, int Origin) {
+	_AudioFile *AudioFile = (_AudioFile *)Source;
+	switch(Origin) {
+		case SEEK_SET:
+			fseek(AudioFile->FileHandle, Offset + AudioFile->Start, SEEK_SET);
+		break;
+		case SEEK_CUR:
+			fseek(AudioFile->FileHandle, Offset, SEEK_CUR);
+		break;
+		case SEEK_END:
+			fseek(AudioFile->FileHandle, Offset + AudioFile->Start + AudioFile->Size, SEEK_SET);
+		break;
+		default:
+			return -1;
+		break;
+	}
+
+	return 0;
+}
+
+// Custom file tell
+long AudioFileTell(void *Source) {
+	_AudioFile *AudioFile = (_AudioFile *)Source;
+
+	return ftell(AudioFile->FileHandle) - AudioFile->Start;
+}
+
+// Custom file read
+std::size_t AudioFileRead(void *Destination, std::size_t Size, std::size_t Count, void *Source) {
+	_AudioFile *AudioFile = (_AudioFile *)Source;
+
+	// Check for reading past end of file
+	long Current = AudioFileTell(AudioFile);
+	if(Current + (int)(Size * Count) > AudioFile->Size) {
+		Size = 1;
+		Count = AudioFile->Size - Current;
+	}
+
+	return fread(Destination, Size, Count, AudioFile->FileHandle);
 }
 
 // Constructor
@@ -284,31 +327,21 @@ _Sound *_Audio::LoadSound(const std::string &Path) {
 
 	// Open file
 	OggVorbis_File VorbisStream;
-	long Rate;
-	int Format;
-	OpenVorbis(Path, &VorbisStream, Rate, Format);
+	OpenVorbis(Path, &VorbisStream);
 
-	// Alloc some memory for the samples
-	std::vector<char> Data;
+	return LoadSoundData(&VorbisStream);
+}
 
-	// Decode vorbis file
-	long BytesRead;
-	char Buffer[BUFFER_SIZE];
-	int BitStream;
-	do {
-		BytesRead = ov_read(&VorbisStream, Buffer, BUFFER_SIZE, 0, 2, 1, &BitStream);
-		Data.insert(Data.end(), Buffer, Buffer + BytesRead);
-	} while(BytesRead > 0);
+// Load sound from handle
+_Sound *_Audio::LoadSound(const _AudioFile &AudioFile) {
+	if(!Enabled)
+		return nullptr;
 
-	// Create buffer
-	_Sound *Sound = new _Sound();
-	alGenBuffers(1, &Sound->ID);
-	alBufferData(Sound->ID, Format, &Data[0], (ALsizei)Data.size(), (ALsizei)Rate);
+	// Open file
+	OggVorbis_File VorbisStream;
+	OpenVorbis(AudioFile, &VorbisStream);
 
-	// Close vorbis file
-	ov_clear(&VorbisStream);
-
-	return Sound;
+	return LoadSoundData(&VorbisStream);
 }
 
 // Load music
@@ -319,16 +352,17 @@ _Music *_Audio::LoadMusic(const std::string &Path) {
 	_Music *Music = new _Music();
 
 	// Get vorbis file info
-	OpenVorbis(Path, &Music->Stream, Music->Frequency, Music->Format);
+	OpenVorbis(Path, &Music->Stream);
+	GetVorbisInfo(&Music->Stream, Music->Frequency, Music->Format);
 	Music->Loaded = true;
 
 	return Music;
 }
 
 // Play a sound
-void _Audio::PlaySound(_Sound *Sound, float Volume) {
+_AudioSource *_Audio::PlaySound(_Sound *Sound, float Volume) {
 	if(!Enabled || !Sound)
-		return;
+		return nullptr;
 
 	// Create audio source
 	_AudioSource *AudioSource = new _AudioSource(Sound, SoundVolume * Volume);
@@ -336,6 +370,8 @@ void _Audio::PlaySound(_Sound *Sound, float Volume) {
 
 	// Add to sources
 	Sources.push_back(AudioSource);
+
+	return AudioSource;
 }
 
 // Play music
@@ -374,25 +410,46 @@ void _Audio::StopMusic() {
 }
 
 // Read data from a vorbis stream
-long _Audio::ReadStream(OggVorbis_File *Stream, char *Buffer, int Size) {
+long _Audio::ReadStream(OggVorbis_File *VorbisFile, char *Buffer, int Size) {
 
 	// Decode vorbis file
 	int BitStream;
-	long BytesRead = ov_read(Stream, Buffer, Size, 0, 2, 1, &BitStream);
+	long BytesRead = ov_read(VorbisFile, Buffer, Size, 0, 2, 1, &BitStream);
 
 	return BytesRead;
 }
 
 // Open vorbis file and return format/rate
-void _Audio::OpenVorbis(const std::string &Path, OggVorbis_File *Stream, long &Rate, int &Format) {
+void _Audio::OpenVorbis(const std::string &Path, OggVorbis_File *VorbisFile) {
 
 	// Open file
-	int ReturnCode = ov_fopen(Path.c_str(), Stream);
+	int ReturnCode = ov_fopen(Path.c_str(), VorbisFile);
 	if(ReturnCode != 0)
 		throw std::runtime_error("ov_fopen failed: ReturnCode=" + std::to_string(ReturnCode));
+}
+
+// Open vorbis file from a handle and return format/rate
+void _Audio::OpenVorbis(const _AudioFile &AudioFile, OggVorbis_File *VorbisFile) {
+
+	// Set up custom file functions
+	ov_callbacks Callbacks = {
+		(std::size_t (*)(void *, std::size_t, std::size_t, void *)) AudioFileRead,
+		(int (*)(void *, ogg_int64_t, int)) AudioFileSeek,
+		NULL,
+		(long (*)(void *)) AudioFileTell,
+	};
+
+	// Open file
+	int ReturnCode = ov_open_callbacks((void *)&AudioFile, VorbisFile, nullptr, 0, Callbacks);
+	if(ReturnCode != 0)
+		throw std::runtime_error("ov_fopen failed: ReturnCode=" + std::to_string(ReturnCode));
+}
+
+// Get stream info
+void _Audio::GetVorbisInfo(OggVorbis_File *VorbisFile, long &Rate, int &Format) {
 
 	// Get vorbis file info
-	vorbis_info *Info = ov_info(Stream, -1);
+	vorbis_info *Info = ov_info(VorbisFile, -1);
 	Rate = Info->rate;
 
 	// Get openal format
@@ -462,6 +519,35 @@ void _Audio::SetMusicVolume(float Volume) {
 
 	MusicVolume = std::min(std::max(Volume, 0.0f), 1.0f);
 	alSourcef(MusicSource, AL_GAIN, MusicVolume);
+}
+
+// Load sound data from a vorbis stream
+_Sound *_Audio::LoadSoundData(OggVorbis_File *VorbisFile) {
+
+	// Decode vorbis file
+	std::vector<char> Data;
+	long BytesRead;
+	char Buffer[BUFFER_SIZE];
+	int BitStream;
+	do {
+		BytesRead = ov_read(VorbisFile, Buffer, BUFFER_SIZE, 0, 2, 1, &BitStream);
+		Data.insert(Data.end(), Buffer, Buffer + BytesRead);
+	} while(BytesRead > 0);
+
+	// Get info
+	long Rate;
+	int Format;
+	GetVorbisInfo(VorbisFile, Rate, Format);
+
+	// Create buffer
+	_Sound *Sound = new _Sound();
+	alGenBuffers(1, &Sound->ID);
+	alBufferData(Sound->ID, Format, &Data[0], (ALsizei)Data.size(), (ALsizei)Rate);
+
+	// Close vorbis file
+	ov_clear(VorbisFile);
+
+	return Sound;
 }
 
 }

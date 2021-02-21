@@ -29,7 +29,7 @@ _Actions Actions;
 
 // Reset the action state
 void _Actions::ResetState() {
-	for(size_t i = 0; i < State.size(); i++) {
+	for(std::size_t i = 0; i < State.size(); i++) {
 		State[i].Value = 0.0f;
 		State[i].Source = -1;
 	}
@@ -42,7 +42,7 @@ void _Actions::ClearMappings(int InputType) {
 }
 
 // Remove all actions for an input
-void _Actions::ClearMappingForInputAction(int InputType, int Input, size_t Action) {
+void _Actions::ClearMappingForInputAction(int InputType, int Input, std::size_t Action) {
 	for(auto MapIterator = InputMap[InputType][Input].begin(); MapIterator != InputMap[InputType][Input].end(); ) {
 		if(MapIterator->Action == Action)
 			MapIterator = InputMap[InputType][Input].erase(MapIterator);
@@ -52,7 +52,7 @@ void _Actions::ClearMappingForInputAction(int InputType, int Input, size_t Actio
 }
 
 // Remove a mapping for an action
-void _Actions::ClearMappingsForAction(int InputType, size_t Action, int Rank) {
+void _Actions::ClearMappingsForAction(int InputType, std::size_t Action, int Rank) {
 	for(int Input = 0; Input < ACTIONS_MAXINPUTS; Input++) {
 		for(auto MapIterator = InputMap[InputType][Input].begin(); MapIterator != InputMap[InputType][Input].end(); ) {
 			if(MapIterator->Action == Action && MapIterator->Rank == Rank) {
@@ -74,7 +74,7 @@ void _Actions::Serialize(std::ofstream &File, int InputType) {
 }
 
 // Add an input mapping
-void _Actions::AddInputMap(int Rank, int InputType, int Input, size_t Action, float Scale, float DeadZone, bool IfNone) {
+void _Actions::AddInputMap(int Rank, int InputType, int Input, std::size_t Action, float Scale, float DeadZone, bool IfNone) {
 	if(Action >= State.size() || Input < 0 || Input >= ACTIONS_MAXINPUTS)
 		return;
 
@@ -83,7 +83,7 @@ void _Actions::AddInputMap(int Rank, int InputType, int Input, size_t Action, fl
 }
 
 // Returns an input for an action
-int _Actions::GetInputForAction(int InputType, size_t Action, int Rank) {
+int _Actions::GetInputForAction(int InputType, std::size_t Action, int Rank) {
 
 	for(int Input = 0; Input < ACTIONS_MAXINPUTS; Input++) {
 		for(auto &MapIterator : InputMap[InputType][Input]) {
@@ -97,7 +97,7 @@ int _Actions::GetInputForAction(int InputType, size_t Action, int Rank) {
 }
 
 // Return true if an input exists for an action
-bool _Actions::HasInputForAction(size_t Action) {
+bool _Actions::HasInputForAction(std::size_t Action) {
 	for(int i = 0; i < _Input::INPUT_COUNT; i++) {
 		if(GetInputForAction(i, Action) != -1)
 			return true;
@@ -107,7 +107,7 @@ bool _Actions::HasInputForAction(size_t Action) {
 }
 
 // Get name of input key/button for a given action
-std::string _Actions::GetInputNameForAction(size_t Action, int Rank) {
+std::string _Actions::GetInputNameForAction(std::size_t Action, int Rank) {
 
 	for(int InputType = 0; InputType < _Input::INPUT_COUNT; InputType++) {
 		int Input = GetInputForAction(InputType, Action, Rank);

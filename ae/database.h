@@ -48,6 +48,7 @@ class _Database {
 
 		template<typename T> T GetInt(int ColumnIndex, int Handle=0);
 		template<typename T> T GetInt(const std::string &ColumnName, int Handle=0);
+		int64_t GetInt64(const std::string &ColumnName, int Handle=0);
 		double GetReal(int ColumnIndex, int Handle=0);
 		double GetReal(const std::string &ColumnName, int Handle=0);
 		const char *GetString(int ColumnIndex, int Handle=0);

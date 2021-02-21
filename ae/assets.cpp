@@ -126,7 +126,7 @@ void _Assets::LoadFonts(const std::string &Path, bool LoadFonts) {
 
 		// Find program
 		if(Programs.find(ProgramName) == Programs.end())
-		   throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find program: " + ProgramName);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find program: " + ProgramName);
 
 		// Get size
 		uint32_t Size;
@@ -266,7 +266,7 @@ void _Assets::LoadColors(const std::string &Path) {
 }
 
 // Load a directory full of textures
-void _Assets::LoadTextureDirectory(const std::string &Path, bool IsServer, bool Repeat, bool MipMaps) {
+void _Assets::LoadTextureDirectory(const std::string &Path, bool IsServer, bool Repeat, bool MipMaps, bool Nearest) {
 
 	// Get files
 	_Files Files(Path);
@@ -275,8 +275,30 @@ void _Assets::LoadTextureDirectory(const std::string &Path, bool IsServer, bool 
 	for(const auto &File : Files.Nodes) {
 		std::string Name = Path + File;
 		if(!Assets.Textures[Name])
-			Assets.Textures[Name] = new _Texture(Name, IsServer, Repeat, MipMaps);
+			Assets.Textures[Name] = new _Texture(Name, IsServer, Repeat, MipMaps, Nearest);
 	}
+}
+
+// Load texture pack
+void _Assets::LoadTexturePack(const std::string &Path, bool IsServer, bool Repeat, bool MipMaps, bool Nearest) {
+
+	// Load file pack
+	_FilePack FilePack(Path);
+
+	// Load textures
+	FILE *FileHandle = fopen(Path.c_str(), "rb");
+	if(!FileHandle)
+		throw std::runtime_error("Error loading: " + Path);
+
+	for(const auto &File : FilePack.Data) {
+		if(Assets.Textures[File.first])
+			continue;
+
+		fseek(FileHandle, File.second.Offset + FilePack.BodyOffset, SEEK_SET);
+		Assets.Textures[File.first] = new _Texture(File.first, FileHandle, IsServer, Repeat, MipMaps, Nearest);
+	}
+
+	fclose(FileHandle);
 }
 
 // Load atlases
@@ -304,6 +326,30 @@ void _Assets::LoadSounds(const std::string &Path) {
 		if(!Assets.Sounds[File])
 			Assets.Sounds[File] = Audio.LoadSound(Path + File);
 	}
+}
+
+// Load sound pack
+void _Assets::LoadSoundPack(const std::string &Path) {
+
+	// Load file pack
+	_FilePack FilePack(Path);
+
+	// Load sounds
+	FILE *FileHandle = fopen(Path.c_str(), "rb");
+	if(!FileHandle)
+		throw std::runtime_error("Error loading: " + Path);
+
+	for(const auto &File : FilePack.Data) {
+		if(Assets.Sounds[File.first])
+			continue;
+
+		int Start = File.second.Offset + FilePack.BodyOffset;
+		fseek(FileHandle, Start, SEEK_SET);
+		Assets.Sounds[File.second.Name] = Audio.LoadSound(_AudioFile(FileHandle, Start, File.second.Size));
+	}
+
+	// Close
+	fclose(FileHandle);
 }
 
 // Load music files
@@ -362,7 +408,7 @@ void _Assets::LoadAnimations(const std::string &Path, bool IsServer) {
 		std::string TextureFile;
 		std::getline(File, TextureFile, '\t');
 		if(!Assets.Textures[TextureFile])
-			Assets.Textures[TextureFile] = new _Texture(TextureFile, IsServer, false, false);
+			Assets.Textures[TextureFile] = new _Texture(TextureFile, IsServer, false, false, false);
 
 		Template->Texture = Assets.Textures[TextureFile];
 
@@ -422,7 +468,7 @@ void _Assets::LoadStyles(const std::string &Path) {
 
 		// Find program
 		if(Programs.find(ProgramName) == Programs.end())
-		   throw std::runtime_error("Cannot find program: " + ProgramName + " for style: " + Name);
+			throw std::runtime_error("Cannot find program: " + ProgramName + " for style: " + Name);
 
 		// Check for texture
 		if(TextureName != "" && Textures.find(TextureName) == Textures.end())

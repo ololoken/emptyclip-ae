@@ -38,6 +38,7 @@ namespace ae {
 class _Font;
 class _Texture;
 class _TextureArray;
+class _Atlas;
 class _Program;
 struct _KeyEvent;
 
@@ -159,6 +160,7 @@ class _Element {
 		const _Style *DisabledStyle;
 		const _Texture *Texture;
 		const _TextureArray *TextureArray;
+		const _Atlas *Atlas;
 		uint32_t TextureIndex;
 		float Fade;
 
@@ -180,8 +182,9 @@ class _Element {
 		// Text
 		const _Font *Font;
 		std::string Text;
-		size_t MaxLength;
-		size_t CursorPosition;
+		std::string AllowedCharacters;
+		std::size_t MaxLength;
+		std::size_t CursorPosition;
 		double CursorTimer;
 		int LastKeyPressed;
 		bool Password;

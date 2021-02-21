@@ -143,6 +143,12 @@ template<typename T> T _Database::GetInt(const std::string &ColumnName, int Hand
 	return (T)sqlite3_column_int(QueryHandle[Handle], GetColumnIndex(ColumnName, Handle));
 }
 
+// Returns an 64-bit integer column by column name
+int64_t _Database::GetInt64(const std::string &ColumnName, int Handle) {
+
+	return sqlite3_column_int64(QueryHandle[Handle], GetColumnIndex(ColumnName, Handle));
+}
+
 // Returns a float column
 double _Database::GetReal(int ColumnIndex, int Handle) {
 

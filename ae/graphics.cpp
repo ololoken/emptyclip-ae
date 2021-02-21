@@ -435,6 +435,18 @@ void _Graphics::DrawScaledImage(const glm::vec2 &Position, const _Texture *Textu
 	DrawImage(Bounds, Texture, true);
 }
 
+// Draw image centered given a size
+void _Graphics::DrawScaledImage(const glm::vec2 &Position, const _Texture *Texture, const glm::vec2 &Size, const glm::vec4 &Color) {
+	Graphics.SetColor(Color);
+
+	// Scale texture by UI scale
+	glm::vec2 TextureSize = Size * 0.5f * ae::_Element::GetUIScale();
+
+	// Draw image
+	_Bounds Bounds(Position - TextureSize, Position + TextureSize);
+	DrawImage(Bounds, Texture, true);
+}
+
 // Draw image in screen space
 void _Graphics::DrawImage(const _Bounds &Bounds, const _Texture *Texture, bool Stretch) {
 	SetVBO(VBO_QUAD_UV);

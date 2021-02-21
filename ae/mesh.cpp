@@ -177,7 +177,7 @@ void _Mesh::ConvertOBJ(const std::string &Path) {
 
 	// Pack vertices
 	std::map<_PackedVertex, GLuint> PackedVertexMap;
-	for(size_t i = 0; i < VertexIndices.size(); i++) {
+	for(std::size_t i = 0; i < VertexIndices.size(); i++) {
 
 		// Create packed vertex
 		_PackedVertex PackedVertex;

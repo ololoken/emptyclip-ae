@@ -32,6 +32,9 @@ std::string TrimString(const std::string &String);
 void TokenizeString(const std::string &String, std::vector<std::string> &Tokens, char Delimiter=' ');
 int MakeDirectory(const std::string &Path);
 
+void StartTimer();
+void PrintTimer(const std::string &Message="", bool Reset=false);
+
 template <class T>
 inline T ToNumber(const std::string &String) {
 	T Number = 0;
@@ -42,6 +45,6 @@ inline T ToNumber(const std::string &String) {
 	return Number;
 }
 
-inline float Round(float Number) { return (int)(Number * 10) / 10.0f; }
+inline float Round(double Number) { return (int64_t)(Number * 10) / 10.0; }
 
 }

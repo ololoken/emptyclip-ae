@@ -23,7 +23,7 @@
 namespace ae {
 
 // Constructor for a new buffer
-_Buffer::_Buffer(size_t InitialSize) :
+_Buffer::_Buffer(std::size_t InitialSize) :
 	Data(nullptr),
 	CurrentByte(0),
 	CurrentBit(0) {
@@ -33,7 +33,7 @@ _Buffer::_Buffer(size_t InitialSize) :
 }
 
 // Constructor for an existing buffer
-_Buffer::_Buffer(const char *ExistingBuffer, size_t Length) :
+_Buffer::_Buffer(const char *ExistingBuffer, std::size_t Length) :
 	CurrentByte(0),
 	CurrentBit(0) {
 
@@ -50,7 +50,7 @@ _Buffer::~_Buffer() {
 }
 
 // Resize the buffer
-void _Buffer::Resize(size_t NewSize) {
+void _Buffer::Resize(std::size_t NewSize) {
 	if(NewSize == AllocatedSize)
 		return;
 
@@ -69,7 +69,7 @@ void _Buffer::Resize(size_t NewSize) {
 
 // Shrinks the buffer to the current used size
 void _Buffer::Shrink() {
-	size_t NewSize = CurrentByte;
+	std::size_t NewSize = CurrentByte;
 	if(CurrentBit)
 		NewSize++;
 
@@ -87,11 +87,11 @@ void _Buffer::AlignBitIndex() {
 }
 
 // Aligns the buffer to the next byte and checks for a valid size
-void _Buffer::AlignAndExpand(size_t NewWriteSize) {
+void _Buffer::AlignAndExpand(std::size_t NewWriteSize) {
 	AlignBitIndex();
 
 	// Resize the buffer if needed
-	size_t NewSize = CurrentByte + NewWriteSize;
+	std::size_t NewSize = CurrentByte + NewWriteSize;
 	if(NewSize > AllocatedSize)
 		Resize(NewSize << 1);
 }
@@ -118,7 +118,7 @@ void _Buffer::WriteBit(bool Value) {
 
 // Write a string to the buffer
 void _Buffer::WriteString(const char *Value) {
-	size_t StringLength = strlen(Value);
+	std::size_t StringLength = strlen(Value);
 	AlignAndExpand(StringLength + 1);
 
 	// Copy string to buffer

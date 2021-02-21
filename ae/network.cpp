@@ -134,7 +134,7 @@ bool _Network::CheckPings(_Buffer &Data, _NetworkAddress &NetworkAddress) {
 	ENetAddress EAddress;
 	int Received = enet_socket_receive(PingSocket, &EAddress, &SocketBuffer, 1);
 	if(Received > 0) {
-		Data.SetAllocatedSize((size_t)Received);
+		Data.SetAllocatedSize((std::size_t)Received);
 		NetworkAddress.Host = EAddress.host;
 		NetworkAddress.Port = EAddress.port;
 

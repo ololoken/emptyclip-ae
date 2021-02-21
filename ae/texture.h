@@ -23,6 +23,8 @@
 #include <glm/vec2.hpp>
 #include <string>
 
+struct SDL_Surface;
+
 namespace ae {
 
 // Classes
@@ -30,7 +32,9 @@ class _Texture {
 
 	public:
 
-		_Texture(const std::string &Path, bool IsServer, bool Repeat, bool Mipmaps);
+		_Texture(const std::string &Path) : Name(Path), ID(0) { }
+		_Texture(const std::string &Path, bool IsServer, bool Repeat, bool Mipmaps, bool Nearest);
+		_Texture(const std::string &Path, FILE *FileHandle, bool IsServer, bool Repeat, bool Mipmaps, bool Nearest);
 		_Texture(unsigned char *Data, const glm::ivec2 &Size, int InternalFormat, GLenum Format);
 		~_Texture();
 
@@ -40,6 +44,10 @@ class _Texture {
 
 		// Dimensions
 		glm::ivec2 Size;
+
+	private:
+
+		void Load(SDL_Surface *Image, bool Repeat, bool Mipmaps, bool Nearest);
 
 };
 

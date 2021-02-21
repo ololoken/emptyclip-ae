@@ -58,7 +58,7 @@ _Program::_Program(const std::string &Name, const _Shader *VertexShader, const _
 		glGetProgramiv(ID, GL_INFO_LOG_LENGTH, &ResultLength);
 
 		// Get message
-		std::string ErrorMessage((size_t)ResultLength, 0);
+		std::string ErrorMessage((std::size_t)ResultLength, 0);
 		glGetProgramInfoLog(ID, ResultLength, nullptr, (GLchar *)&ErrorMessage[0]);
 
 		throw std::runtime_error(ErrorMessage);
@@ -170,7 +170,7 @@ _Shader::_Shader(const std::string &Path, GLenum ProgramType) {
 		glGetShaderiv(ID, GL_INFO_LOG_LENGTH, &ResultLength);
 
 		// Get message
-		std::string ErrorMessage((size_t)ResultLength, 0);
+		std::string ErrorMessage((std::size_t)ResultLength, 0);
 		glGetShaderInfoLog(ID, ResultLength, nullptr, (GLchar *)&ErrorMessage[0]);
 
 		throw std::runtime_error("Error in " + Path + '\n' + ErrorMessage);

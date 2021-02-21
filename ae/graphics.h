@@ -87,6 +87,7 @@ class _Graphics {
 
 		void DrawLine(const glm::vec2 &Start, const glm::vec2 &End);
 		void DrawScaledImage(const glm::vec2 &Position, const _Texture *Texture, const glm::vec4 &Color=glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+		void DrawScaledImage(const glm::vec2 &Position, const _Texture *Texture, const glm::vec2 &Size, const glm::vec4 &Color=glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 		void DrawImage(const _Bounds &Bounds, const _Texture *Texture, bool Stretch=true);
 		void DrawAtlasTexture(const _Bounds &Bounds, const _Texture *Texture, const glm::vec4 &TextureCoords);
 		void DrawTextureArray(const _Bounds &Bounds, const _TextureArray *Texture, uint32_t Index);

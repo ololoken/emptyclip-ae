@@ -22,6 +22,7 @@
 // Libraries
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 namespace ae {
 
@@ -36,6 +37,30 @@ class _Files {
 
 		std::vector<std::string> Nodes;
 		std::string Path;
+};
+
+// Class for reading packed file
+class _FilePack {
+
+	public:
+
+		struct _File {
+			_File() { }
+			_File(const std::string &Name, int Size, int Offset) : Name(Name), Size(Size), Offset(Offset) { }
+
+			std::string Name;
+			int Size;
+			int Offset;
+		};
+
+		_FilePack() : BodyOffset(0) { }
+		_FilePack(const std::string &Path);
+		void Load(const std::string &Path);
+
+		std::unordered_map<std::string, _File> Data;
+		std::string Path;
+		int BodyOffset;
+
 };
 
 }

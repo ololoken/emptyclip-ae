@@ -58,10 +58,11 @@ struct _NetworkEvent {
 		PACKET,
 	};
 
-	_NetworkEvent() : Data(nullptr), Peer(nullptr) { }
+	_NetworkEvent() : Time(0.0), EventData(0), Data(nullptr), Peer(nullptr) { }
 
 	EventType Type;
 	double Time;
+	int EventData;
 	_Buffer *Data;
 	_Peer *Peer;
 };

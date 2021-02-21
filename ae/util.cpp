@@ -21,9 +21,14 @@
 #include <sys/stat.h>
 #include <fstream>
 #include <sstream>
+#include <iostream>
+#include <iomanip>
 #include <regex>
+#include <SDL_timer.h>
 
 namespace ae {
+
+static uint64_t Timer = 0;
 
 // Loads a file into a string
 const char *LoadFileIntoMemory(const char *Path) {
@@ -42,17 +47,17 @@ const char *LoadFileIntoMemory(const char *Path) {
 	File.seekg(0, std::ios::beg);
 
 	// Read data
-	char *Data = new char[(size_t)Size + 1];
+	char *Data = new char[(std::size_t)Size + 1];
 	File.read(Data, Size);
 	File.close();
-	Data[(size_t)Size] = 0;
+	Data[(std::size_t)Size] = 0;
 
 	return Data;
 }
 
 // Remove extension from a filename
 std::string RemoveExtension(const std::string &Path) {
-	size_t SuffixPosition = Path.find_last_of(".");
+	std::size_t SuffixPosition = Path.find_last_of(".");
 	if(SuffixPosition == std::string::npos)
 		return Path;
 
@@ -80,6 +85,22 @@ void TokenizeString(const std::string &String, std::vector<std::string> &Tokens,
 	std::string Token = "";
 	while(std::getline(Buffer, Token, Delimiter))
 		Tokens.push_back(std::move(Token));
+}
+
+// Start timer
+void StartTimer() {
+	Timer = SDL_GetPerformanceCounter();
+}
+
+// Print timer
+void PrintTimer(const std::string &Message, bool Reset) {
+	double Time = (SDL_GetPerformanceCounter() - Timer) / (double)SDL_GetPerformanceFrequency();
+	if(!Message.empty())
+		std::cout << Message << ": ";
+
+	std::cout << std::fixed << std::setprecision(5) << Time << std::endl;
+	if(Reset)
+		StartTimer();
 }
 
 }

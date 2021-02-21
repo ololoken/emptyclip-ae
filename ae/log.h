@@ -31,10 +31,9 @@ class _LogFile {
 
 	public:
 
-		_LogFile() : TokenCount(0), ToStdOut(true) { }
+		_LogFile() : ToStdOut(true), PrependDate(true), TokenCount(0) { }
 		~_LogFile() {
-			File.close();
-			File.clear();
+			Close();
 		}
 
 		// Open log file
@@ -42,7 +41,11 @@ class _LogFile {
 			File.open(Filename, std::ios::app);
 		}
 
-		void SetToStdOut(bool ToStdOut) { this->ToStdOut = ToStdOut; }
+		// Close file
+		void Close() {
+			File.close();
+			File.clear();
+		}
 
 		// Handles most types
 		template <typename Type>
@@ -50,12 +53,12 @@ class _LogFile {
 
 			// Get date
 			char Buffer[64];
-			if(!TokenCount)
+			if(PrependDate && !TokenCount)
 				GetDateString(Buffer);
 
 			// Output to stdout
 			if(ToStdOut) {
-				if(!TokenCount)
+				if(PrependDate && !TokenCount)
 					std::clog << Buffer << " - ";
 
 				std::clog << Value;
@@ -63,7 +66,7 @@ class _LogFile {
 
 			// Output to file
 			if(File.is_open()) {
-				if(!TokenCount)
+				if(PrependDate && !TokenCount)
 					File << Buffer << " - ";
 
 				File << Value;
@@ -89,13 +92,15 @@ class _LogFile {
 			return *this;
 		}
 
+		bool ToStdOut;
+		bool PrependDate;
+
 	private:
 
 		void GetDateString(char *Buffer);
 
 		std::ofstream File;
 		int TokenCount;
-		bool ToStdOut;
 };
 
 // Get ISO 8601 timestamp

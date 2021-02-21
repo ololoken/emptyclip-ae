@@ -18,6 +18,8 @@
 * 3. This notice may not be removed or altered from any source distribution.
 *******************************************************************************/
 #include <ae/files.h>
+#include <fstream>
+#include <cstring>
 #include <algorithm>
 
 namespace ae {
@@ -92,6 +94,51 @@ void _Files::Load(const std::string &Path, bool PrependPath) {
 
 	// Sort files
 	std::sort(Nodes.begin(), Nodes.end());
+}
+
+// Constructor
+_FilePack::_FilePack(const std::string &Path) {
+	Load(Path);
+}
+
+// Read list of files in pack
+void _FilePack::Load(const std::string &Path) {
+	this->Path = Path;
+
+	// Open file
+	std::ifstream Input(Path.c_str(), std::ios::binary);
+
+	// Get file count
+	int FileCount = 0;
+	Input.read((char *)&FileCount, 4);
+
+	// Load header
+	char Buffer[256];
+	int Offset = 0;
+	for(int i = 0; i < FileCount; i++) {
+
+		// Read file name
+		int NameSize = Input.get();
+		Input.read(Buffer, NameSize);
+		Buffer[NameSize] = 0;
+
+		// Get base name
+		char *BaseName = strrchr(Buffer, '/');
+		if(BaseName)
+			BaseName++;
+		else
+			BaseName = Buffer;
+
+		// Read file size
+		int Size;
+		Input.read((char *)&Size, 4);
+		Data[Buffer] = _File(BaseName, Size, Offset);
+
+		Offset += Size;
+	}
+
+	// Save start of body
+	BodyOffset = Input.tellg();
 }
 
 }

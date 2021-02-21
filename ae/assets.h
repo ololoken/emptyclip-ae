@@ -71,9 +71,11 @@ class _Assets {
 		void Close();
 
 		void LoadColors(const std::string &Path);
-		void LoadTextureDirectory(const std::string &Path, bool IsServer=false, bool Repeat=false, bool MipMaps=false);
+		void LoadTextureDirectory(const std::string &Path, bool IsServer=false, bool Repeat=false, bool MipMaps=false, bool Nearest=false);
+		void LoadTexturePack(const std::string &Path, bool IsServer=false, bool Repeat=false, bool MipMaps=false, bool Nearest=false);
 		void LoadAtlasDirectory(const std::string &Path, const glm::ivec2 &Size, float Padding);
 		void LoadSounds(const std::string &Path);
+		void LoadSoundPack(const std::string &Path);
 		void LoadMusic(const std::string &Path);
 		void LoadMeshDirectory(const std::string &Path);
 		void LoadAnimations(const std::string &Path, bool IsServer);

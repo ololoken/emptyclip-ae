@@ -36,10 +36,10 @@ class _State;
 
 // Structure for an input binding
 struct _ActionMap {
-	_ActionMap(int Rank, size_t Action, float Scale, float DeadZone) : Rank(Rank), Action(Action), DeadZone(DeadZone), Scale(Scale) { }
+	_ActionMap(int Rank, std::size_t Action, float Scale, float DeadZone) : Rank(Rank), Action(Action), DeadZone(DeadZone), Scale(Scale) { }
 
 	int Rank;
-	size_t Action;
+	std::size_t Action;
 	float DeadZone;
 	float Scale;
 };
@@ -62,12 +62,12 @@ class _Actions {
 
 		// Mappping
 		void ClearMappings(int InputType);
-		void ClearMappingForInputAction(int InputType, int Input, size_t Action);
-		void ClearMappingsForAction(int InputType, size_t Action, int Rank);
-		void AddInputMap(int Rank, int InputType, int Input, size_t Action, float Scale=1.0f, float DeadZone=-1.0f, bool IfNone=true);
-		int GetInputForAction(int InputType, size_t Action, int Rank=0);
-		bool HasInputForAction(size_t Action);
-		std::string GetInputNameForAction(size_t Action, int Rank=0);
+		void ClearMappingForInputAction(int InputType, int Input, std::size_t Action);
+		void ClearMappingsForAction(int InputType, std::size_t Action, int Rank);
+		void AddInputMap(int Rank, int InputType, int Input, std::size_t Action, float Scale=1.0f, float DeadZone=-1.0f, bool IfNone=true);
+		int GetInputForAction(int InputType, std::size_t Action, int Rank=0);
+		bool HasInputForAction(std::size_t Action);
+		std::string GetInputNameForAction(std::size_t Action, int Rank=0);
 
 		// Handlers
 		void InputEvent(_State *GameState, int InputType, int Input, float Value);

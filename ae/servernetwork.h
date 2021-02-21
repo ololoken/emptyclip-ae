@@ -32,7 +32,7 @@ class _ServerNetwork : public _Network {
 
 	public:
 
-		_ServerNetwork(size_t MaxPeers, uint16_t Port);
+		_ServerNetwork(std::size_t MaxPeers, uint16_t Port);
 		~_ServerNetwork() override;
 
 		// Sockets
@@ -40,8 +40,9 @@ class _ServerNetwork : public _Network {
 
 		// Connections
 		uint16_t GetListenPort();
-		size_t GetMaxPeers();
-		void DisconnectAll();
+		std::size_t GetMaxPeers();
+		void DisconnectPeer(const _Peer *Peer, int Data=0);
+		void DisconnectAll(int Data=0);
 
 		// Packets
 		void SendPacket(const _Buffer &Buffer, const _Peer *Peer, SendType Type=RELIABLE, uint8_t Channel=0);

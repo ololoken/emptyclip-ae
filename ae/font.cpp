@@ -142,7 +142,7 @@ void _Font::SortCharacters(FT_Face &Face, const std::string &Characters, std::st
 	auto CharacterCompare = [](_SortCharacter &Left, _SortCharacter &Right) { return Left.Height < Right.Height; };
 	std::priority_queue<_SortCharacter, std::vector<_SortCharacter>, decltype(CharacterCompare)> CharacterList(CharacterCompare);
 	_SortCharacter Character;
-	for(size_t i = 0; i < Characters.size(); i++) {
+	for(std::size_t i = 0; i < Characters.size(); i++) {
 
 		// Load a character
 		FT_Load_Char(Face, (FT_ULong)Characters[i], LoadFlags);
@@ -180,7 +180,7 @@ void _Font::CreateFontTexture(std::string SortedCharacters, uint32_t TextureWidt
 	uint32_t MaxRows = 0;
 
 	// Determine Glyph UVs and texture height given a texture width
-	for(size_t i = 0; i < SortedCharacters.size(); i++) {
+	for(std::size_t i = 0; i < SortedCharacters.size(); i++) {
 
 		// Load a character
 		FT_Load_Char(Face, (FT_ULong)SortedCharacters[i], LoadFlags);
@@ -233,7 +233,7 @@ void _Font::CreateFontTexture(std::string SortedCharacters, uint32_t TextureWidt
 	memset(Image, 0, TextureSize);
 
 	// Render each glyph to the texture
-	for(size_t i = 0; i < SortedCharacters.size(); i++) {
+	for(std::size_t i = 0; i < SortedCharacters.size(); i++) {
 		_Glyph &Glyph = Glyphs[(FT_Byte)SortedCharacters[i]];
 
 		// Load a character
@@ -342,7 +342,7 @@ float _Font::DrawText(const std::string &Text, glm::vec2 Position, const _Alignm
 
 	// Draw string
 	FT_UInt PreviousGlyphIndex = 0;
-	for(size_t i = 0; i < Text.size(); i++) {
+	for(std::size_t i = 0; i < Text.size(); i++) {
 		FT_UInt GlyphIndex = FT_Get_Char_Index(Face, (FT_ULong)Text[i]);
 
 		// Handle kerning
@@ -376,7 +376,7 @@ void _Font::DrawTextFormatted(const std::string &Text, glm::vec2 Position, const
 
 	// Draw string
 	FT_UInt PreviousGlyphIndex = 0;
-	for(size_t i = 0; i < Text.size(); i++) {
+	for(std::size_t i = 0; i < Text.size(); i++) {
 		FT_UInt GlyphIndex = FT_Get_Char_Index(Face, (FT_ULong)Text[i]);
 
 		// Handle kerning
@@ -437,7 +437,7 @@ void _Font::GetStringDimensions(const std::string &Text, _TextBounds &TextBounds
 	TextBounds.Width = TextBounds.AboveBase = TextBounds.BelowBase = 0;
 	const _Glyph *Glyph = nullptr;
 	FT_UInt PreviousGlyphIndex = 0;
-	for(size_t i = 0; i < Text.size(); i++) {
+	for(std::size_t i = 0; i < Text.size(); i++) {
 
 		if(UseFormatting && Text[i] == '[')
 			InTag = true;
@@ -478,9 +478,9 @@ void _Font::BreakupString(const std::string &Text, float Width, std::list<std::s
 	bool InTag = false;
 	float X = 0;
 	FT_UInt PreviousGlyphIndex = 0;
-	size_t StartCut = 0;
-	size_t LastSpace = std::string::npos;
-	for(size_t i = 0; i < Text.size(); i++) {
+	std::size_t StartCut = 0;
+	std::size_t LastSpace = std::string::npos;
+	for(std::size_t i = 0; i < Text.size(); i++) {
 
 		// Check for formatting codes
 		if(UseFormatting && Text[i] == '[')
@@ -521,7 +521,7 @@ void _Font::BreakupString(const std::string &Text, float Width, std::list<std::s
 			if(X >= Width) {
 
 				// Determine if next cut should start after a space
-				size_t Adjust = 0;
+				std::size_t Adjust = 0;
 				if(LastSpace == std::string::npos)
 					LastSpace = i;
 				else

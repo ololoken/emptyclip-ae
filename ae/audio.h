@@ -71,6 +71,15 @@ class _AudioSource {
 		ALuint ID;
 };
 
+// Wrapper around file handle
+struct _AudioFile {
+	_AudioFile(FILE *FileHandle, int Start, int Size) : FileHandle(FileHandle), Start(Start), Size(Size) { }
+
+	FILE *FileHandle;
+	int Start;
+	int Size;
+};
+
 // Classes
 class _Audio {
 
@@ -88,12 +97,13 @@ class _Audio {
 		void UpdateMusic();
 
 		_Sound *LoadSound(const std::string &Path);
+		_Sound *LoadSound(const _AudioFile &AudioFile);
 		_Music *LoadMusic(const std::string &Path);
 
 		void Stop();
 		void StopSounds();
 		void StopMusic();
-		void PlaySound(_Sound *Sound, float Volume=1.0f);
+		_AudioSource *PlaySound(_Sound *Sound, float Volume=1.0f);
 		void PlayMusic(_Music *Music, bool Loop=true);
 
 		void SetSoundVolume(float Volume);
@@ -103,8 +113,12 @@ class _Audio {
 
 	private:
 
-		long ReadStream(OggVorbis_File *Stream, char *Buffer, int Size);
-		void OpenVorbis(const std::string &Path, OggVorbis_File *Stream, long &Rate, int &Format);
+		_Sound *LoadSoundData(OggVorbis_File *VorbisFile);
+
+		long ReadStream(OggVorbis_File *VorbisFile, char *Buffer, int Size);
+		void OpenVorbis(const std::string &Path, OggVorbis_File *VorbisFile);
+		void OpenVorbis(const _AudioFile &AudioFile, OggVorbis_File *VorbisFile);
+		void GetVorbisInfo(OggVorbis_File *VorbisFile, long &Rate, int &Format);
 		bool QueueBuffers(_Music *Music, ALuint Buffer);
 
 		bool Enabled;

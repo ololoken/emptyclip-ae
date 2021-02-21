@@ -29,8 +29,8 @@ class _Buffer {
 
 	public:
 
-		_Buffer(size_t InitialSize=32);
-		_Buffer(const char *ExistingBuffer, size_t Length);
+		_Buffer(std::size_t InitialSize=32);
+		_Buffer(const char *ExistingBuffer, std::size_t Length);
 		~_Buffer();
 
 		// Write data
@@ -61,25 +61,25 @@ class _Buffer {
 		const char *ReadString();
 
 		const char *GetData() const { return Data; }
-		char &operator[](size_t Index) { return Data[Index]; }
-		char operator[](size_t Index) const { return Data[Index]; }
+		char &operator[](std::size_t Index) { return Data[Index]; }
+		char operator[](std::size_t Index) const { return Data[Index]; }
 
 		void Shrink();
-		void SetAllocatedSize(size_t Size) { AllocatedSize = Size; }
-		size_t GetAllocatedSize() const { return AllocatedSize; }
-		size_t GetCurrentSize() const { return CurrentByte + (CurrentBit != 0); }
+		void SetAllocatedSize(std::size_t Size) { AllocatedSize = Size; }
+		std::size_t GetAllocatedSize() const { return AllocatedSize; }
+		std::size_t GetCurrentSize() const { return CurrentByte + (CurrentBit != 0); }
 		bool End() const { return CurrentByte == AllocatedSize; }
 
 		void StartRead() { CurrentByte = 0; CurrentBit = 0; }
 
 	private:
 
-		void Resize(size_t NewSize);
+		void Resize(std::size_t NewSize);
 		void AlignBitIndex();
-		void AlignAndExpand(size_t NewWriteSize);
+		void AlignAndExpand(std::size_t NewWriteSize);
 
 		char *Data;
-		size_t AllocatedSize, CurrentByte;
+		std::size_t AllocatedSize, CurrentByte;
 		unsigned char CurrentBit;
 };
 

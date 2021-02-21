@@ -26,7 +26,7 @@
 namespace ae {
 
 // Constructor
-_ServerNetwork::_ServerNetwork(size_t MaxPeers, uint16_t Port) {
+_ServerNetwork::_ServerNetwork(std::size_t MaxPeers, uint16_t Port) {
 	ENetAddress Address;
 	Address.host = ENET_HOST_ANY;
 	Address.port = Port;
@@ -63,7 +63,7 @@ uint16_t _ServerNetwork::GetListenPort() {
 }
 
 // Get max number of peers
-size_t _ServerNetwork::GetMaxPeers() {
+std::size_t _ServerNetwork::GetMaxPeers() {
 	if(!Connection)
 		return 0;
 
@@ -93,18 +93,27 @@ void _ServerNetwork::ClearPeers() {
 	Peers.clear();
 }
 
+// Disconnect a single peer
+void _ServerNetwork::DisconnectPeer(const _Peer *Peer, int Data) {
+	if(!Peer || !Peer->ENetPeer)
+		return;
+
+	enet_peer_disconnect(Peer->ENetPeer, Data);
+}
+
 // Disconnect all peers
-void _ServerNetwork::DisconnectAll() {
+void _ServerNetwork::DisconnectAll(int Data) {
 
 	// Disconnect all connected peers
 	for(auto &Peer : Peers)
-		enet_peer_disconnect(Peer->ENetPeer, 0);
+		enet_peer_disconnect(Peer->ENetPeer, Data);
 }
 
 // Create a _NetworkEvent from an enet event
 void _ServerNetwork::CreateEvent(_NetworkEvent &Event, double EventTime, ENetEvent &EEvent) {
 	Event.Time = EventTime;
 	Event.Type = _NetworkEvent::EventType(EEvent.type-1);
+	Event.EventData = (int)EEvent.data;
 	if(EEvent.peer->data)
 		Event.Peer = (_Peer *)EEvent.peer->data;
 }
@@ -143,8 +152,6 @@ void _ServerNetwork::SendPacket(const _Buffer &Buffer, const _Peer *Peer, SendTy
 	// Send packet
 	if(enet_peer_send(Peer->ENetPeer, Channel, EPacket) != 0)
 		enet_packet_destroy(EPacket);
-
-	//enet_host_flush(Connection);
 }
 
 // Send a packet to all peers

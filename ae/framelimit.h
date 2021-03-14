@@ -20,7 +20,8 @@
 #pragma once
 
 // Libraries
-#include <SDL_timer.h>
+#include <chrono>
+#include <thread>
 
 namespace ae {
 
@@ -29,41 +30,43 @@ class _FrameLimit {
 	public:
 
 		// Constructor
-		_FrameLimit(double FrameRate, bool Vsync) : FrameRate(FrameRate), Vsync(Vsync) { Reset(); }
+		_FrameLimit(double FrameRate) : FrameRate(FrameRate), ExtraTime(0.0) { Reset(); }
 
-		// Set the frame timer = now()
+		// Reset timer
 		void Reset() {
-			Timer = SDL_GetPerformanceCounter();
+			Timer = std::chrono::high_resolution_clock::now();
+		}
+
+		// Update frame rate
+		void SetFrameRate(double Value) {
+			FrameRate = Value;
+			ExtraTime = 0.0;
+			Reset();
 		}
 
 		// Limit frame rate
 		void Update() {
-			if(Vsync)
+			if(FrameRate <= 0.0)
 				return;
 
-			// Get frame time
-			double LastFrameTime = (SDL_GetPerformanceCounter() - Timer) / (double)SDL_GetPerformanceFrequency();
-
-			// Limit frame rate
-			if(FrameRate > 0.0) {
-				double ExtraTime = 1.0 / FrameRate - LastFrameTime;
-				if(ExtraTime > 0.0) {
-					SDL_Delay((Uint32)(ExtraTime * 1000));
-				}
-			}
-
-			// Reset timer after delay
+			// Account for extra time from last frame
+			double Elapsed = std::chrono::duration<int64_t, std::nano>(std::chrono::high_resolution_clock::now() - Timer).count() - ExtraTime;
 			Reset();
-		}
 
-		// Attributes
-		double FrameRate;
-		bool Vsync;
+			// Get sleep duration
+			ExtraTime = 1000000000 / FrameRate - Elapsed;
+			if(ExtraTime > 0)
+				std::this_thread::sleep_for(std::chrono::nanoseconds((int64_t)(ExtraTime)));
+			else
+				ExtraTime = 0;
+		}
 
 	private:
 
-		// Time
-		Uint64 Timer;
+		std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds> Timer;
+		double FrameRate;
+		double ExtraTime;
+
 };
 
 }

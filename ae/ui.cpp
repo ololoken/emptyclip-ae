@@ -28,7 +28,7 @@
 #include <ae/atlas.h>
 #include <constants.h>
 #include <SDL_keycode.h>
-#include <tinyxml2.h>
+#include <tinyxml2/tinyxml2.h>
 #include <glm/common.hpp>
 #include <algorithm>
 #include <sstream>

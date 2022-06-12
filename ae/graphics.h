@@ -91,8 +91,8 @@ class _Graphics {
 		void DrawImage(const _Bounds &Bounds, const _Texture *Texture, bool Stretch=true);
 		void DrawAtlasTexture(const _Bounds &Bounds, const _Texture *Texture, const glm::vec4 &TextureCoords);
 		void DrawTextureArray(const _Bounds &Bounds, const _TextureArray *Texture, uint32_t Index);
-		void DrawSprite(const glm::vec3 &Position, const _Texture *Texture, float Rotation=0.0f, const glm::vec2 Scale=glm::vec2(1.0f));
-		void DrawAnimationFrame(const glm::vec3 &Position, const _Texture *Texture, const glm::vec4 &TextureCoords, float Rotation=0.0f, const glm::vec2 Scale=glm::vec2(1.0f));
+		void DrawSprite(const glm::vec3 &Position, const _Texture *Texture, float Rotation=0.0f, const glm::vec2 &Scale=glm::vec2(1.0f));
+		void DrawAnimationFrame(const glm::vec3 &Position, const _Texture *Texture, const glm::vec4 &TextureCoords, float Rotation=0.0f, const glm::vec2 &Scale=glm::vec2(1.0f));
 		void DrawCube(const glm::vec3 &Start, const glm::vec3 &Scale, const _Texture *Texture);
 		void DrawRectangle(const _Bounds &Bounds, bool Filled=false);
 		void DrawRectangle(const glm::vec2 &Start, const glm::vec2 &End, bool Filled=false);

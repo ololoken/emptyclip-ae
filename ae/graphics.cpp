@@ -521,7 +521,7 @@ void _Graphics::DrawTextureArray(const _Bounds &Bounds, const _TextureArray *Tex
 }
 
 // Draw 3d sprite
-void _Graphics::DrawSprite(const glm::vec3 &Position, const _Texture *Texture, float Rotation, const glm::vec2 Scale) {
+void _Graphics::DrawSprite(const glm::vec3 &Position, const _Texture *Texture, float Rotation, const glm::vec2 &Scale) {
 	SetVBO(VBO_SPRITE);
 	SetTextureID(Texture->ID);
 
@@ -540,7 +540,7 @@ void _Graphics::DrawSprite(const glm::vec3 &Position, const _Texture *Texture, f
 }
 
 // Draw frame from an animation
-void _Graphics::DrawAnimationFrame(const glm::vec3 &Position, const _Texture *Texture, const glm::vec4 &TextureCoords, float Rotation, const glm::vec2 Scale) {
+void _Graphics::DrawAnimationFrame(const glm::vec3 &Position, const _Texture *Texture, const glm::vec4 &TextureCoords, float Rotation, const glm::vec2 &Scale) {
 	SetVBO(VBO_ATLAS);
 	SetTextureID(Texture->ID);
 

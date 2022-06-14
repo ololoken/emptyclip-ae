@@ -24,7 +24,7 @@
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
 #include <string>
-#include <list>
+#include <vector>
 
 // Forward Declarations
 namespace tinyxml2 {
@@ -58,14 +58,16 @@ struct _Alignment {
 		BASELINE,
 	};
 
-	_Alignment() { Horizontal = CENTER; Vertical = MIDDLE; }
+	_Alignment() : Horizontal(CENTER), Vertical(MIDDLE) { }
 	_Alignment(int Horizontal, int Vertical) : Horizontal(Horizontal), Vertical(Vertical) { }
 
-	int Horizontal, Vertical;
+	int Horizontal;
+	int Vertical;
 };
 
 // Style struct
 struct _Style {
+
 	_Style() :
 		TextureColor(0.0f),
 		BackgroundColor(0.0f),
@@ -190,7 +192,7 @@ class _Element {
 		bool Password;
 
 		// Children
-		std::list<_Element *> Children;
+		std::vector<_Element *> Children;
 		glm::vec2 ChildrenOffset;
 
 	private:
@@ -198,7 +200,7 @@ class _Element {
 		void DrawStyle(const _Style *DrawStyle) const;
 		void AssignAttributeString(tinyxml2::XMLElement *Node, const char *Attribute, std::string &String);
 
-		std::list<std::string> Texts;
+		std::vector<std::string> Texts;
 
 };
 

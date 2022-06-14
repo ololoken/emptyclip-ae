@@ -48,14 +48,13 @@ void _Camera::Set3DProjection(double BlendFactor) {
 	glm::vec3 DrawPosition;
 	GetDrawPosition(BlendFactor, DrawPosition);
 
-	float Width = DrawPosition.z * Graphics.AspectRatio;
-	float Height = DrawPosition.z;
+	glm::vec2 Size(DrawPosition.z * Graphics.AspectRatio, DrawPosition.z);
 
 	// Get AABB at z=0
-	AABB[0] = -Width + DrawPosition.x;
-	AABB[1] = -Height + DrawPosition.y;
-	AABB[2] = Width + DrawPosition.x;
-	AABB[3] = Height + DrawPosition.y;
+	AABB[0] = -Size.x + DrawPosition.x;
+	AABB[1] = -Size.y + DrawPosition.y;
+	AABB[2] = Size.x + DrawPosition.x;
+	AABB[3] = Size.y + DrawPosition.y;
 
 	Transform = Projection * glm::translate(glm::mat4(1.0f), -DrawPosition);
 }

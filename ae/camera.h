@@ -21,7 +21,6 @@
 
 // Libraries
 #include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 
 namespace ae {
@@ -51,22 +50,23 @@ class _Camera {
 
 		void GetDrawPosition(double BlendFactor, glm::vec3 &DrawPosition);
 		const glm::vec3 &GetPosition() const { return Position; }
-		const glm::vec4 &GetAABB() const { return AABB; }
+
 		glm::mat4 Transform;
+		glm::vec4 AABB;
 
 	private:
 
 		glm::mat4 Projection;
 
-		glm::vec3 LastPosition, Position, TargetPosition;
+		glm::vec3 LastPosition;
+		glm::vec3 Position;
+		glm::vec3 TargetPosition;
 		float UpdateDivisor;
 
 		glm::vec2 Frustum;
 		float Fovy;
 		float Near;
 		float Far;
-
-		glm::vec4 AABB;
 };
 
 }

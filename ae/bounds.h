@@ -27,6 +27,7 @@ namespace ae {
 
 // Bounds struct
 struct _Bounds {
+
 	_Bounds() : Start(0.0f, 0.0f), End(0.0f, 0.0f) { }
 	_Bounds(const glm::vec2 &Start, const glm::vec2 &End) : Start(Start), End(End) { }
 	_Bounds(const glm::vec4 &Bounds) : Start(Bounds[0], Bounds[1]), End(Bounds[2], Bounds[3]) { }

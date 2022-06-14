@@ -27,26 +27,24 @@
 #include <SDL_mouse.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/constants.hpp>
 #include <stdexcept>
 
 namespace ae {
 
 _Graphics Graphics;
 
-// Initializes the graphics system
+// Initialize
 void _Graphics::Init(const _WindowSettings &WindowSettings) {
 
-	// Init
+	// Initialize
 	CircleVertices = 32;
-	Anisotropy = 0;
+	Anisotropy = 0.0f;
 	FramesPerSecond = 0;
 	FrameCount = 0;
 	FrameRateTimer = 0;
 	Context = nullptr;
 	Window = nullptr;
 	VertexArrayID = 0;
-	Enabled = true;
 	Element = nullptr;
 
 	// Set sizes
@@ -66,13 +64,18 @@ void _Graphics::Init(const _WindowSettings &WindowSettings) {
 		CurrentSize = WindowSize;
 
 	// Set opengl attributes
-	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 1);
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 1);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	if(WindowSettings.MSAA > 0) {
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, WindowSettings.MSAA);
+	}
 
 	// Load cursors
+	Cursors[CURSOR_NONE] = nullptr;
 	Cursors[CURSOR_MAIN] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
 	Cursors[CURSOR_CROSS] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_CROSSHAIR);
 	SDL_SetCursor(Cursors[CURSOR_MAIN]);
@@ -100,90 +103,7 @@ void _Graphics::Init(const _WindowSettings &WindowSettings) {
 	SetupOpenGL();
 
 	// Setup viewport
-	ChangeViewport(CurrentSize);
-}
-
-// Closes the graphics system
-void _Graphics::Close() {
-	delete Element;
-	Element = nullptr;
-
-	// Close opengl context
-	if(Context) {
-		for(int i = 1; i < VBO_COUNT; i++)
-			glDeleteBuffers(1, &VertexBuffer[i]);
-
-		glDeleteVertexArrays(1, &VertexArrayID);
-
-		SDL_GL_DeleteContext(Context);
-		Context = nullptr;
-	}
-
-	// Close cursors
-	for(int i = 0; i < CURSOR_COUNT; i++)
-		SDL_FreeCursor(Cursors[i]);
-
-	// Close window
-	if(Window) {
-		SDL_DestroyWindow(Window);
-		Window = nullptr;
-	}
-}
-
-// Change the viewport
-void _Graphics::ChangeViewport(const glm::ivec2 &Size) {
-	ViewportSize = Size;
-
-	// Calculate aspect ratio
-	AspectRatio = (float)ViewportSize.x / ViewportSize.y;
-}
-
-// Change window and viewport size
-void _Graphics::ChangeWindowSize(const glm::ivec2 &Size) {
-
-	// Keep viewport difference the same
-	glm::ivec2 ViewportDifference = CurrentSize - ViewportSize;
-
-	// Change viewport size
-	CurrentSize = Size;
-	ChangeViewport(Size - ViewportDifference);
-
-	// Update shaders
-	Ortho = glm::ortho(0.0f, (float)CurrentSize.x, (float)CurrentSize.y, 0.0f, -1.0f, 1.0f);
-	SetStaticUniforms();
-
-	// Update UI elements
-	Element->Size = Size;
-	Element->CalculateBounds(false);
-
-	// Update actual window
-	SDL_SetWindowSize(Window, Size.x, Size.y);
-}
-
-// Toggle fullscreen
-bool _Graphics::SetFullscreen(bool Fullscreen) {
-	if(FullscreenSize == glm::ivec2(0))
-		return false;
-
-	if(Fullscreen)
-		Graphics.ChangeWindowSize(FullscreenSize);
-	else
-		Graphics.ChangeWindowSize(WindowSize);
-
-	if(SDL_SetWindowFullscreen(Window, SDL_GetWindowFlags(Window) ^ SDL_WINDOW_FULLSCREEN_DESKTOP) != 0)
-		return false;
-
-	return true;
-}
-
-// Set Vsync
-bool _Graphics::SetVsync(bool Vsync) {
-	return SDL_GL_SetSwapInterval(Vsync) == 0;
-}
-
-// Get Vsync value
-bool _Graphics::GetVsync() {
-	return SDL_GL_GetSwapInterval();
+	SetViewport(CurrentSize);
 }
 
 // Sets up OpenGL
@@ -225,14 +145,31 @@ void _Graphics::SetupOpenGL() {
 	Flip(0);
 }
 
-// Assign uniform values in program
-void _Graphics::SetStaticUniforms() {
-	SetProgram(Assets.Programs["ortho_pos"]);
-	glUniformMatrix4fv(Assets.Programs["ortho_pos"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Ortho));
-	SetProgram(Assets.Programs["ortho_pos_uv"]);
-	glUniformMatrix4fv(Assets.Programs["ortho_pos_uv"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Ortho));
-	SetProgram(Assets.Programs["text"]);
-	glUniformMatrix4fv(Assets.Programs["text"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Ortho));
+// Shutdown
+void _Graphics::Close() {
+	delete Element;
+	Element = nullptr;
+
+	// Close opengl context
+	if(Context) {
+		for(int i = 1; i < VBO_COUNT; i++)
+			glDeleteBuffers(1, &VertexBuffer[i]);
+
+		glDeleteVertexArrays(1, &VertexArrayID);
+
+		SDL_GL_DeleteContext(Context);
+		Context = nullptr;
+	}
+
+	// Close cursors
+	for(int i = 1; i < CURSOR_COUNT; i++)
+		SDL_FreeCursor(Cursors[i]);
+
+	// Close window
+	if(Window) {
+		SDL_DestroyWindow(Window);
+		Window = nullptr;
+	}
 }
 
 // Builds the vertex buffer objects
@@ -387,16 +324,23 @@ GLuint _Graphics::CreateVBO(float *Vertices, GLsizeiptr Size, GLenum Type) {
 	return BufferID;
 }
 
-// Fade the screen
-void _Graphics::FadeScreen(float Amount) {
-	Graphics.SetProgram(Assets.Programs["ortho_pos"]);
-	Graphics.SetColor(glm::vec4(0.0f, 0.0f, 0.0f, Amount));
-	DrawRectangle(glm::vec2(0, 0), CurrentSize, true);
+// Resets all the last used variables
+void _Graphics::ResetState() {
+	SetAttribLevel(0);
+	glUseProgram(0);
+	glActiveTexture(GL_TEXTURE0);
+	LastVertexBufferID = (GLuint)-1;
+	LastTextureID = (GLuint)-1;
+	LastAttribLevel = (GLuint)-1;
+	LastProgram = nullptr;
+	LastDepthTest = false;
 }
 
-// Clears the screen
-void _Graphics::ClearScreen() {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+// Throw opengl error
+void _Graphics::CheckError() {
+	GLenum Error = glGetError();
+	if(Error)
+		throw std::runtime_error("glGetError returned " + std::to_string(Error));
 }
 
 // Sets up the projection matrix for drawing 2D objects
@@ -407,6 +351,245 @@ void _Graphics::Setup2D() {
 // Set up modelview matrix
 void _Graphics::Setup3D() {
 	glViewport(0, CurrentSize.y - ViewportSize.y, ViewportSize.x, ViewportSize.y);
+}
+
+// Fade the screen
+void _Graphics::FadeScreen(const _Program *Program, float Amount) {
+	Graphics.SetProgram(Program);
+	Graphics.SetColor(glm::vec4(0.0f, 0.0f, 0.0f, Amount));
+	DrawRectangle(glm::vec2(0, 0), CurrentSize, true);
+}
+
+// Clears the screen
+void _Graphics::ClearScreen() {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+}
+
+// Draws the frame
+void _Graphics::Flip(double FrameTime) {
+
+	// Swap buffers
+	SDL_GL_SwapWindow(Window);
+
+	// Clear screen
+	ClearScreen();
+
+	// Update frame counter
+	FrameCount++;
+	FrameRateTimer += FrameTime;
+	if(FrameRateTimer >= 1.0) {
+		FramesPerSecond = FrameCount;
+		FrameCount = 0;
+		FrameRateTimer -= 1.0;
+	}
+
+	// Check for errors
+	#ifndef NDEBUG
+		CheckError();
+	#endif
+}
+
+// Change the viewport
+void _Graphics::SetViewport(const glm::ivec2 &Size) {
+	ViewportSize = Size;
+
+	// Calculate aspect ratio
+	AspectRatio = (float)ViewportSize.x / ViewportSize.y;
+}
+
+// Change window and viewport size
+void _Graphics::SetWindowSize(const glm::ivec2 &Size) {
+
+	// Keep viewport difference the same
+	glm::ivec2 ViewportDifference = CurrentSize - ViewportSize;
+
+	// Change viewport size
+	CurrentSize = Size;
+	SetViewport(Size - ViewportDifference);
+
+	// Update shaders
+	Ortho = glm::ortho(0.0f, (float)CurrentSize.x, (float)CurrentSize.y, 0.0f, -1.0f, 1.0f);
+	SetStaticUniforms();
+
+	// Update UI elements
+	Element->Size = Size;
+	Element->CalculateBounds(false);
+
+	// Update actual window
+	SDL_SetWindowSize(Window, Size.x, Size.y);
+}
+
+// Toggle fullscreen
+bool _Graphics::SetFullscreen(bool Fullscreen) {
+	if(FullscreenSize == glm::ivec2(0))
+		return false;
+
+	if(Fullscreen)
+		Graphics.SetWindowSize(FullscreenSize);
+	else
+		Graphics.SetWindowSize(WindowSize);
+
+	if(SDL_SetWindowFullscreen(Window, SDL_GetWindowFlags(Window) ^ SDL_WINDOW_FULLSCREEN_DESKTOP) != 0)
+		return false;
+
+	return true;
+}
+
+// Assign uniform values in program
+void _Graphics::SetStaticUniforms() {
+	SetProgram(Assets.Programs["ortho_pos"]);
+	glUniformMatrix4fv(Assets.Programs["ortho_pos"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Ortho));
+	SetProgram(Assets.Programs["ortho_pos_uv"]);
+	glUniformMatrix4fv(Assets.Programs["ortho_pos_uv"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Ortho));
+	SetProgram(Assets.Programs["text"]);
+	glUniformMatrix4fv(Assets.Programs["text"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Ortho));
+}
+
+// Set Vsync
+bool _Graphics::SetVsync(bool Vsync) {
+	return SDL_GL_SetSwapInterval(Vsync) == 0;
+}
+
+// Get Vsync value
+bool _Graphics::GetVsync() {
+	return SDL_GL_GetSwapInterval();
+}
+
+// Set mouse cursor icon
+void _Graphics::SetCursor(int Type) {
+	if(Type == CURSOR_NONE) {
+		SDL_ShowCursor(false);
+	}
+	else {
+		SDL_ShowCursor(true);
+		SDL_SetCursor(Cursors[Type]);
+	}
+}
+
+// Enable state for VBO
+void _Graphics::SetVBO(GLuint VBO) {
+	if(LastVertexBufferID == VBO)
+		return;
+
+	glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer[VBO]);
+
+	switch(VBO) {
+		case VBO_CUBE:
+			SetAttribLevel(3);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, nullptr);
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (GLvoid *)(sizeof(glm::vec3)));
+			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (GLvoid *)(sizeof(glm::vec3) + sizeof(glm::vec2)));
+		break;
+		case VBO_SPRITE:
+		case VBO_ATLAS:
+		case VBO_QUAD_UV:
+			SetAttribLevel(2);
+			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr);
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (GLvoid *)(sizeof(float) * 8));
+		break;
+		case VBO_LINE:
+		case VBO_RECT:
+		case VBO_QUAD:
+		case VBO_CIRCLE:
+			SetAttribLevel(1);
+			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr);
+		break;
+	}
+
+	LastVertexBufferID = VBO;
+}
+
+// Enable vertex attrib arrays
+void _Graphics::SetAttribLevel(GLuint AttribLevel) {
+	if(AttribLevel == LastAttribLevel)
+		return;
+
+	if(AttribLevel < LastAttribLevel && LastAttribLevel != (GLuint)-1) {
+		for(GLuint i = 1; i < LastAttribLevel; i++)
+			glDisableVertexAttribArray(i);
+	}
+
+	for(GLuint i = 1; i < AttribLevel; i++)
+		glEnableVertexAttribArray(i);
+
+	LastAttribLevel = AttribLevel;
+}
+
+// Set opengl color
+void _Graphics::SetColor(const glm::vec4 &Color) {
+	glUniform4fv(LastProgram->ColorID, 1, &Color[0]);
+}
+
+// Set texture id
+void _Graphics::SetTextureID(GLuint TextureID, GLenum Type) {
+	if(TextureID == LastTextureID)
+		return;
+
+	glBindTexture(Type, TextureID);
+
+	LastTextureID = TextureID;
+}
+
+// Set vertex buffer id
+void _Graphics::SetVertexBufferID(GLuint VertexBufferID) {
+	if(VertexBufferID == LastVertexBufferID)
+		return;
+
+	glBindBuffer(GL_ARRAY_BUFFER, VertexBufferID);
+	LastVertexBufferID = VertexBufferID;
+}
+
+// Enable a program
+void _Graphics::SetProgram(const _Program *Program) {
+	if(Program == LastProgram)
+		return;
+
+	SetAttribLevel(Program->Attribs);
+	Program->Use();
+	LastProgram = Program;
+}
+
+// Enable/disable depth test
+void _Graphics::SetDepthTest(bool DepthTest) {
+	if(DepthTest == LastDepthTest)
+		return;
+
+	if(DepthTest)
+		glEnable(GL_DEPTH_TEST);
+	else
+		glDisable(GL_DEPTH_TEST);
+
+	LastDepthTest = DepthTest;
+}
+
+// Set scissor region
+void _Graphics::SetScissor(const _Bounds &Bounds) {
+	glScissor((GLint)Bounds.Start.x, (GLint)(CurrentSize.y - Bounds.End.y), (GLsizei)(Bounds.End.x - Bounds.Start.x), (GLsizei)(Bounds.End.y - Bounds.Start.y));
+}
+
+// Set depth mask
+void _Graphics::SetDepthMask(bool Value) {
+	glDepthMask(Value);
+}
+
+// Enable stencil test
+void _Graphics::EnableStencilTest() {
+	glEnable(GL_STENCIL_TEST);
+}
+
+// Disable stencil tests
+void _Graphics::DisableStencilTest() {
+	glDisable(GL_STENCIL_TEST);
+}
+
+// Enable scissor test
+void _Graphics::EnableScissorTest() {
+	glEnable(GL_SCISSOR_TEST);
+}
+
+// Disable scissor test
+void _Graphics::DisableScissorTest() {
+	glDisable(GL_SCISSOR_TEST);
 }
 
 // Draw line
@@ -423,28 +606,87 @@ void _Graphics::DrawLine(const glm::vec2 &Start, const glm::vec2 &End) {
 	glDrawArrays(GL_LINES, 0, 2);
 }
 
-// Draw image centered
-void _Graphics::DrawScaledImage(const glm::vec2 &Position, const _Texture *Texture, const glm::vec4 &Color) {
-	Graphics.SetColor(Color);
-
-	// Scale texture by UI scale
-	glm::vec2 TextureSize = glm::vec2(Texture->Size) * 0.5f * ae::_Element::GetUIScale();
-
-	// Draw image
-	_Bounds Bounds(Position - TextureSize, Position + TextureSize);
-	DrawImage(Bounds, Texture, true);
+// Draw rectangle in screen space
+void _Graphics::DrawRectangle(const _Bounds &Bounds, bool Filled) {
+	DrawRectangle(glm::vec2(Bounds.Start.x, Bounds.Start.y), glm::vec2(Bounds.End.x, Bounds.End.y), Filled);
 }
 
-// Draw image centered given a size
-void _Graphics::DrawScaledImage(const glm::vec2 &Position, const _Texture *Texture, const glm::vec2 &Size, const glm::vec4 &Color) {
-	Graphics.SetColor(Color);
+// Draw rectangle
+void _Graphics::DrawRectangle(const glm::vec2 &Start, const glm::vec2 &End, bool Filled) {
 
-	// Scale texture by UI scale
-	glm::vec2 TextureSize = Size * 0.5f * ae::_Element::GetUIScale();
+	// Get transform
+	glm::mat4 Transform(1.0f);
+	if(Filled) {
+		SetVBO(VBO_QUAD);
+		Transform = glm::translate(Transform, glm::vec3(Start, 0.0f));
+		Transform = glm::scale(Transform, glm::vec3(End - Start, 0.0f));
+	}
+	else {
+		SetVBO(VBO_RECT);
+		Transform = glm::translate(Transform, glm::vec3(Start.x + 0.5f, Start.y + 0.5f, 0.0f));
+		Transform = glm::scale(Transform, glm::vec3(End - Start - glm::vec2(1.0f), 0.0f));
+	}
 
-	// Draw image
-	_Bounds Bounds(Position - TextureSize, Position + TextureSize);
-	DrawImage(Bounds, Texture, true);
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(Transform));
+	if(Filled)
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	else
+		glDrawArrays(GL_LINE_LOOP, 0, 4);
+}
+
+// Draw rectangle in 3D space
+void _Graphics::DrawRectangle3D(const glm::vec2 &Start, const glm::vec2 &End, bool Filled) {
+
+	// Get transform
+	glm::mat4 Transform(1.0f);
+	if(Filled) {
+		SetVBO(VBO_QUAD);
+		Transform = glm::translate(Transform, glm::vec3(Start, 0.0f));
+		Transform = glm::scale(Transform, glm::vec3(End - Start, 0.0f));
+	}
+	else {
+		SetVBO(VBO_RECT);
+		Transform = glm::translate(Transform, glm::vec3(Start.x, Start.y, 0.0f));
+		Transform = glm::scale(Transform, glm::vec3(End - Start, 0.0f));
+	}
+
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(Transform));
+	if(Filled)
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	else
+		glDrawArrays(GL_LINE_LOOP, 0, 4);
+}
+
+// Draw circle
+void _Graphics::DrawCircle(const glm::vec3 &Position, float Radius) {
+	Graphics.SetVBO(VBO_CIRCLE);
+
+	glm::mat4 ModelTransform;
+	ModelTransform = glm::translate(glm::mat4(1.0f), Position);
+	ModelTransform = glm::scale(ModelTransform, glm::vec3(Radius, Radius, 0.0f));
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(ModelTransform));
+
+	glDrawArrays(GL_LINE_LOOP, 0, (GLsizei)CircleVertices);
+}
+
+// Draw stencil mask
+void _Graphics::DrawMask(const _Bounds &Bounds) {
+
+	// Enable stencil
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+	glStencilMask(0x01);
+
+	// Write 1 to stencil buffer
+	glStencilFunc(GL_ALWAYS, 0x01, 0x01);
+	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+
+	// Draw region
+	DrawRectangle(Bounds.Start, Bounds.End, true);
+
+	// Then draw element only where stencil is 1
+	glStencilFunc(GL_EQUAL, 0x01, 0x01);
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	glStencilMask(0x00);
 }
 
 // Draw image in screen space
@@ -472,6 +714,62 @@ void _Graphics::DrawImage(const _Bounds &Bounds, const _Texture *Texture, bool S
 	TextureTransform[0][0] = S;
 	TextureTransform[1][1] = T;
 	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
+// Draw image centered given a size
+void _Graphics::DrawScaledImage(const glm::vec2 &Position, const _Texture *Texture, const glm::vec2 &Size, const glm::vec4 &Color) {
+	Graphics.SetColor(Color);
+
+	// Scale texture by UI scale
+	glm::vec2 TextureSize = Size * 0.5f * ae::_Element::GetUIScale();
+
+	// Draw image
+	_Bounds Bounds(Position - TextureSize, Position + TextureSize);
+	DrawImage(Bounds, Texture, true);
+}
+
+// Draw 3d sprite
+void _Graphics::DrawSprite(const glm::vec3 &Position, const _Texture *Texture, float Rotation, const glm::vec2 &Scale) {
+	SetVBO(VBO_SPRITE);
+	SetTextureID(Texture->ID);
+
+	Rotation = glm::radians(Rotation);
+
+	glm::mat4 ModelTransform;
+	ModelTransform = glm::translate(glm::mat4(1.0f), Position);
+	if(Rotation != 0.0f)
+		ModelTransform = glm::rotate(ModelTransform, Rotation, glm::vec3(0, 0, 1));
+
+	ModelTransform = glm::scale(ModelTransform, glm::vec3(Scale, 0.0f));
+
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(ModelTransform));
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
+// Draw frame from an animation
+void _Graphics::DrawAnimationFrame(const glm::vec3 &Position, const _Texture *Texture, const glm::vec4 &TextureCoords, float Rotation, const glm::vec2 &Scale) {
+	SetVBO(VBO_ATLAS);
+	SetTextureID(Texture->ID);
+
+	// Set transform
+	glm::mat4 ModelTransform;
+	ModelTransform = glm::translate(glm::mat4(1.0f), Position);
+	Rotation = glm::radians(Rotation);
+	if(Rotation != 0.0f)
+		ModelTransform = glm::rotate(ModelTransform, Rotation, glm::vec3(0, 0, 1));
+	ModelTransform = glm::scale(ModelTransform, glm::vec3(Scale, 0.0f));
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(ModelTransform));
+
+	// Texture transform
+	glm::mat4 TextureTransform(1.0f);
+	TextureTransform[3][0] = TextureCoords[0];
+	TextureTransform[3][1] = TextureCoords[1];
+	TextureTransform[0][0] = TextureCoords[2] - TextureCoords[0];
+	TextureTransform[1][1] = TextureCoords[3] - TextureCoords[1];
+	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
+
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
@@ -520,50 +818,6 @@ void _Graphics::DrawTextureArray(const _Bounds &Bounds, const _TextureArray *Tex
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
-// Draw 3d sprite
-void _Graphics::DrawSprite(const glm::vec3 &Position, const _Texture *Texture, float Rotation, const glm::vec2 &Scale) {
-	SetVBO(VBO_SPRITE);
-	SetTextureID(Texture->ID);
-
-	Rotation = glm::radians(Rotation);
-
-	glm::mat4 ModelTransform;
-	ModelTransform = glm::translate(glm::mat4(1.0f), Position);
-	if(Rotation != 0.0f)
-		ModelTransform = glm::rotate(ModelTransform, Rotation, glm::vec3(0, 0, 1));
-
-	ModelTransform = glm::scale(ModelTransform, glm::vec3(Scale, 0.0f));
-
-	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(ModelTransform));
-
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-}
-
-// Draw frame from an animation
-void _Graphics::DrawAnimationFrame(const glm::vec3 &Position, const _Texture *Texture, const glm::vec4 &TextureCoords, float Rotation, const glm::vec2 &Scale) {
-	SetVBO(VBO_ATLAS);
-	SetTextureID(Texture->ID);
-
-	// Set transform
-	glm::mat4 ModelTransform;
-	ModelTransform = glm::translate(glm::mat4(1.0f), Position);
-	Rotation = glm::radians(Rotation);
-	if(Rotation != 0.0f)
-		ModelTransform = glm::rotate(ModelTransform, Rotation, glm::vec3(0, 0, 1));
-	ModelTransform = glm::scale(ModelTransform, glm::vec3(Scale, 0.0f));
-	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(ModelTransform));
-
-	// Texture transform
-	glm::mat4 TextureTransform(1.0f);
-	TextureTransform[3][0] = TextureCoords[0];
-	TextureTransform[3][1] = TextureCoords[1];
-	TextureTransform[0][0] = TextureCoords[2] - TextureCoords[0];
-	TextureTransform[1][1] = TextureCoords[3] - TextureCoords[1];
-	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
-
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-}
-
 // Draw 3d wall
 void _Graphics::DrawCube(const glm::vec3 &Start, const glm::vec3 &Scale, const _Texture *Texture) {
 	SetVBO(VBO_CUBE);
@@ -605,266 +859,6 @@ void _Graphics::DrawCube(const glm::vec3 &Start, const glm::vec3 &Scale, const _
 	TextureTransform[1][1] = Scale.z;
 	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
 	glDrawArrays(GL_TRIANGLE_STRIP, 16, 4);
-}
-
-// Draw rectangle in screen space
-void _Graphics::DrawRectangle(const _Bounds &Bounds, bool Filled) {
-	DrawRectangle(glm::vec2(Bounds.Start.x, Bounds.Start.y), glm::vec2(Bounds.End.x, Bounds.End.y), Filled);
-}
-
-// Draw rectangle in 3D space
-void _Graphics::DrawRectangle3D(const glm::vec2 &Start, const glm::vec2 &End, bool Filled) {
-	glm::mat4 Transform(1.0f);
-	if(Filled) {
-		SetVBO(VBO_QUAD);
-		Transform = glm::translate(Transform, glm::vec3(Start, 0.0f));
-		Transform = glm::scale(Transform, glm::vec3(End - Start, 0.0f));
-	}
-	else {
-		SetVBO(VBO_RECT);
-		Transform = glm::translate(Transform, glm::vec3(Start.x, Start.y, 0.0f));
-		Transform = glm::scale(Transform, glm::vec3(End - Start, 0.0f));
-	}
-
-	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(Transform));
-	if(Filled) {
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	}
-	else {
-		glDrawArrays(GL_LINE_LOOP, 0, 4);
-	}
-}
-
-// Draw rectangle
-void _Graphics::DrawRectangle(const glm::vec2 &Start, const glm::vec2 &End, bool Filled) {
-
-	glm::mat4 Transform(1.0f);
-	if(Filled) {
-		SetVBO(VBO_QUAD);
-		Transform = glm::translate(Transform, glm::vec3(Start, 0.0f));
-		Transform = glm::scale(Transform, glm::vec3(End - Start, 0.0f));
-	}
-	else {
-		SetVBO(VBO_RECT);
-		Transform = glm::translate(Transform, glm::vec3(Start.x + 0.5f, Start.y + 0.5f, 0.0f));
-		Transform = glm::scale(Transform, glm::vec3(End - Start - glm::vec2(1.0f), 0.0f));
-	}
-
-	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(Transform));
-	if(Filled) {
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	}
-	else {
-		glDrawArrays(GL_LINE_LOOP, 0, 4);
-	}
-}
-
-// Draw stencil mask
-void _Graphics::DrawMask(const _Bounds &Bounds) {
-
-	// Enable stencil
-	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-	glStencilMask(0x01);
-
-	// Write 1 to stencil buffer
-	glStencilFunc(GL_ALWAYS, 0x01, 0x01);
-	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
-
-	// Draw region
-	DrawRectangle(Bounds.Start, Bounds.End, true);
-
-	// Then draw element only where stencil is 1
-	glStencilFunc(GL_EQUAL, 0x01, 0x01);
-	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-	glStencilMask(0x00);
-}
-
-// Draw circle
-void _Graphics::DrawCircle(const glm::vec3 &Position, float Radius) {
-	Graphics.SetVBO(VBO_CIRCLE);
-
-	glm::mat4 ModelTransform;
-	ModelTransform = glm::translate(glm::mat4(1.0f), Position);
-	ModelTransform = glm::scale(ModelTransform, glm::vec3(Radius, Radius, 0.0f));
-	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(ModelTransform));
-
-	glDrawArrays(GL_LINE_LOOP, 0, CircleVertices);
-}
-
-// Draws the frame
-void _Graphics::Flip(double FrameTime) {
-	if(!Enabled)
-		return;
-
-	// Swap buffers
-	SDL_GL_SwapWindow(Window);
-
-	// Clear screen
-	ClearScreen();
-
-	// Update frame counter
-	FrameCount++;
-	FrameRateTimer += FrameTime;
-	if(FrameRateTimer >= 1.0) {
-		FramesPerSecond = FrameCount;
-		FrameCount = 0;
-		FrameRateTimer -= 1.0;
-	}
-
-	// Check for errors
-	#ifndef NDEBUG
-		CheckError();
-	#endif
-}
-
-// Enable state for VBO
-void _Graphics::SetVBO(GLuint VBO) {
-	if(LastVertexBufferID == VBO)
-		return;
-
-	glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer[VBO]);
-
-	switch(VBO) {
-		case VBO_CUBE:
-			EnableAttribs(3);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, nullptr);
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (GLvoid *)(sizeof(glm::vec3)));
-			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (GLvoid *)(sizeof(glm::vec3) + sizeof(glm::vec2)));
-		break;
-		case VBO_SPRITE:
-		case VBO_ATLAS:
-		case VBO_QUAD_UV:
-			EnableAttribs(2);
-			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr);
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (GLvoid *)(sizeof(float) * 8));
-		break;
-		case VBO_LINE:
-		case VBO_RECT:
-		case VBO_QUAD:
-		case VBO_CIRCLE:
-			EnableAttribs(1);
-			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr);
-		break;
-	}
-
-	LastVertexBufferID = VBO;
-}
-
-// Enable vertex attrib arrays
-void _Graphics::EnableAttribs(GLuint AttribLevel) {
-	if(AttribLevel == LastAttribLevel)
-		return;
-
-	if(AttribLevel < LastAttribLevel && LastAttribLevel != (GLuint)-1) {
-		for(GLuint i = 1; i < LastAttribLevel; i++)
-			glDisableVertexAttribArray(i);
-	}
-
-	for(GLuint i = 1; i < AttribLevel; i++)
-		glEnableVertexAttribArray(i);
-
-	LastAttribLevel = AttribLevel;
-}
-
-// Set opengl color
-void _Graphics::SetColor(const glm::vec4 &Color) {
-	glUniform4fv(LastProgram->ColorID, 1, &Color[0]);
-}
-
-// Set texture id
-void _Graphics::SetTextureID(GLuint TextureID, GLenum Type) {
-	if(TextureID == LastTextureID)
-		return;
-
-	glBindTexture(Type, TextureID);
-
-	LastTextureID = TextureID;
-}
-
-// Set vertex buffer id
-void _Graphics::SetVertexBufferID(GLuint VertexBufferID) {
-	if(VertexBufferID == LastVertexBufferID)
-		return;
-
-	glBindBuffer(GL_ARRAY_BUFFER, VertexBufferID);
-	LastVertexBufferID = VertexBufferID;
-}
-
-// Enable a program
-void _Graphics::SetProgram(const _Program *Program) {
-	if(Program == LastProgram)
-		return;
-
-	EnableAttribs(Program->Attribs);
-	Program->Use();
-	LastProgram = Program;
-}
-
-// Enable/disable depth test
-void _Graphics::SetDepthTest(bool DepthTest) {
-	if(DepthTest == LastDepthTest)
-		return;
-
-	if(DepthTest)
-		glEnable(GL_DEPTH_TEST);
-	else
-		glDisable(GL_DEPTH_TEST);
-
-	LastDepthTest = DepthTest;
-}
-
-// Set scissor region
-void _Graphics::SetScissor(const _Bounds &Bounds) {
-	glScissor((GLint)Bounds.Start.x, (GLint)(CurrentSize.y - Bounds.End.y), (GLsizei)(Bounds.End.x - Bounds.Start.x), (GLsizei)(Bounds.End.y - Bounds.Start.y));
-}
-
-// Resets all the last used variables
-void _Graphics::ResetState() {
-	EnableAttribs(0);
-	glUseProgram(0);
-	glActiveTexture(GL_TEXTURE0);
-	LastVertexBufferID = (GLuint)-1;
-	LastTextureID = (GLuint)-1;
-	LastAttribLevel = (GLuint)-1;
-	LastProgram = nullptr;
-	LastDepthTest = false;
-}
-
-// Throw opengl error
-void _Graphics::CheckError() {
-	GLenum Error = glGetError();
-	if(Error)
-		throw std::runtime_error("glGetError returned " + std::to_string(Error));
-}
-
-// Set depth mask
-void _Graphics::SetDepthMask(bool Value) {
-	glDepthMask(Value);
-}
-
-// Enable stencil test
-void _Graphics::EnableStencilTest() {
-	glEnable(GL_STENCIL_TEST);
-}
-
-// Disable stencil tests
-void _Graphics::DisableStencilTest() {
-	glDisable(GL_STENCIL_TEST);
-}
-
-// Enable scissor test
-void _Graphics::EnableScissorTest() {
-	glEnable(GL_SCISSOR_TEST);
-}
-
-// Disable scissor test
-void _Graphics::DisableScissorTest() {
-	glDisable(GL_SCISSOR_TEST);
-}
-
-// Set mouse cursor icon
-void _Graphics::ShowCursor(int Type) {
-	SDL_SetCursor(Cursors[Type]);
 }
 
 }

@@ -26,7 +26,9 @@
 namespace ae {
 
 // Load from file
-_Texture::_Texture(const std::string &Path, bool IsServer, bool Repeat, bool Mipmaps, bool Nearest) : _Texture(Path)  {
+_Texture::_Texture(const std::string &Path, bool IsServer, bool Repeat, bool Mipmaps, bool Nearest) :
+	_Texture(Path) {
+
 	if(IsServer)
 		return;
 
@@ -40,7 +42,9 @@ _Texture::_Texture(const std::string &Path, bool IsServer, bool Repeat, bool Mip
 }
 
 // Load from file handle
-_Texture::_Texture(const std::string &Path, FILE *FileHandle, bool IsServer, bool Repeat, bool Mipmaps, bool Nearest) : _Texture(Path)  {
+_Texture::_Texture(const std::string &Path, FILE *FileHandle, bool IsServer, bool Repeat, bool Mipmaps, bool Nearest) :
+	_Texture(Path) {
+
 	if(IsServer)
 		return;
 
@@ -109,7 +113,8 @@ void _Texture::Load(SDL_Surface *Image, bool Repeat, bool Mipmaps, bool Nearest)
 }
 
 // Initialize from buffer
-_Texture::_Texture(unsigned char *Data, const glm::ivec2 &Size, GLint InternalFormat, GLenum Format) : Size(Size) {
+_Texture::_Texture(unsigned char *Data, const glm::ivec2 &Size, GLint InternalFormat, GLenum Format) :
+	Size(Size) {
 
 	// Create texture
 	glGenTextures(1, &ID);

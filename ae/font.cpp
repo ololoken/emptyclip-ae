@@ -27,7 +27,6 @@
 #include <stdexcept>
 #include <cstdint>
 #include <functional>
-#include <iostream>
 
 namespace ae {
 
@@ -473,7 +472,7 @@ void _Font::GetStringDimensions(const std::string &Text, _TextBounds &TextBounds
 }
 
 // Break up text into multiple strings based on max width
-void _Font::BreakupString(const std::string &Text, float Width, std::list<std::string> &Strings, bool UseFormatting) const {
+void _Font::BreakupString(const std::string &Text, float Width, std::vector<std::string> &Strings, bool UseFormatting) const {
 
 	bool InTag = false;
 	float X = 0;

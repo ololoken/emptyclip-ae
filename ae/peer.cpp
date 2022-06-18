@@ -17,6 +17,7 @@
 *    misrepresented as being the original software.
 * 3. This notice may not be removed or altered from any source distribution.
 *******************************************************************************/
+#ifndef AE_NO_NETWORK
 #include <ae/peer.h>
 #include <enet/enet.h>
 
@@ -37,3 +38,4 @@ _Peer::~_Peer() {
 }
 
 }
+#endif

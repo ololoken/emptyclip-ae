@@ -189,6 +189,7 @@ _Element::~_Element() {
 	for(auto &Child : Children) {
 		if(Graphics.Element->HitElement == Child)
 			Graphics.Element->HitElement = nullptr;
+
 		delete Child;
 	}
 }
@@ -435,9 +436,8 @@ void _Element::Update(double FrameTime, const glm::vec2 &Mouse) {
 	if(MaxLength) {
 		if(FocusedElement == this || FocusedElement == Parent) {
 			CursorTimer += FrameTime;
-			if(CursorTimer >= 1) {
+			if(CursorTimer >= 1)
 				CursorTimer = 0;
-			}
 		}
 	}
 }
@@ -672,51 +672,51 @@ void _Element::CalculateChildrenBounds(bool Scale) {
 }
 
 // Set the debug flag, and increment for children
-void _Element::SetDebug(int Debug) {
-	this->Debug = Debug;
+void _Element::SetDebug(int Value) {
+	Debug = Value;
 
 	for(auto &Child : Children) {
-		if(Debug)
-			Child->SetDebug(Debug + 1);
+		if(Value)
+			Child->SetDebug(Value + 1);
 	}
 }
 
 // Set clickable/hoverable flag of element and children. Depth=-1 is full recursion
-void _Element::SetClickable(bool Clickable, int Depth) {
+void _Element::SetClickable(bool Value, int Depth) {
 	if(Depth == 0)
 		return;
 
-	this->Clickable = Clickable;
+	Clickable = Value;
 
 	if(Depth != -1)
 		Depth--;
 
 	for(auto &Child : Children)
-		Child->SetClickable(Clickable, Depth);
+		Child->SetClickable(Value, Depth);
 }
 
 // Set active state of element and children
-void _Element::SetActive(bool Visible) {
-	this->Active = Visible;
+void _Element::SetActive(bool Value) {
+	Active = Value;
 
 	for(auto &Child : Children)
-		Child->SetActive(Visible);
+		Child->SetActive(Value);
 }
 
 // Set fade of element and children
-void _Element::SetFade(float Fade) {
-	this->Fade = Fade;
+void _Element::SetFade(float Value) {
+	Fade = Value;
 
 	for(auto &Child : Children)
-		Child->SetFade(Fade);
+		Child->SetFade(Value);
 }
 
 // Set enabled state of element
-void _Element::SetEnabled(bool Enabled) {
-	this->Enabled = Enabled;
+void _Element::SetEnabled(bool Value) {
+	Enabled = Value;
 
 	for(auto &Child : Children)
-		Child->SetEnabled(Enabled);
+		Child->SetEnabled(Value);
 }
 
 // Break up text into multiple strings

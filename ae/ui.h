@@ -123,16 +123,16 @@ class _Element {
 		void Clear() { CursorTimer = 0; Text = ""; CursorPosition = 0; }
 		void ResetCursor() { CursorTimer = 0; }
 
-		void SetDebug(int Debug);
-		void SetClickable(bool Clickable, int Depth=-1);
-		void SetActive(bool Active);
-		void SetFade(float Fade);
-		void SetEnabled(bool Enabled);
+		void SetDebug(int Value);
+		void SetClickable(bool Value, int Depth=-1);
+		void SetActive(bool Value);
+		void SetFade(float Value);
+		void SetEnabled(bool Value);
+		void SetWrap(float Width);
 		void SetOffsetPercent(const glm::vec2 &Value) { BaseOffset = Value * (Parent->BaseSize - BaseSize); CalculateBounds(); }
 		void SetWidth(float Width) { BaseSize.x = Size.x = Width; CalculateBounds(false); }
 		void SetHeight(float Height) { BaseSize.y = Size.y = Height; CalculateBounds(false); }
 		void SetText(const std::string &Text) { this->Text = Text; CursorPosition = Text.length(); }
-		void SetWrap(float Width);
 
 		glm::vec2 GetOffsetPercent() { return Offset / (Parent->Size - Size); }
 

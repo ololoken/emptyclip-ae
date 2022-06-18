@@ -79,7 +79,8 @@ class _Buffer {
 		void AlignAndExpand(std::size_t NewWriteSize);
 
 		char *Data;
-		std::size_t AllocatedSize, CurrentByte;
+		std::size_t AllocatedSize;
+		std::size_t CurrentByte;
 		unsigned char CurrentBit;
 };
 

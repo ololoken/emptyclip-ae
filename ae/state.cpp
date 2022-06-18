@@ -25,12 +25,10 @@ namespace ae {
 
 // Constructor
 _State::_State() {
-
 }
 
 // Destructor
 _State::~_State() {
-
 }
 
 }

@@ -17,6 +17,7 @@
 *    misrepresented as being the original software.
 * 3. This notice may not be removed or altered from any source distribution.
 *******************************************************************************/
+#ifndef AE_NO_DATABASE
 #include <ae/database.h>
 #include <sqlite3.h>
 #include <stdexcept>
@@ -212,3 +213,4 @@ template uint64_t _Database::GetInt(const std::string &ColumnName, int Handle);
 template int _Database::GetInt(const std::string &ColumnName, int Handle);
 
 }
+#endif

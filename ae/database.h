@@ -18,6 +18,7 @@
 * 3. This notice may not be removed or altered from any source distribution.
 *******************************************************************************/
 #pragma once
+#ifndef AE_NO_DATABASE
 
 // Libraries
 #include <string>
@@ -69,3 +70,4 @@ class _Database {
 };
 
 }
+#endif

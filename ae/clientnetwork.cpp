@@ -17,6 +17,7 @@
 *    misrepresented as being the original software.
 * 3. This notice may not be removed or altered from any source distribution.
 *******************************************************************************/
+#ifndef AE_NO_NETWORK
 #include <ae/clientnetwork.h>
 #include <ae/peer.h>
 #include <ae/buffer.h>
@@ -147,3 +148,4 @@ uint32_t _ClientNetwork::GetPacketsLost() {
 }
 
 }
+#endif

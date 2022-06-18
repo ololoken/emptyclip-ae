@@ -17,6 +17,7 @@
 *    misrepresented as being the original software.
 * 3. This notice may not be removed or altered from any source distribution.
 *******************************************************************************/
+#ifndef AE_NO_NETWORK
 #include <ae/servernetwork.h>
 #include <ae/peer.h>
 #include <ae/buffer.h>
@@ -164,3 +165,4 @@ void _ServerNetwork::BroadcastPacket(const _Buffer &Buffer, _Peer *ExceptionPeer
 }
 
 }
+#endif

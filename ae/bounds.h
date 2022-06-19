@@ -25,13 +25,14 @@
 
 namespace ae {
 
-// Bounds struct
+// Rectangle bounds
 struct _Bounds {
 
 	_Bounds() : Start(0.0f, 0.0f), End(0.0f, 0.0f) { }
 	_Bounds(const glm::vec2 &Start, const glm::vec2 &End) : Start(Start), End(End) { }
 	_Bounds(const glm::vec4 &Bounds) : Start(Bounds[0], Bounds[1]), End(Bounds[2], Bounds[3]) { }
 
+	glm::vec2 GetCenter() const { return (Start + End) * 0.5f; }
 	bool Inside(const glm::vec2 &Point) { return Point.x >= Start.x && Point.y >= Start.y && Point.x < End.x && Point.y < End.y; }
 
 	glm::vec2 Start;

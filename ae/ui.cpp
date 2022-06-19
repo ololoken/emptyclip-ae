@@ -46,7 +46,7 @@ const glm::vec4 DebugColors[] = {
 	{ 0.0f, 0.0f, 1.0f, 1.0f }
 };
 const int DebugColorCount = sizeof(DebugColors) / sizeof(glm::vec4);
-static int BaseHeight = 1080;
+static int BaseHeight = -1;
 
 // Constructor
 _Element::_Element() :
@@ -196,7 +196,10 @@ _Element::~_Element() {
 
 // Get UI scale factor
 float _Element::GetUIScale() {
-	return Graphics.CurrentSize.y / (float)BaseHeight;
+	if(BaseHeight == -1)
+		return 1.0f;
+	else
+		return Graphics.CurrentSize.y / (float)BaseHeight;
 }
 
 // Serialize element and children to xml node

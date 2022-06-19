@@ -143,6 +143,12 @@ void _Program::SetUniformMat4(const std::string &Name, const glm::mat4 &Value) c
 	glUniformMatrix4fv(glGetUniformLocation(ID, Name.c_str()), 1, GL_FALSE, glm::value_ptr(Value[0]));
 }
 
+// Reset texture transform
+void _Program::ResetTextureTransform() {
+	if(TextureTransformID)
+		glUniformMatrix4fv(TextureTransformID, 1, GL_FALSE, glm::value_ptr(glm::mat4(1)));
+}
+
 // Loads a shader
 _Shader::_Shader(const std::string &Path, GLenum ProgramType) {
 

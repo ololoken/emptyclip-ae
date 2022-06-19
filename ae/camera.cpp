@@ -26,19 +26,22 @@
 namespace ae {
 
 // Initialize
-_Camera::_Camera(const glm::vec3 &Position, float UpdateDivisor, float Fovy, float Near, float Far) :
-	LastPosition(Position),
-	Position(Position),
-	TargetPosition(Position),
-	UpdateDivisor(UpdateDivisor),
-	Fovy(Fovy),
-	Near(Near),
-	Far(Far) {
+_Camera::_Camera(const _CameraSettings &Settings) :
+	AABB(0),
+	LastPosition(0),
+	Position(0),
+	TargetPosition(0),
+	UpdateDivisor(Settings.UpdateDivisor),
+	SnappingThreshold(Settings.SnappingThreshold),
+	Frustum(0),
+	Fovy(Settings.Fovy),
+	Near(Settings.Near),
+	Far(Settings.Far) {
 }
 
 // Calculate the frustum
 void _Camera::CalculateFrustum(float AspectRatio) {
-	Frustum.y = (float)std::tan(Fovy / 360 * glm::pi<float>()) * Near;
+	Frustum.y = (float)std::tan(Fovy / 360.0f * glm::pi<float>()) * Near;
 	Frustum.x = Frustum.y * AspectRatio;
 	Projection = glm::frustum(-Frustum.x, Frustum.x, Frustum.y, -Frustum.y, Near, Far);
 }
@@ -83,19 +86,19 @@ void _Camera::Update(double FrameTime) {
 
 	// Update position
 	glm::vec2 Delta(TargetPosition - Position);
-	if(std::abs(Delta.x) > 0.01f)
+	if(std::abs(Delta.x) > SnappingThreshold)
 		Position.x += Delta.x / UpdateDivisor;
 	else
 		Position.x = TargetPosition.x;
 
-	if(std::abs(Delta.y) > 0.01f)
+	if(std::abs(Delta.y) > SnappingThreshold)
 		Position.y += Delta.y / UpdateDivisor;
 	else
 		Position.y = TargetPosition.y;
 
 	// Update distance
 	float DeltaZ = TargetPosition.z - Position.z;
-	if(std::abs(DeltaZ) > 0.01f)
+	if(std::abs(DeltaZ) > SnappingThreshold)
 		Position.z += DeltaZ / UpdateDivisor;
 	else
 		Position.z = TargetPosition.z;
@@ -107,6 +110,39 @@ void _Camera::GetDrawPosition(double BlendFactor, glm::vec3 &DrawPosition) {
 		DrawPosition = Position;
 	else
 		DrawPosition = Position * (float)BlendFactor + LastPosition * (1.0f - (float)BlendFactor);
+}
+
+// Determines whether a circle is in view
+bool _Camera::IsCircleInView(const glm::vec2 &Center, float Radius) const {
+
+	// Get closest point on AABB
+	glm::vec2 Point(Center);
+	if(Point.x < AABB[0])
+		Point.x = AABB[0];
+	if(Point.y < AABB[1])
+		Point.y = AABB[1];
+	if(Point.x > AABB[2])
+		Point.x = AABB[2];
+	if(Point.y > AABB[3])
+		Point.y = AABB[3];
+
+	// Test circle collision with point
+	float DistanceSquared = glm::distance2(Point, Center);
+	bool Hit = DistanceSquared < Radius * Radius;
+
+	return Hit;
+}
+
+// Determines whether an AABB is in view
+bool _Camera::IsAABBInView(const glm::vec4 &Bounds) const {
+
+	if(Bounds[2] < AABB[0] || Bounds[0] > AABB[2])
+		return false;
+
+	if(Bounds[3] < AABB[1] || Bounds[1] > AABB[3])
+		return false;
+
+	return true;
 }
 
 }

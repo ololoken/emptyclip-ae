@@ -25,12 +25,28 @@
 
 namespace ae {
 
+struct _CameraSettings {
+
+	_CameraSettings() :
+		UpdateDivisor(20.0f),
+		Fovy(90.0f),
+		Near(0.1f),
+		Far(500.0f),
+		SnappingThreshold(0.005f) { }
+
+	float UpdateDivisor;
+	float Fovy;
+	float Near;
+	float Far;
+	float SnappingThreshold;
+};
+
 // Camera class
 class _Camera {
 
 	public:
 
-		_Camera(const glm::vec3 &Position, float UpdateDivisor, float Fovy, float Near, float Far);
+		_Camera(const _CameraSettings &Settings);
 		~_Camera() { }
 
 		// Updates
@@ -51,6 +67,9 @@ class _Camera {
 		void GetDrawPosition(double BlendFactor, glm::vec3 &DrawPosition);
 		const glm::vec3 &GetPosition() const { return Position; }
 
+		bool IsCircleInView(const glm::vec2 &Position, float Radius) const;
+		bool IsAABBInView(const glm::vec4 &Bounds) const;
+
 		glm::mat4 Transform;
 		glm::vec4 AABB;
 
@@ -62,6 +81,7 @@ class _Camera {
 		glm::vec3 Position;
 		glm::vec3 TargetPosition;
 		float UpdateDivisor;
+		float SnappingThreshold;
 
 		glm::vec2 Frustum;
 		float Fovy;

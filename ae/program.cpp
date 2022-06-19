@@ -144,7 +144,7 @@ void _Program::SetUniformMat4(const std::string &Name, const glm::mat4 &Value) c
 }
 
 // Reset texture transform
-void _Program::ResetTextureTransform() {
+void _Program::ResetTextureTransform() const {
 	if(TextureTransformID)
 		glUniformMatrix4fv(TextureTransformID, 1, GL_FALSE, glm::value_ptr(glm::mat4(1)));
 }

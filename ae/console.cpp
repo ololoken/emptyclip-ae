@@ -24,6 +24,7 @@
 #include <ae/graphics.h>
 #include <ae/util.h>
 #include <SDL_scancode.h>
+#include <stdexcept>
 
 namespace ae {
 
@@ -37,6 +38,12 @@ const glm::vec4 TEXTBOX_BG_COLOR = glm::vec4(0.05f, 0.05f, 0.05f, 0.5f);
 _Console::_Console(const _Program *Program, const _Font *Font) :
 	Element(nullptr),
 	Font(Font) {
+
+	if(!Graphics.Element)
+		throw std::runtime_error("Invalid graphics element!");
+
+	if(!Font)
+		throw std::runtime_error("Invalid console font!");
 
 	// Add style
 	Style = new _Style();

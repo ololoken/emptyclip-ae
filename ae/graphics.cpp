@@ -362,6 +362,7 @@ void _Graphics::FadeScreen(const _Program *Program, float Amount) {
 
 // Clears the screen
 void _Graphics::ClearScreen() {
+	SetDepthMask(true);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
@@ -562,6 +563,14 @@ void _Graphics::SetDepthTest(bool DepthTest) {
 	LastDepthTest = DepthTest;
 }
 
+// Set cull face
+void _Graphics::SetCullFace(bool Value) {
+	if(Value)
+		glEnable(GL_CULL_FACE);
+	else
+		glDisable(GL_CULL_FACE);
+}
+
 // Set scissor region
 void _Graphics::SetScissor(const _Bounds &Bounds) {
 	glScissor((GLint)Bounds.Start.x, (GLint)(CurrentSize.y - Bounds.End.y), (GLsizei)(Bounds.End.x - Bounds.Start.x), (GLsizei)(Bounds.End.y - Bounds.Start.y));
@@ -590,6 +599,16 @@ void _Graphics::EnableScissorTest() {
 // Disable scissor test
 void _Graphics::DisableScissorTest() {
 	glDisable(GL_SCISSOR_TEST);
+}
+
+// Enable blending mode for particles
+void _Graphics::EnableParticleBlending() {
+	glBlendFunc(GL_SRC_ALPHA, 1);
+}
+
+// Disable blending mode for particles
+void _Graphics::DisableParticleBlending() {
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 // Draw line
@@ -773,6 +792,34 @@ void _Graphics::DrawAnimationFrame(const glm::vec3 &Position, const _Texture *Te
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
+// Draw quad with repeated textures
+void _Graphics::DrawRepeatable(const glm::vec3 &Start, const glm::vec3 &End, const ae::_Texture *Texture, float Rotation, float ScaleX) {
+	SetVBO(VBO_QUAD_UV);
+	SetTextureID(Texture->ID);
+
+	// Get size
+	glm::vec3 Size = End - Start;
+
+	// Model transform
+	glm::mat4 Transform(1.0f);
+	Transform[3][0] = Start.x;
+	Transform[3][1] = Start.y;
+	Transform[3][2] = Start.z;
+	Transform[0][0] = Size.x;
+	Transform[1][1] = Size.y;
+	Transform[2][2] = Size.z;
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(Transform));
+
+	// Texture transform
+	glm::mat4 TextureTransform(1.0f);
+	if(Rotation != 0.0f)
+		TextureTransform = glm::rotate(TextureTransform, glm::radians(Rotation), glm::vec3(0, 0, -1));
+	TextureTransform = glm::scale(TextureTransform, glm::vec3(Size.x * ScaleX, Size.y, 1.0f));
+
+	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
 // Draw image from a texture atlas
 void _Graphics::DrawAtlasTexture(const _Bounds &Bounds, const _Texture *Texture, const glm::vec4 &TextureCoords) {
 	SetVBO(VBO_QUAD_UV);
@@ -818,6 +865,34 @@ void _Graphics::DrawTextureArray(const _Bounds &Bounds, const _TextureArray *Tex
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
+// Draw double-sided flat wall
+void _Graphics::DrawWall(const glm::vec3 &Position, const glm::vec3 &Scale, float Rotation, const ae::_Texture *Texture) {
+	SetVBO(VBO_CUBE);
+	SetTextureID(Texture->ID);
+
+	glm::mat4 ModelTransform(1.0f);
+	glm::mat4 TextureTransform(1.0f);
+	int Offset;
+	if(Rotation == 0) {
+		ModelTransform = glm::translate(ModelTransform, glm::vec3(Position.x, Position.y + 0.5f, Position.z));
+		TextureTransform[0][0] = Scale.x;
+		TextureTransform[1][1] = Scale.z;
+		Offset = 12;
+	}
+	else {
+		ModelTransform = glm::translate(ModelTransform, glm::vec3(Position.x + 0.5f, Position.y, Position.z));
+		TextureTransform[0][0] = Scale.y;
+		TextureTransform[1][1] = Scale.z;
+		Offset = 8;
+	}
+	ModelTransform = glm::scale(ModelTransform, Scale);
+
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(ModelTransform));
+	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
+
+	glDrawArrays(GL_TRIANGLE_STRIP, Offset, 4);
+}
+
 // Draw 3d wall
 void _Graphics::DrawCube(const glm::vec3 &Start, const glm::vec3 &Scale, const _Texture *Texture) {
 	SetVBO(VBO_CUBE);
@@ -859,6 +934,24 @@ void _Graphics::DrawCube(const glm::vec3 &Start, const glm::vec3 &Scale, const _
 	TextureTransform[1][1] = Scale.z;
 	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
 	glDrawArrays(GL_TRIANGLE_STRIP, 16, 4);
+}
+
+// Vertical texture
+void _Graphics::DrawWallDecal(const glm::vec3 &Position, const _Texture *Texture, float Rotation, const glm::vec2 &Scale) {
+	SetVBO(VBO_SPRITE);
+	SetTextureID(Texture->ID);
+
+	glm::mat4 ModelTransform;
+	ModelTransform = glm::translate(glm::mat4(1.0f), Position);
+	if(Rotation != 0.0f)
+		ModelTransform = glm::rotate(ModelTransform, glm::radians(Rotation), glm::vec3(0, 0, 1));
+
+	ModelTransform = glm::rotate(ModelTransform, glm::radians(90.0f), glm::vec3(1, 0, 0));
+	ModelTransform = glm::scale(ModelTransform, glm::vec3(Scale.x, Scale.y, 0.0f));
+
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(ModelTransform));
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
 }

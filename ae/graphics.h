@@ -100,12 +100,15 @@ class _Graphics {
 		void SetVertexBufferID(GLuint VertexBufferID);
 		void SetProgram(const _Program *Program);
 		void SetDepthTest(bool DepthTest);
+		void SetCullFace(bool Value);
 		void SetScissor(const _Bounds &Bounds);
 		void SetDepthMask(bool Value);
 		void EnableStencilTest();
 		void DisableStencilTest();
 		void EnableScissorTest();
 		void DisableScissorTest();
+		void EnableParticleBlending();
+		void DisableParticleBlending();
 
 		void DrawLine(const glm::vec2 &Start, const glm::vec2 &End);
 		void DrawRectangle(const _Bounds &Bounds, bool Filled=false);
@@ -120,7 +123,10 @@ class _Graphics {
 		void DrawAnimationFrame(const glm::vec3 &Position, const _Texture *Texture, const glm::vec4 &TextureCoords, float Rotation=0.0f, const glm::vec2 &Scale=glm::vec2(1.0f));
 		void DrawAtlasTexture(const _Bounds &Bounds, const _Texture *Texture, const glm::vec4 &TextureCoords);
 		void DrawTextureArray(const _Bounds &Bounds, const _TextureArray *Texture, uint32_t Index);
+		void DrawRepeatable(const glm::vec3 &Start, const glm::vec3 &End, const _Texture *Texture, float Rotation, float ScaleX);
+		void DrawWall(const glm::vec3 &Position, const glm::vec3 &Scale, float Rotation, const _Texture *Texture);
 		void DrawCube(const glm::vec3 &Start, const glm::vec3 &Scale, const _Texture *Texture);
+		void DrawWallDecal(const glm::vec3 &Position, const ae::_Texture *Texture, float Rotation=0.0f, const glm::vec2 &Scale=glm::vec2(1.0f));
 
 		_Element *Element;
 		glm::ivec2 CurrentSize;

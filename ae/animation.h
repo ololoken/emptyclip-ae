@@ -1,0 +1,86 @@
+/******************************************************************************
+* Copyright (c) 2022 Alan Witkowski
+*
+* This software is provided 'as-is', without any express or implied
+* warranty. In no event will the authors be held liable for any damages
+* arising from the use of this software.
+*
+* Permission is granted to anyone to use this software for any purpose,
+* including commercial applications, and to alter it and redistribute it
+* freely, subject to the following restrictions:
+*
+* 1. The origin of this software must not be misrepresented; you must not
+*    claim that you wrote the original software. If you use this software
+*    in a product, an acknowledgment in the product documentation would be
+*    appreciated but is not required.
+* 2. Altered source versions must be plainly marked as such, and must not be
+*    misrepresented as being the original software.
+* 3. This notice may not be removed or altered from any source distribution.
+*******************************************************************************/
+#pragma once
+
+// Libraries
+#include <ae/component.h>
+#include <glm/vec2.hpp>
+#include <glm/vec4.hpp>
+#include <vector>
+#include <string>
+
+namespace ae {
+
+// Forward Declarations
+class _Texture;
+
+// Animation template struct
+struct _AnimationTemplate {
+	std::string Identifier;
+	const _Texture *Texture;
+	int FramesPerLine;
+	glm::vec2 TextureScale;
+	glm::ivec2 FrameSize;
+	int StartFrame;
+	int EndFrame;
+	int DefaultFrame;
+	int RepeatType;
+};
+
+// Classes
+class _Animation : public ae::_Component {
+
+	public:
+
+		// Play modes
+		enum PlayType {
+			STOPPED,
+			PLAYING,
+			PAUSED
+		};
+
+		// Repeat modes
+		enum RepeatType {
+			STOP,
+			WRAP,
+			BOUNCE
+		};
+
+		_Animation(ae::_BaseObject *Parent);
+		~_Animation();
+
+		void Update(double FrameTime);
+		void Play(std::size_t Reel);
+		void Stop();
+		void CalculateTextureCoords();
+
+		std::vector<const ae::_AnimationTemplate *> Templates;
+		glm::vec4 TextureCoords;
+		double Timer;
+		double FramePeriod;
+		size_t Reel;
+		int Mode;
+		int Frame;
+		int LastFrame;
+		int Direction;
+
+};
+
+}

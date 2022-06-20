@@ -40,19 +40,7 @@ class _Shader;
 class _Sound;
 class _Music;
 struct _Style;
-
-// Animation template struct
-struct _AnimationTemplate {
-	std::string Identifier;
-	const _Texture *Texture;
-	int FramesPerLine;
-	glm::vec2 TextureScale;
-	glm::ivec2 FrameSize;
-	int StartFrame;
-	int EndFrame;
-	int DefaultFrame;
-	int RepeatType;
-};
+struct _AnimationTemplate;
 
 struct _Layer {
 	_Layer() : Layer(0), DepthTest(0), DepthMask(0), EditorOnly(0) { }

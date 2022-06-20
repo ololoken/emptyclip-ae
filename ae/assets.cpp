@@ -26,6 +26,7 @@
 #include <ae/tilemap.h>
 #include <ae/atlas.h>
 #include <ae/mesh.h>
+#include <ae/animation.h>
 #include <ae/files.h>
 #include <ae/graphics.h>
 #include <ae/audio.h>

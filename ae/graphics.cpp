@@ -248,10 +248,10 @@ void _Graphics::BuildVertexBuffers() {
 			 0.5f,  0.5f,
 			-0.5f, -0.5f,
 			 0.5f, -0.5f,
-			 1.0f,  0.0f,
-			 0.0f,  0.0f,
-			 1.0f,  1.0f,
 			 0.0f,  1.0f,
+			 1.0f,  1.0f,
+			 0.0f,  0.0f,
+			 1.0f,  0.0f,
 		};
 
 		VertexBuffer[VBO_ATLAS] = CreateVBO(Vertices, sizeof(Vertices), GL_DYNAMIC_DRAW);

@@ -45,6 +45,10 @@ void _Animation::Update(double FrameTime) {
 	if(Templates.size() == 0)
 		return;
 
+	// Update timer
+	Timer += FrameTime;
+
+	// Update frame
 	if(Mode == PLAYING && Timer >= FramePeriod) {
 		Timer = 0;
 		Frame += Direction;
@@ -62,12 +66,11 @@ void _Animation::Update(double FrameTime) {
 		}
 	}
 
+	// Update texture coordinates
 	if(Frame != LastFrame) {
 		CalculateTextureCoords();
 		LastFrame = Frame;
 	}
-
-	Timer += FrameTime;
 }
 
 // Play an animation

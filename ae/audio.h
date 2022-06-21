@@ -33,10 +33,12 @@ class _Sound {
 
 	public:
 
-		_Sound() : ID(0) { }
+		_Sound() : ID(0), Volume(1.0f), Limit(0) { }
 		~_Sound();
 
 		ALuint ID;
+		float Volume;
+		int Limit;
 };
 
 // Music class

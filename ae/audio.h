@@ -22,6 +22,7 @@
 // Libraries
 #include <al.h>
 #include <vorbis/vorbisfile.h>
+#include <glm/vec3.hpp>
 #include <thread>
 #include <list>
 #include <string>
@@ -65,16 +66,18 @@ class _AudioSource {
 		_AudioSource(const _Sound *Sound, float Volume=1.0f);
 		~_AudioSource();
 
-		void Play();
-		void Stop();
+		void Play() const;
+		void Stop() const;
 
-		bool IsPlaying();
+		bool IsPlaying() const;
 
 		ALuint ID;
 };
 
 // Wrapper around file handle
 struct _AudioFile {
+
+	_AudioFile() : FileHandle(nullptr), Start(0), Size(0) { }
 	_AudioFile(FILE *FileHandle, int Start, int Size) : FileHandle(FileHandle), Start(Start), Size(Size) { }
 
 	FILE *FileHandle;
@@ -82,7 +85,7 @@ struct _AudioFile {
 	int Size;
 };
 
-// Classes
+// Audio class
 class _Audio {
 
 	public:
@@ -105,11 +108,15 @@ class _Audio {
 		void Stop();
 		void StopSounds();
 		void StopMusic();
-		_AudioSource *PlaySound(_Sound *Sound, float Volume=1.0f);
+		const _AudioSource *PlaySound(_Sound *Sound, float Volume=1.0f);
+		const _AudioSource *PlaySound(_Sound *Sound, const glm::vec3 &Position, float Volume=1.0f, bool Loop=false, float MinGain=0.0f, float MaxGain=1.0f, float ReferenceDistance=10.0f, float MaxDistance=100.0f, float RollOff=2.5f);
 		void PlayMusic(_Music *Music, bool Loop=true);
 
 		void SetSoundVolume(float Volume);
 		void SetMusicVolume(float Volume);
+		void SetPosition(const glm::vec3 &Position);
+		void SetDirection(const glm::vec3 &Look, const glm::vec3 &Up);
+		glm::vec3 GetPosition();
 
 		bool Done;
 
@@ -134,7 +141,7 @@ class _Audio {
 		_Music *CurrentSong;
 		_Music *NewSong;
 
-		std::list<_AudioSource *> Sources;
+		std::list<const _AudioSource *> Sources;
 
 		std::thread *Thread;
 };

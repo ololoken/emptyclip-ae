@@ -21,7 +21,6 @@
 #include <alc.h>
 #include <stdexcept>
 #include <vector>
-#include <cstddef>
 
 namespace ae {
 
@@ -91,7 +90,7 @@ _AudioSource::_AudioSource(const _Sound *Sound, float Volume) {
 
 	// Assign buffer to source
 	alSourcei(ID, AL_BUFFER, (ALint)Sound->ID);
-	alSourcef(ID, AL_GAIN, Volume);
+	alSourcef(ID, AL_GAIN, Sound->Volume * Volume);
 }
 
 // Destructor
@@ -100,9 +99,7 @@ _AudioSource::~_AudioSource() {
 }
 
 // Determine if source is actively playing
-bool _AudioSource::IsPlaying() {
-
-	// Get state
+bool _AudioSource::IsPlaying() const {
 	ALenum State;
 	alGetSourcei(ID, AL_SOURCE_STATE, &State);
 
@@ -110,13 +107,13 @@ bool _AudioSource::IsPlaying() {
 }
 
 // Play
-void _AudioSource::Play() {
+void _AudioSource::Play() const {
 	if(ID)
 		alSourcePlay(ID);
 }
 
 // Stop
-void _AudioSource::Stop() {
+void _AudioSource::Stop() const {
 	if(ID)
 		alSourceStop(ID);
 }
@@ -227,7 +224,7 @@ void _Audio::Stop() {
 // Stop all sounds
 void _Audio::StopSounds() {
 	for(auto &Iterator : Sources) {
-		_AudioSource *Source = Iterator;
+		const _AudioSource *Source = Iterator;
 		Source->Stop();
 
 		delete Source;
@@ -243,7 +240,7 @@ void _Audio::Update(double FrameTime) {
 
 	// Update sources
 	for(auto Iterator = Sources.begin(); Iterator != Sources.end(); ) {
-		_AudioSource *Source = *Iterator;
+		const _AudioSource *Source = *Iterator;
 
 		// Delete source
 		if(!Source->IsPlaying()) {
@@ -359,13 +356,43 @@ _Music *_Audio::LoadMusic(const std::string &Path) {
 	return Music;
 }
 
+
 // Play a sound
-_AudioSource *_Audio::PlaySound(_Sound *Sound, float Volume) {
+const _AudioSource *_Audio::PlaySound(_Sound *Sound, float Volume) {
 	if(!Enabled || !Sound)
 		return nullptr;
 
 	// Create audio source
-	_AudioSource *AudioSource = new _AudioSource(Sound, SoundVolume * Volume);
+	const _AudioSource *AudioSource = new _AudioSource(Sound, SoundVolume * Volume);
+
+	// Play
+	AudioSource->Play();
+
+	// Add to sources
+	Sources.push_back(AudioSource);
+
+	return AudioSource;
+}
+
+// Play a positional sound
+const _AudioSource *_Audio::PlaySound(_Sound *Sound, const glm::vec3 &Position, float Volume, bool Loop, float MinGain, float MaxGain, float ReferenceDistance, float MaxDistance, float RollOff) {
+	if(!Enabled || !Sound)
+		return nullptr;
+
+	// Create audio source
+	const _AudioSource *AudioSource = new _AudioSource(Sound, SoundVolume * Volume);
+
+	// Set parameters
+	alSourcef(AudioSource->ID, AL_MIN_GAIN, MinGain);
+	alSourcef(AudioSource->ID, AL_MAX_GAIN, MaxGain);
+	alSourcef(AudioSource->ID, AL_REFERENCE_DISTANCE, ReferenceDistance);
+	alSourcef(AudioSource->ID, AL_MAX_DISTANCE, MaxDistance);
+	alSourcef(AudioSource->ID, AL_ROLLOFF_FACTOR, RollOff);
+	alSourcei(AudioSource->ID, AL_LOOPING, Loop);
+	alSourcei(AudioSource->ID, AL_SOURCE_RELATIVE, false);
+	alSource3f(AudioSource->ID, AL_POSITION, Position.x, Position.y, Position.z);
+
+	// Play
 	AudioSource->Play();
 
 	// Add to sources
@@ -404,9 +431,8 @@ void _Audio::StopMusic() {
 	NewSong = nullptr;
 
 	// Wait for thread to kill current song
-	while(CurrentSong) {
+	while(CurrentSong)
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
-	}
 }
 
 // Read data from a vorbis stream
@@ -435,7 +461,7 @@ void _Audio::OpenVorbis(const _AudioFile &AudioFile, OggVorbis_File *VorbisFile)
 	ov_callbacks Callbacks = {
 		(std::size_t (*)(void *, std::size_t, std::size_t, void *)) AudioFileRead,
 		(int (*)(void *, ogg_int64_t, int)) AudioFileSeek,
-		NULL,
+		nullptr,
 		(long (*)(void *)) AudioFileTell,
 	};
 
@@ -476,24 +502,18 @@ bool _Audio::QueueBuffers(_Music *Music, ALuint Buffer) {
 		// Read some bytes
 		int BitStream;
 		long BytesRead = ov_read(&Music->Stream, Data + (BUFFER_SIZE - BytesNeeded), (int)BytesNeeded, 0, 2, 1, &BitStream);
-
-		// Check for errors
-		if(BytesRead < 0) {
+		if(BytesRead < 0)
 			return true;
-		}
+
 		// Handle track end
-		else if(BytesRead == 0) {
-			if(Music->Loop) {
+		if(BytesRead == 0) {
+			if(Music->Loop)
 				ov_time_seek(&Music->Stream, 0);
-			}
-			else {
+			else
 				return true;
-			}
 		}
-		// Subtract from total bytes to read
-		else {
+		else
 			BytesNeeded -= BytesRead;
-		}
 	}
 
 	if(Music) {
@@ -519,6 +539,31 @@ void _Audio::SetMusicVolume(float Volume) {
 
 	MusicVolume = std::min(std::max(Volume, 0.0f), 1.0f);
 	alSourcef(MusicSource, AL_GAIN, MusicVolume);
+}
+
+// Set listener position
+void _Audio::SetPosition(const glm::vec3 &Position) {
+	if(!Enabled)
+		return;
+
+	alListener3f(AL_POSITION, Position.x, Position.y, Position.z);
+}
+
+// Set listener direction
+void _Audio::SetDirection(const glm::vec3 &Look, const glm::vec3 &Up) {
+	if(!Enabled)
+		return;
+
+	float Orientation[6] = { Look.x, Look.y, Look.z, Up.x, Up.y, Up.z };
+	alListenerfv(AL_ORIENTATION, Orientation);
+}
+
+// Get listener position
+glm::vec3 _Audio::GetPosition() {
+	float Position[3];
+	alGetListener3f(AL_POSITION, &Position[0], &Position[1], &Position[2]);
+
+	return glm::vec3(Position[0], Position[1], Position[2]);
 }
 
 // Load sound data from a vorbis stream

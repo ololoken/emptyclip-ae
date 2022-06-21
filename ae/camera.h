@@ -28,7 +28,7 @@ namespace ae {
 struct _CameraSettings {
 
 	_CameraSettings() :
-		UpdateDivisor(20.0f),
+		UpdateDivisor(0.1f),
 		Fovy(90.0f),
 		Near(0.1f),
 		Far(500.0f),

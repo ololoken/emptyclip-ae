@@ -33,6 +33,7 @@
 #include <constants.h>
 #include <map>
 #include <stdexcept>
+#include <sstream>
 #include <iostream>
 #include <fstream>
 #include <limits>
@@ -82,8 +83,8 @@ void _Assets::Close() {
 	for(const auto &Style : Styles)
 		delete Style.second;
 
-	for(const auto &AnimationTemplate : AnimationTemplates)
-		delete AnimationTemplate.second;
+	for(const auto &Reel : Reels)
+		delete Reel.second;
 
 	Fonts.clear();
 	Layers.clear();
@@ -93,7 +94,8 @@ void _Assets::Close() {
 	Atlases.clear();
 	Meshes.clear();
 	Styles.clear();
-	AnimationTemplates.clear();
+	Reels.clear();
+	Animations.clear();
 	Sounds.clear();
 	Music.clear();
 	Elements.clear();
@@ -381,8 +383,8 @@ void _Assets::LoadMeshDirectory(const std::string &Path) {
 	}
 }
 
-// Load animations
-void _Assets::LoadAnimations(const std::string &Path, bool IsServer) {
+// Load animation reels
+void _Assets::LoadReels(const std::string &Path, bool IsServer) {
 
 	// Load file
 	std::ifstream File(Path.c_str(), std::ios::in);
@@ -398,11 +400,11 @@ void _Assets::LoadAnimations(const std::string &Path, bool IsServer) {
 		std::getline(File, Name, '\t');
 
 		// Check for duplicates
-		if(AnimationTemplates[Name])
+		if(Reels[Name])
 			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Name);
 
 		// Create template
-		_AnimationTemplate *Template = new _AnimationTemplate();
+		_Reel *Template = new _Reel();
 		Template->Identifier = Name;
 
 		// Load texture
@@ -414,7 +416,7 @@ void _Assets::LoadAnimations(const std::string &Path, bool IsServer) {
 		Template->Texture = Assets.Textures[TextureFile];
 
 		// Read data
-		File >> Template->FrameSize.x >> Template->FrameSize.y >> Template->StartFrame >> Template->EndFrame >> Template->DefaultFrame >> Template->RepeatType;
+		File >> Template->FramePeriod >> Template->FrameSize.x >> Template->FrameSize.y >> Template->StartFrame >> Template->EndFrame >> Template->DefaultFrame >> Template->RepeatType;
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Add to list
@@ -422,13 +424,54 @@ void _Assets::LoadAnimations(const std::string &Path, bool IsServer) {
 			Template->FramesPerLine = Template->Texture->Size.x / Template->FrameSize.x;
 			Template->TextureScale = glm::vec2(Template->FrameSize) / glm::vec2(Template->Texture->Size);
 		}
-		AnimationTemplates[Name] = Template;
+		Reels[Name] = Template;
 	}
 
 	File.close();
 }
 
-// Loads the styles
+// Load animations
+void _Assets::LoadAnimations(const std::string &Path) {
+
+	// Load file
+	std::ifstream File(Path, std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
+
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
+		std::string ID;
+		std::getline(File, ID, '\t');
+
+		// Check for duplicates
+		if(Animations.find(ID) != Animations.end())
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + ID);
+
+		// Read rest of line into buffer
+		std::string Line;
+		std::getline(File, Line, '\n');
+		std::stringstream Buffer(Line);
+
+		// Get reels
+		std::string ReelID;
+		std::vector<const _Reel *> AnimationReels;
+		while(std::getline(Buffer, ReelID, '\t')) {
+			if(ReelID != "" && Reels.find(ReelID) == Reels.end())
+				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find reel: " + ReelID);
+
+			AnimationReels.push_back(Reels[ReelID]);
+		}
+
+		Animations[ID] = AnimationReels;
+	}
+
+	File.close();
+}
+
+// Load UI styles
 void _Assets::LoadStyles(const std::string &Path) {
 
 	// Load file

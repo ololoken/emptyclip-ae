@@ -23,6 +23,7 @@
 #include <glm/vec4.hpp>
 #include <glm/vec2.hpp>
 #include <unordered_map>
+#include <vector>
 #include <string>
 
 namespace ae {
@@ -40,7 +41,7 @@ class _Shader;
 class _Sound;
 class _Music;
 struct _Style;
-struct _AnimationTemplate;
+struct _Reel;
 
 struct _Layer {
 	_Layer() : Layer(0), DepthTest(0), DepthMask(0), EditorOnly(0) { }
@@ -66,7 +67,8 @@ class _Assets {
 		void LoadSoundPack(const std::string &Path);
 		void LoadMusic(const std::string &Path);
 		void LoadMeshDirectory(const std::string &Path);
-		void LoadAnimations(const std::string &Path, bool IsServer);
+		void LoadReels(const std::string &Path, bool IsServer);
+		void LoadAnimations(const std::string &Path);
 		void LoadFonts(const std::string &Path, bool LoadFonts=true);
 		void LoadLayers(const std::string &Path);
 		void LoadPrograms(const std::string &Path);
@@ -82,7 +84,8 @@ class _Assets {
 		std::unordered_map<std::string, _TileMap *> TileMaps;
 		std::unordered_map<std::string, const _Mesh *> Meshes;
 		std::unordered_map<std::string, _Program *> Programs;
-		std::unordered_map<std::string, const _AnimationTemplate *> AnimationTemplates;
+		std::unordered_map<std::string, const _Reel *> Reels;
+		std::unordered_map<std::string, std::vector<const _Reel *> > Animations;
 		std::unordered_map<std::string, glm::vec4> Colors;
 		std::unordered_map<std::string, _Style *> Styles;
 		std::unordered_map<std::string, _Sound *> Sounds;

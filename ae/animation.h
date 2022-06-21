@@ -31,13 +31,14 @@ namespace ae {
 // Forward Declarations
 class _Texture;
 
-// Animation template struct
-struct _AnimationTemplate {
+// Holds an animation reel
+struct _Reel {
 	std::string Identifier;
 	const _Texture *Texture;
-	int FramesPerLine;
 	glm::vec2 TextureScale;
 	glm::ivec2 FrameSize;
+	double FramePeriod;
+	int FramesPerLine;
 	int StartFrame;
 	int EndFrame;
 	int DefaultFrame;
@@ -49,7 +50,7 @@ class _Animation : public ae::_Component {
 
 	public:
 
-		// Play modes
+		// State
 		enum PlayType {
 			STOPPED,
 			PLAYING,
@@ -67,11 +68,14 @@ class _Animation : public ae::_Component {
 		~_Animation();
 
 		void Update(double FrameTime);
-		void Play(std::size_t Reel);
+		void Play(std::size_t Reel, double Speed=1.0);
 		void Stop();
 		void CalculateTextureCoords();
 
-		std::vector<const ae::_AnimationTemplate *> Templates;
+		bool IsPlaying() const { return Mode == PLAYING; }
+		bool IsStopped() const { return Mode == STOPPED; }
+
+		std::vector<const ae::_Reel *> Reels;
 		glm::vec4 TextureCoords;
 		double Timer;
 		double FramePeriod;

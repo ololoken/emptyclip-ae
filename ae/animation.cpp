@@ -42,7 +42,7 @@ _Animation::~_Animation() {
 
 // Update
 void _Animation::Update(double FrameTime) {
-	if(Templates.size() == 0)
+	if(Reels.empty())
 		return;
 
 	// Update timer
@@ -52,16 +52,30 @@ void _Animation::Update(double FrameTime) {
 	if(Mode == PLAYING && Timer >= FramePeriod) {
 		Timer = 0;
 		Frame += Direction;
-		if(Frame > Templates[Reel]->EndFrame) {
-			if(Templates[Reel]->RepeatType == BOUNCE) {
-				Frame = Templates[Reel]->EndFrame - 1;
-				Direction = -Direction;
+		if(Frame > Reels[Reel]->EndFrame) {
+			switch(Reels[Reel]->RepeatType) {
+				case STOP:
+					Frame = Reels[Reel]->EndFrame;
+					Direction = 0;
+					Mode = STOPPED;
+				break;
+				case BOUNCE:
+					Frame = Reels[Reel]->EndFrame - 1;
+					Direction = -Direction;
+				break;
 			}
 		}
-		else if(Frame < Templates[Reel]->StartFrame) {
-			if(Templates[Reel]->RepeatType == BOUNCE) {
-				Frame = Templates[Reel]->StartFrame + 1;
-				Direction = -Direction;
+		else if(Frame < Reels[Reel]->StartFrame) {
+			switch(Reels[Reel]->RepeatType) {
+				case STOP:
+					Frame = Reels[Reel]->StartFrame;
+					Direction = 0;
+					Mode = STOPPED;
+				break;
+				case BOUNCE:
+					Frame = Reels[Reel]->StartFrame + 1;
+					Direction = -Direction;
+				break;
 			}
 		}
 	}
@@ -74,35 +88,43 @@ void _Animation::Update(double FrameTime) {
 }
 
 // Play an animation
-void _Animation::Play(std::size_t Reel) {
+void _Animation::Play(std::size_t Reel, double Speed) {
 	if(Mode == PLAYING)
+		return;
+
+	if(Reels.empty())
 		return;
 
 	Mode = PLAYING;
 	this->Reel = Reel;
-	Frame = Templates[Reel]->DefaultFrame;
+	Frame = Reels[Reel]->DefaultFrame;
+	FramePeriod = Reels[Reel]->FramePeriod / Speed;
 	Timer = 0;
 	Direction = 1;
+	LastFrame = -1;
 }
 
 // Stop
 void _Animation::Stop() {
+	if(Reels.empty())
+		return;
+
 	Mode = STOPPED;
-	Frame = Templates[Reel]->DefaultFrame;
+	Frame = Reels[Reel]->DefaultFrame;
 }
 
 // Calculate where in the texture to draw the current frame
 void _Animation::CalculateTextureCoords() {
-	if(!Templates[Reel]->Texture || !Templates[Reel]->Texture->ID)
+	if(Reels.empty() || !Reels[Reel]->Texture || !Reels[Reel]->Texture->ID)
 		return;
 
-	int FrameX = Frame % (Templates[Reel]->FramesPerLine);
-	int FrameY = Frame / (Templates[Reel]->FramesPerLine);
+	int FrameX = Frame % (Reels[Reel]->FramesPerLine);
+	int FrameY = Frame / (Reels[Reel]->FramesPerLine);
 
-	TextureCoords[0] = Templates[Reel]->TextureScale.x * FrameX;
-	TextureCoords[1] = Templates[Reel]->TextureScale.y * FrameY;
-	TextureCoords[2] = TextureCoords[0] + Templates[Reel]->TextureScale.x;
-	TextureCoords[3] = TextureCoords[1] + Templates[Reel]->TextureScale.y;
+	TextureCoords[0] = Reels[Reel]->TextureScale.x * FrameX;
+	TextureCoords[1] = Reels[Reel]->TextureScale.y * FrameY;
+	TextureCoords[2] = TextureCoords[0] + Reels[Reel]->TextureScale.x;
+	TextureCoords[3] = TextureCoords[1] + Reels[Reel]->TextureScale.y;
 }
 
 }

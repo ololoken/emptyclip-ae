@@ -87,19 +87,19 @@ void _Camera::Update(double FrameTime) {
 	// Update position
 	glm::vec2 Delta(TargetPosition - Position);
 	if(std::abs(Delta.x) > SnappingThreshold)
-		Position.x += Delta.x / UpdateDivisor;
+		Position.x += FrameTime * Delta.x / UpdateDivisor;
 	else
 		Position.x = TargetPosition.x;
 
 	if(std::abs(Delta.y) > SnappingThreshold)
-		Position.y += Delta.y / UpdateDivisor;
+		Position.y += FrameTime * Delta.y / UpdateDivisor;
 	else
 		Position.y = TargetPosition.y;
 
 	// Update distance
 	float DeltaZ = TargetPosition.z - Position.z;
 	if(std::abs(DeltaZ) > SnappingThreshold)
-		Position.z += DeltaZ / UpdateDivisor;
+		Position.z += FrameTime * DeltaZ / UpdateDivisor;
 	else
 		Position.z = TargetPosition.z;
 }

@@ -21,6 +21,7 @@
 #include <alc.h>
 #include <stdexcept>
 #include <vector>
+#include <glm/gtx/norm.hpp>
 
 namespace ae {
 
@@ -118,6 +119,48 @@ void _AudioSource::Stop() const {
 		alSourceStop(ID);
 }
 
+// Returns true if the source is relative
+bool _AudioSource::IsRelative() {
+	ALenum State;
+
+	alGetSourcei(ID, AL_SOURCE_RELATIVE, &State);
+
+	return State == AL_TRUE;
+}
+
+// Set relative
+void _AudioSource::SetRelative(bool Value) {
+	alSourcei(ID, AL_SOURCE_RELATIVE, Value);
+}
+
+// Set looping
+void _AudioSource::SetLooping(bool Value) {
+	alSourcei(ID, AL_LOOPING, Value);
+}
+
+// Set pitch
+void _AudioSource::SetPitch(float Value) {
+	alSourcef(ID, AL_PITCH, Value);
+}
+
+// Set gain
+void _AudioSource::SetGain(float Value) {
+	alSourcef(ID, AL_GAIN, Value);
+}
+
+// Set position
+void _AudioSource::SetPosition(const glm::vec3 &Position) {
+	alSource3f(ID, AL_POSITION, Position.x, Position.y, Position.z);
+}
+
+// Get source position
+glm::vec3 _AudioSource::GetPosition() {
+	float Position[3];
+	alGetSource3f(ID, AL_POSITION, &Position[0], &Position[1], &Position[2]);
+
+	return glm::vec3(Position[0], Position[1], Position[2]);
+}
+
 // Destructor
 _Sound::~_Sound() {
 	alDeleteBuffers(1, &ID);
@@ -135,6 +178,7 @@ _Audio::_Audio() :
 	Enabled(false),
 	SoundVolume(1.0f),
 	MusicVolume(1.0f),
+	MaxDistanceSquared(10000.0f),
 	MusicSource(0),
 	CurrentSong(nullptr),
 	NewSong(nullptr),
@@ -145,7 +189,7 @@ _Audio::_Audio() :
 }
 
 // Initialize
-void _Audio::Init(bool Enabled) {
+void _Audio::Init(bool Enabled, bool StartMusicThread) {
 	if(!Enabled)
 		return;
 
@@ -156,8 +200,6 @@ void _Audio::Init(bool Enabled) {
 
 	// Create context
 	ALCcontext *Context = alcCreateContext(Device, nullptr);
-
-	// Set active context
 	alcMakeContextCurrent(Context);
 
 	// Create music buffers
@@ -167,14 +209,14 @@ void _Audio::Init(bool Enabled) {
 	// Clear code
 	alGetError();
 
+	// Initialize
 	CurrentSong = nullptr;
 	NewSong = nullptr;
 	Done = false;
+	this->Enabled = Enabled;
 
 	// Start thread
 	Thread = new std::thread(RunThread, this);
-
-	this->Enabled = Enabled;
 }
 
 // Close
@@ -216,17 +258,14 @@ void _Audio::Close() {
 
 // Stop all sound and music
 void _Audio::Stop() {
-
 	StopSounds();
 	StopMusic();
 }
 
 // Stop all sounds
 void _Audio::StopSounds() {
-	for(auto &Iterator : Sources) {
-		const _AudioSource *Source = Iterator;
+	for(auto &Source : Sources) {
 		Source->Stop();
-
 		delete Source;
 	}
 
@@ -358,12 +397,13 @@ _Music *_Audio::LoadMusic(const std::string &Path) {
 
 
 // Play a sound
-const _AudioSource *_Audio::PlaySound(_Sound *Sound, float Volume) {
+const _AudioSource *_Audio::PlaySound(const _Sound *Sound, float Volume) {
 	if(!Enabled || !Sound)
 		return nullptr;
 
 	// Create audio source
 	const _AudioSource *AudioSource = new _AudioSource(Sound, SoundVolume * Volume);
+	alSourcei(AudioSource->ID, AL_SOURCE_RELATIVE, true);
 
 	// Play
 	AudioSource->Play();
@@ -375,8 +415,13 @@ const _AudioSource *_Audio::PlaySound(_Sound *Sound, float Volume) {
 }
 
 // Play a positional sound
-const _AudioSource *_Audio::PlaySound(_Sound *Sound, const glm::vec3 &Position, float Volume, bool Loop, float MinGain, float MaxGain, float ReferenceDistance, float MaxDistance, float RollOff) {
+const _AudioSource *_Audio::PlaySound(const _Sound *Sound, const glm::vec3 &Position, float Volume, bool Loop, float MinGain, float MaxGain, float ReferenceDistance, float MaxDistance, float RollOff) {
 	if(!Enabled || !Sound)
+		return nullptr;
+
+	// Check max distance
+	float DistanceSquared = glm::distance2(Position, GetPosition());
+	if(DistanceSquared > MaxDistanceSquared)
 		return nullptr;
 
 	// Create audio source

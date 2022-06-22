@@ -70,6 +70,14 @@ class _AudioSource {
 		void Stop() const;
 
 		bool IsPlaying() const;
+		bool IsRelative();
+
+		void SetRelative(bool Value);
+		void SetLooping(bool Value);
+		void SetPitch(float Value);
+		void SetGain(float Value);
+		void SetPosition(const glm::vec3 &Position);
+		glm::vec3 GetPosition();
 
 		ALuint ID;
 };
@@ -95,7 +103,7 @@ class _Audio {
 
 		_Audio();
 
-		void Init(bool Enabled);
+		void Init(bool Enabled, bool StartMusicThread=true);
 		void Close();
 
 		void Update(double FrameTime);
@@ -108,10 +116,11 @@ class _Audio {
 		void Stop();
 		void StopSounds();
 		void StopMusic();
-		const _AudioSource *PlaySound(_Sound *Sound, float Volume=1.0f);
-		const _AudioSource *PlaySound(_Sound *Sound, const glm::vec3 &Position, float Volume=1.0f, bool Loop=false, float MinGain=0.0f, float MaxGain=1.0f, float ReferenceDistance=10.0f, float MaxDistance=100.0f, float RollOff=2.5f);
+		const _AudioSource *PlaySound(const _Sound *Sound, float Volume=1.0f);
+		const _AudioSource *PlaySound(const _Sound *Sound, const glm::vec3 &Position, float Volume=1.0f, bool Loop=false, float MinGain=0.0f, float MaxGain=1.0f, float ReferenceDistance=10.0f, float MaxDistance=100.0f, float RollOff=2.5f);
 		void PlayMusic(_Music *Music, bool Loop=true);
 
+		void SetMaxDistance(float Distance) { MaxDistanceSquared = Distance * Distance; }
 		void SetSoundVolume(float Volume);
 		void SetMusicVolume(float Volume);
 		void SetPosition(const glm::vec3 &Position);
@@ -131,9 +140,9 @@ class _Audio {
 		bool QueueBuffers(_Music *Music, ALuint Buffer);
 
 		bool Enabled;
-
 		float SoundVolume;
 		float MusicVolume;
+		float MaxDistanceSquared;
 
 		ALuint MusicSource;
 		ALuint MusicBuffers[BUFFER_COUNT];

@@ -24,6 +24,7 @@
 #include <vorbis/vorbisfile.h>
 #include <glm/vec3.hpp>
 #include <thread>
+#include <unordered_map>
 #include <list>
 #include <string>
 
@@ -80,6 +81,7 @@ class _AudioSource {
 		glm::vec3 GetPosition();
 
 		ALuint ID;
+		ALuint SoundID;
 };
 
 // Wrapper around file handle
@@ -113,12 +115,12 @@ class _Audio {
 		_Sound *LoadSound(const _AudioFile &AudioFile);
 		_Music *LoadMusic(const std::string &Path);
 
-		void Stop();
-		void StopSounds();
-		void StopMusic();
 		const _AudioSource *PlaySound(const _Sound *Sound, float Volume=1.0f);
 		const _AudioSource *PlaySound(const _Sound *Sound, const glm::vec3 &Position, float Volume=1.0f, bool Loop=false, float MinGain=0.0f, float MaxGain=1.0f, float ReferenceDistance=10.0f, float MaxDistance=100.0f, float RollOff=2.5f);
 		void PlayMusic(_Music *Music, bool Loop=true);
+		void Stop();
+		void StopSounds();
+		void StopMusic();
 
 		void SetMaxDistance(float Distance) { MaxDistanceSquared = Distance * Distance; }
 		void SetSoundVolume(float Volume);
@@ -138,6 +140,7 @@ class _Audio {
 		void OpenVorbis(const _AudioFile &AudioFile, OggVorbis_File *VorbisFile);
 		void GetVorbisInfo(OggVorbis_File *VorbisFile, long &Rate, int &Format);
 		bool QueueBuffers(_Music *Music, ALuint Buffer);
+		void CheckSoundLimit(const _Sound *Sound);
 
 		bool Enabled;
 		float SoundVolume;
@@ -151,6 +154,7 @@ class _Audio {
 		_Music *NewSong;
 
 		std::list<const _AudioSource *> Sources;
+		std::unordered_map<ALuint, int> SoundsPlaying;
 
 		std::thread *Thread;
 };

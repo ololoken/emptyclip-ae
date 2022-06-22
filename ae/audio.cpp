@@ -85,6 +85,7 @@ std::size_t AudioFileRead(void *Destination, std::size_t Size, std::size_t Count
 
 // Constructor
 _AudioSource::_AudioSource(const _Sound *Sound, float Volume) {
+	SoundID = Sound->ID;
 
 	// Create source
 	alGenSources(1, &ID);
@@ -256,22 +257,6 @@ void _Audio::Close() {
 	Enabled = false;
 }
 
-// Stop all sound and music
-void _Audio::Stop() {
-	StopSounds();
-	StopMusic();
-}
-
-// Stop all sounds
-void _Audio::StopSounds() {
-	for(auto &Source : Sources) {
-		Source->Stop();
-		delete Source;
-	}
-
-	Sources.clear();
-}
-
 // Update audio
 void _Audio::Update(double FrameTime) {
 	if(!Enabled)
@@ -283,6 +268,12 @@ void _Audio::Update(double FrameTime) {
 
 		// Delete source
 		if(!Source->IsPlaying()) {
+
+			// Update number of sound ids playing
+			SoundsPlaying[Source->SoundID]--;
+			if(SoundsPlaying[Source->SoundID] <= 0)
+				SoundsPlaying.erase(Source->SoundID);
+
 			delete Source;
 			Iterator = Sources.erase(Iterator);
 		}
@@ -395,11 +386,13 @@ _Music *_Audio::LoadMusic(const std::string &Path) {
 	return Music;
 }
 
-
 // Play a sound
 const _AudioSource *_Audio::PlaySound(const _Sound *Sound, float Volume) {
 	if(!Enabled || !Sound)
 		return nullptr;
+
+	// Handle sound limits
+	CheckSoundLimit(Sound);
 
 	// Create audio source
 	const _AudioSource *AudioSource = new _AudioSource(Sound, SoundVolume * Volume);
@@ -423,6 +416,9 @@ const _AudioSource *_Audio::PlaySound(const _Sound *Sound, const glm::vec3 &Posi
 	float DistanceSquared = glm::distance2(Position, GetPosition());
 	if(DistanceSquared > MaxDistanceSquared)
 		return nullptr;
+
+	// Handle sound limits
+	CheckSoundLimit(Sound);
 
 	// Create audio source
 	const _AudioSource *AudioSource = new _AudioSource(Sound, SoundVolume * Volume);
@@ -463,6 +459,22 @@ void _Audio::PlayMusic(_Music *Music, bool Loop) {
 		NewSong->Stop = false;
 		NewSong->Loop = Loop;
 	}
+}
+
+// Stop all sound and music
+void _Audio::Stop() {
+	StopSounds();
+	StopMusic();
+}
+
+// Stop all sounds
+void _Audio::StopSounds() {
+	for(auto &Source : Sources) {
+		Source->Stop();
+		delete Source;
+	}
+
+	Sources.clear();
 }
 
 // Stop all music
@@ -567,6 +579,19 @@ bool _Audio::QueueBuffers(_Music *Music, ALuint Buffer) {
 	}
 
 	return false;
+}
+
+// Check sound limit and stop oldest sound
+void _Audio::CheckSoundLimit(const _Sound *Sound) {
+	SoundsPlaying[Sound->ID]++;
+	if(Sound->Limit > 0 && SoundsPlaying[Sound->ID] > Sound->Limit) {
+		for(auto &Source : Sources) {
+			if(Source->IsPlaying() && Source->SoundID == Sound->ID) {
+				alSourceStop(Source->ID);
+				break;
+			}
+		}
+	}
 }
 
 // Set sound volume

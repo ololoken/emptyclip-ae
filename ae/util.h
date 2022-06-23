@@ -45,6 +45,7 @@ inline T ToNumber(const std::string &String) {
 	return Number;
 }
 
-inline float Round(double Number) { return (int64_t)(Number * 10) / 10.0; }
+inline float Round1(double Number) { return (int64_t)(Number * 10) / 10.0; }
+inline float Round2(double Number) { return (int64_t)(Number * 100) / 100.0; }
 
 }

@@ -33,7 +33,7 @@ class _Texture;
 
 // Holds an animation reel
 struct _Reel {
-	std::string Identifier;
+	std::string ID;
 	const _Texture *Texture;
 	glm::vec2 TextureScale;
 	glm::ivec2 FrameSize;

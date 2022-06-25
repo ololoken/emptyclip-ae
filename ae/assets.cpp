@@ -405,7 +405,7 @@ void _Assets::LoadReels(const std::string &Path, bool IsServer) {
 
 		// Create template
 		_Reel *Template = new _Reel();
-		Template->Identifier = Name;
+		Template->ID = Name;
 
 		// Load texture
 		std::string TextureFile;

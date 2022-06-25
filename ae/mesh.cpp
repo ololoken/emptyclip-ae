@@ -28,7 +28,7 @@ namespace ae {
 
 // Constructor
 _Mesh::_Mesh(const std::string &Path) :
-	Identifier(Path),
+	ID(Path),
 	IndexCount(0),
 	Flags(0),
 	Version(0),

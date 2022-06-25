@@ -60,7 +60,7 @@ class _Mesh {
 		static void ConvertOBJ(const std::string &Path);
 
 		// Attributes
-		std::string Identifier;
+		std::string ID;
 		uint32_t IndexCount;
 		uint32_t Flags;
 		uint8_t Version;

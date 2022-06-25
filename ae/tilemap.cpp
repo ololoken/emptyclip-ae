@@ -47,7 +47,7 @@ _TileMap::_TileMap(const std::string &Path) {
 
 		// Check for duplicates
 		if(Data.find(TileData.ID) != Data.end())
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + TileData.ID);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + TileData.ID);
 
 		TileData.Index = i++;
 

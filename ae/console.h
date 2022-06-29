@@ -22,7 +22,6 @@
 // Libraries
 #include <string>
 #include <vector>
-#include <list>
 #include <fstream>
 #include <glm/vec4.hpp>
 
@@ -70,8 +69,8 @@ class _Console {
 
 		// Commands
 		std::fstream HistoryFile;
-		std::list<std::string> CommandHistory;
-		std::list<std::string>::iterator CommandHistoryIterator;
+		std::vector<std::string> CommandHistory;
+		std::vector<std::string>::iterator CommandHistoryIterator;
 
 		// UI
 		_Element *Element;

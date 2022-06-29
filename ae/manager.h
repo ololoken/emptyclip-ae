@@ -23,6 +23,7 @@
 #include <ae/type.h>
 #include <unordered_map>
 #include <list>
+#include <vector>
 #include <limits>
 #include <stdexcept>
 
@@ -47,7 +48,7 @@ template<class T> class _Manager {
 
 		// Storage
 		std::list<T *> Objects;
-		std::list<T *> DeleteList;
+		std::vector<T *> DeleteList;
 
 	private:
 

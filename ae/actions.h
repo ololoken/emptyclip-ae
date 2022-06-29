@@ -22,7 +22,6 @@
 // Libraries
 #include <ae/input.h>
 #include <SDL_scancode.h>
-#include <list>
 #include <string>
 #include <vector>
 
@@ -78,7 +77,7 @@ class _Actions {
 	private:
 
 		// Input bindings
-		std::list<_ActionMap> InputMap[_Input::INPUT_COUNT][ACTIONS_MAXINPUTS];
+		std::vector<_ActionMap> InputMap[_Input::INPUT_COUNT][ACTIONS_MAXINPUTS];
 };
 
 extern _Actions Actions;

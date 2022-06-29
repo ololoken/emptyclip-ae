@@ -161,7 +161,7 @@ void _Console::Update(double FrameTime) {
 		case SDL_SCANCODE_TAB: {
 
 			// Compare input with all commands
-			std::list<std::string> PossibleCommands;
+			std::vector<std::string> PossibleCommands;
 			std::size_t CompareLength = TextboxElement->Text.length();
 			for(const auto &Token : CommandList) {
 				if(Token.substr(0, CompareLength) == TextboxElement->Text)

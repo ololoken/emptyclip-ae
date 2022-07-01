@@ -37,7 +37,6 @@ _Graphics Graphics;
 void _Graphics::Init(const _WindowSettings &WindowSettings) {
 
 	// Initialize
-	CircleVertices = 32;
 	Anisotropy = 0.0f;
 	FramesPerSecond = 0;
 	FrameCount = 0;

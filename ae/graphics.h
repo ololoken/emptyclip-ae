@@ -72,6 +72,7 @@ class _Graphics {
 
 	public:
 
+		_Graphics() : CircleVertices(32) { }
 		void Init(const _WindowSettings &WindowSettings);
 		void Close();
 
@@ -135,6 +136,7 @@ class _Graphics {
 		float AspectRatio;
 		GLfloat Anisotropy;
 		int FramesPerSecond;
+		int CircleVertices;
 
 	private:
 
@@ -142,7 +144,6 @@ class _Graphics {
 		void SetupOpenGL();
 
 		// Vertex buffers
-		int CircleVertices;
 		GLuint VertexArrayID;
 		GLuint VertexBuffer[VBO_COUNT];
 

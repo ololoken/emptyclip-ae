@@ -70,7 +70,7 @@ long AudioFileTell(void *Source) {
 }
 
 // Custom file read
-std::size_t AudioFileRead(void *Destination, std::size_t Size, std::size_t Count, void *Source) {
+size_t AudioFileRead(void *Destination, size_t Size, size_t Count, void *Source) {
 	_AudioFile *AudioFile = (_AudioFile *)Source;
 
 	// Check for reading past end of file
@@ -516,7 +516,7 @@ void _Audio::OpenVorbis(const _AudioFile &AudioFile, OggVorbis_File *VorbisFile)
 
 	// Set up custom file functions
 	ov_callbacks Callbacks = {
-		(std::size_t (*)(void *, std::size_t, std::size_t, void *)) AudioFileRead,
+		(size_t (*)(void *, size_t, size_t, void *)) AudioFileRead,
 		(int (*)(void *, ogg_int64_t, int)) AudioFileSeek,
 		nullptr,
 		(long (*)(void *)) AudioFileTell,

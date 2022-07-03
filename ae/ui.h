@@ -185,8 +185,8 @@ class _Element {
 		const _Font *Font;
 		std::string Text;
 		std::string AllowedCharacters;
-		std::size_t MaxLength;
-		std::size_t CursorPosition;
+		size_t MaxLength;
+		size_t CursorPosition;
 		double CursorTimer;
 		int LastKeyPressed;
 		bool Password;

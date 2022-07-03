@@ -88,7 +88,7 @@ void _Animation::Update(double FrameTime) {
 }
 
 // Play an animation
-void _Animation::Play(std::size_t Reel, double Speed) {
+void _Animation::Play(size_t Reel, double Speed) {
 	if(Mode == PLAYING)
 		return;
 

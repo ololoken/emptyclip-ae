@@ -22,6 +22,7 @@
 
 // Libraries
 #include <ae/network.h>
+#include <cstddef>
 
 namespace ae {
 
@@ -33,7 +34,7 @@ class _ServerNetwork : public _Network {
 
 	public:
 
-		_ServerNetwork(std::size_t MaxPeers, uint16_t Port);
+		_ServerNetwork(size_t MaxPeers, uint16_t Port);
 		~_ServerNetwork() override;
 
 		// Sockets
@@ -41,7 +42,7 @@ class _ServerNetwork : public _Network {
 
 		// Connections
 		uint16_t GetListenPort();
-		std::size_t GetMaxPeers();
+		size_t GetMaxPeers();
 		void DisconnectPeer(const _Peer *Peer, int Data=0);
 		void DisconnectAll(int Data=0);
 

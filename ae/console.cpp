@@ -137,7 +137,7 @@ void _Console::Update(double FrameTime) {
 			if(!TextboxElement->Text.empty()) {
 
 				// Separate command from parameters
-				std::size_t SpaceIndex = TextboxElement->Text.find_first_of(' ');
+				size_t SpaceIndex = TextboxElement->Text.find_first_of(' ');
 				Command = TextboxElement->Text.substr(0, SpaceIndex);
 
 				// Handle parameters
@@ -162,7 +162,7 @@ void _Console::Update(double FrameTime) {
 
 			// Compare input with all commands
 			std::vector<std::string> PossibleCommands;
-			std::size_t CompareLength = TextboxElement->Text.length();
+			size_t CompareLength = TextboxElement->Text.length();
 			for(const auto &Token : CommandList) {
 				if(Token.substr(0, CompareLength) == TextboxElement->Text)
 					PossibleCommands.push_back(Token);

@@ -27,7 +27,7 @@
 namespace ae {
 
 // Constructor
-_ServerNetwork::_ServerNetwork(std::size_t MaxPeers, uint16_t Port) {
+_ServerNetwork::_ServerNetwork(size_t MaxPeers, uint16_t Port) {
 	ENetAddress Address;
 	Address.host = ENET_HOST_ANY;
 	Address.port = Port;
@@ -64,7 +64,7 @@ uint16_t _ServerNetwork::GetListenPort() {
 }
 
 // Get max number of peers
-std::size_t _ServerNetwork::GetMaxPeers() {
+size_t _ServerNetwork::GetMaxPeers() {
 	if(!Connection)
 		return 0;
 

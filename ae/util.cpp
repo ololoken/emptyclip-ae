@@ -47,17 +47,17 @@ const char *LoadFileIntoMemory(const char *Path) {
 	File.seekg(0, std::ios::beg);
 
 	// Read data
-	char *Data = new char[(std::size_t)Size + 1];
+	char *Data = new char[(size_t)Size + 1];
 	File.read(Data, Size);
 	File.close();
-	Data[(std::size_t)Size] = 0;
+	Data[(size_t)Size] = 0;
 
 	return Data;
 }
 
 // Remove extension from a filename
 std::string RemoveExtension(const std::string &Path) {
-	std::size_t SuffixPosition = Path.find_last_of(".");
+	size_t SuffixPosition = Path.find_last_of(".");
 	if(SuffixPosition == std::string::npos)
 		return Path;
 

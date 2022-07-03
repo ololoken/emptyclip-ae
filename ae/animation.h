@@ -68,7 +68,7 @@ class _Animation : public ae::_Component {
 		~_Animation();
 
 		void Update(double FrameTime);
-		void Play(std::size_t Reel, double Speed=1.0);
+		void Play(size_t Reel, double Speed=1.0);
 		void Stop();
 		void CalculateTextureCoords();
 

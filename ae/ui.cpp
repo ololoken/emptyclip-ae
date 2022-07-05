@@ -62,6 +62,7 @@ _Element::_Element() :
 	Stretch(true),
 	Wrap(false),
 	Format(false),
+	Scaled(true),
 	SizePercent{false, false},
 	Debug(0),
 	Color(1.0f),
@@ -127,7 +128,11 @@ _Element::_Element(tinyxml2::XMLElement *Node, _Element *Parent) :
 	Node->QueryIntAttribute("index", &Index);
 	Node->QueryIntAttribute("debug", &Debug);
 	Node->QueryBoolAttribute("enabled", &Enabled);
+	Node->QueryBoolAttribute("scaled", &Scaled);
 	Node->QueryIntAttribute("base_height", &BaseHeight);
+
+	// Get scale factor
+	float ScaleFactor = Scaled ? GetUIScale() : 1.0f;
 
 	// Handle size
 	for(int i = 0; i < 2; i++) {
@@ -139,12 +144,12 @@ _Element::_Element(tinyxml2::XMLElement *Node, _Element *Parent) :
 		// Convert to number
 		if(BaseSizeString[i] != "") {
 			BaseSize[i] = std::stoi(BaseSizeString[i]);
-			Size[i] = BaseSize[i] * GetUIScale();
+			Size[i] = BaseSize[i] * ScaleFactor;
 		}
 	}
 
 	// Scale offset
-	Offset = BaseOffset * GetUIScale();
+	Offset = BaseOffset * ScaleFactor;
 
 	// Check ids
 	if(Assets.Elements.find(Name) != Assets.Elements.end())
@@ -263,8 +268,10 @@ void _Element::SerializeElement(tinyxml2::XMLDocument &Document, tinyxml2::XMLEl
 			Node->SetAttribute("clickable", Clickable);
 		if(Draggable)
 			Node->SetAttribute("draggable", Draggable);
-		if(Enabled != 1)
+		if(!Enabled)
 			Node->SetAttribute("enabled", Enabled);
+		if(!Scaled)
+			Node->SetAttribute("scaled", Scaled);
 		if(Index != -1)
 			Node->SetAttribute("index", Index);
 
@@ -411,7 +418,8 @@ void _Element::Update(double FrameTime, const glm::vec2 &Mouse) {
 
 	// Handle dragging
 	if(Draggable && PressedElement && Parent) {
-		BaseOffset = (Mouse - Parent->Bounds.Start - PressedOffset) / GetUIScale();
+		float ScaleFactor = Scaled ? GetUIScale() : 1.0f;
+		BaseOffset = (Mouse - Parent->Bounds.Start - PressedOffset) / ScaleFactor;
 		BaseOffset = glm::clamp(BaseOffset, glm::vec2(0), Parent->BaseSize - BaseSize);
 		CalculateBounds();
 	}
@@ -608,8 +616,9 @@ void _Element::CalculateBounds(bool Scale) {
 
 	// Scale element
 	if(Scale) {
-		Offset = BaseOffset * GetUIScale();
-		Size = BaseSize * GetUIScale();
+		float ScaleFactor = Scaled ? GetUIScale() : 1.0f;
+		Offset = BaseOffset * ScaleFactor;
+		Size = BaseSize * ScaleFactor;
 	}
 
 	// Handle percents

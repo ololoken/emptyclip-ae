@@ -107,7 +107,7 @@ void _Assets::LoadFonts(const std::string &Path, bool LoadFonts) {
 	// Load file
 	std::ifstream File(Path.c_str(), std::ios::in);
 	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " - Error loading: " + Path);
 
 	// Skip header
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -125,15 +125,16 @@ void _Assets::LoadFonts(const std::string &Path, bool LoadFonts) {
 
 		// Check for duplicates
 		if(!LoadFonts && Fonts[Name])
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + Name);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + Name + "'");
 
 		// Find program
 		if(Programs.find(ProgramName) == Programs.end())
 			throw std::runtime_error(std::string(__func__) + " - Cannot find program: " + ProgramName);
 
-		// Get size
+		// Get attributes
 		uint32_t Size;
-		File >> Size;
+		int Scaled;
+		File >> Size >> Scaled;
 
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
@@ -145,7 +146,8 @@ void _Assets::LoadFonts(const std::string &Path, bool LoadFonts) {
 				throw std::runtime_error(std::string(__func__) + " - Cannot find font: " + Name);
 
 			// Load font
-			Fonts[Name]->Load(Name, FontFile, Programs[ProgramName], Size * _Element::GetUIScale());
+			float ScaleFactor = Scaled ? _Element::GetUIScale() : 1.0f;
+			Fonts[Name]->Load(Name, FontFile, Programs[ProgramName], Size * ScaleFactor);
 		}
 		else {
 
@@ -165,7 +167,7 @@ void _Assets::LoadLayers(const std::string &Path) {
 	// Load file
 	std::ifstream File(Path.c_str(), std::ios::in);
 	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " - Error loading: " + Path);
 
 	// Skip header
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -194,7 +196,7 @@ void _Assets::LoadPrograms(const std::string &Path) {
 	// Load file
 	std::ifstream File(Path.c_str(), std::ios::in);
 	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " - Error loading: " + Path);
 
 	// Skip header
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -217,7 +219,7 @@ void _Assets::LoadPrograms(const std::string &Path) {
 
 		// Check for duplicates
 		if(Programs[Name])
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + Name);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + Name + "'");
 
 		// Load vertex shader
 		if(Shaders.find(VertexPath) == Shaders.end())
@@ -240,7 +242,7 @@ void _Assets::LoadColors(const std::string &Path) {
 	// Load file
 	std::ifstream File(Path.c_str(), std::ios::in);
 	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " - Error loading: " + Path);
 
 	// Skip header
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -260,7 +262,7 @@ void _Assets::LoadColors(const std::string &Path) {
 
 		// Check for duplicates
 		if(Colors.find(Name) != Colors.end())
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + Name);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + Name + "'");
 
 		Colors[Name] = Color;
 	}
@@ -291,7 +293,7 @@ void _Assets::LoadTexturePack(const std::string &Path, bool IsServer, bool Repea
 	// Load textures
 	FILE *FileHandle = fopen(Path.c_str(), "rb");
 	if(!FileHandle)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " - Error loading: " + Path);
 
 	for(const auto &File : FilePack.Data) {
 		if(Assets.Textures[File.first])
@@ -340,7 +342,7 @@ void _Assets::LoadSoundPack(const std::string &Path) {
 	// Load sounds
 	FILE *FileHandle = fopen(Path.c_str(), "rb");
 	if(!FileHandle)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " - Error loading: " + Path);
 
 	for(const auto &File : FilePack.Data) {
 		if(Assets.Sounds[File.first])
@@ -389,7 +391,7 @@ void _Assets::LoadReels(const std::string &Path, bool IsServer) {
 	// Load file
 	std::ifstream File(Path.c_str(), std::ios::in);
 	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " - Error loading: " + Path);
 
 	// Skip header
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -401,7 +403,7 @@ void _Assets::LoadReels(const std::string &Path, bool IsServer) {
 
 		// Check for duplicates
 		if(Reels[Name])
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + Name);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + Name + "'");
 
 		// Create template
 		_Reel *Template = new _Reel();
@@ -436,7 +438,7 @@ void _Assets::LoadAnimations(const std::string &Path) {
 	// Load file
 	std::ifstream File(Path, std::ios::in);
 	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " - Error loading: " + Path);
 
 	// Skip header
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -448,7 +450,7 @@ void _Assets::LoadAnimations(const std::string &Path) {
 
 		// Check for duplicates
 		if(Animations.find(ID) != Animations.end())
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + ID + "'");
 
 		// Read rest of line into buffer
 		std::string Line;
@@ -477,7 +479,7 @@ void _Assets::LoadStyles(const std::string &Path) {
 	// Load file
 	std::ifstream File(Path.c_str(), std::ios::in);
 	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " - Error loading: " + Path);
 
 	// Skip header
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -500,23 +502,23 @@ void _Assets::LoadStyles(const std::string &Path) {
 
 		// Check for background color
 		if(BackgroundColorName != "" && Colors.find(BackgroundColorName) == Colors.end())
-			throw std::runtime_error("Unable to find background color: " + BackgroundColorName + " for style: " + Name);
+			throw std::runtime_error(std::string(__func__) + "Unable to find background color: " + BackgroundColorName + " for style: " + Name);
 
 		// Check for border color
 		if(BorderColorName != "" && Colors.find(BorderColorName) == Colors.end())
-			throw std::runtime_error("Unable to find border color: " + BorderColorName + " for style: " + Name);
+			throw std::runtime_error(std::string(__func__) + "Unable to find border color: " + BorderColorName + " for style: " + Name);
 
 		// Check for texture color
 		if(TextureColorName != "" && Colors.find(TextureColorName) == Colors.end())
-			throw std::runtime_error("Unable to find texture color: " + TextureColorName + " for style: " + Name);
+			throw std::runtime_error(std::string(__func__) + "Unable to find texture color: " + TextureColorName + " for style: " + Name);
 
 		// Find program
 		if(Programs.find(ProgramName) == Programs.end())
-			throw std::runtime_error("Cannot find program: " + ProgramName + " for style: " + Name);
+			throw std::runtime_error(std::string(__func__) + "Cannot find program: " + ProgramName + " for style: " + Name);
 
 		// Check for texture
 		if(TextureName != "" && Textures.find(TextureName) == Textures.end())
-			throw std::runtime_error("Unable to find texture: " + TextureName + " for style: " + Name);
+			throw std::runtime_error(std::string(__func__) + "Unable to find texture: " + TextureName + " for style: " + Name);
 
 		bool Stretch;
 		File >> Stretch;
@@ -544,7 +546,7 @@ void _Assets::LoadStyles(const std::string &Path) {
 
 		// Check for duplicates
 		if(Styles.find(Name) != Styles.end())
-			throw std::runtime_error("Duplicate style Name: " + Name);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate style: " + Name);
 
 		Styles[Name] = Style;
 	}
@@ -558,7 +560,7 @@ void _Assets::LoadUI(const std::string &Path, bool CalculateBounds) {
 	// Load file
 	tinyxml2::XMLDocument Document;
 	if(Document.LoadFile(Path.c_str()) != tinyxml2::XML_SUCCESS)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " - Error loading: " + Path);
 
 	// Load elements
 	tinyxml2::XMLElement *ChildNode = Document.FirstChildElement();

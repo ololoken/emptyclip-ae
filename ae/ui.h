@@ -151,6 +151,7 @@ class _Element {
 		bool Stretch;
 		bool Wrap;
 		bool Format;
+		bool Scaled;
 		bool SizePercent[2];
 		int Debug;
 

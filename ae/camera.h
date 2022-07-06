@@ -52,8 +52,8 @@ class _Camera {
 		// Updates
 		void CalculateFrustum(float AspectRatio);
 		void Set3DProjection(double BlendFactor);
-		void ConvertScreenToWorld(const glm::ivec2 &Point, glm::vec2 &WorldPosition);
-		void ConvertWorldToScreen(const glm::vec2 &WorldPosition, glm::vec2 &Point);
+		void ConvertScreenToWorld(const glm::vec2 &ScreenPosition, glm::vec2 &WorldPosition) const;
+		void ConvertWorldToScreen(const glm::vec2 &WorldPosition, glm::vec2 &ScreenPosition) const;
 
 		void Update(double FrameTime);
 		void UpdatePosition(const glm::vec2 &UpdatePosition) { this->TargetPosition += glm::vec3(UpdatePosition, 0.0f); }
@@ -64,7 +64,7 @@ class _Camera {
 		void SetDistance(float Distance) { this->TargetPosition.z = Distance; }
 		void SetUpdateDivisor(float Divisor) { UpdateDivisor = Divisor; }
 
-		void GetDrawPosition(double BlendFactor, glm::vec3 &DrawPosition);
+		void GetDrawPosition(double BlendFactor, glm::vec3 &DrawPosition) const;
 		const glm::vec3 &GetPosition() const { return Position; }
 
 		bool IsCircleInView(const glm::vec2 &Position, float Radius) const;

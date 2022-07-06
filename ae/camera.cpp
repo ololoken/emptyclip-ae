@@ -63,15 +63,15 @@ void _Camera::Set3DProjection(double BlendFactor) {
 }
 
 // Converts screen space to world space
-void _Camera::ConvertScreenToWorld(const glm::ivec2 &Point, glm::vec2 &WorldPosition) {
-	WorldPosition.x = (Point.x / (float)(Graphics.ViewportSize.x) - 0.5f) * Position.z * Graphics.AspectRatio * 2 + Position.x;
-	WorldPosition.y = (Point.y / (float)(Graphics.ViewportSize.y) - 0.5f) * Position.z * 2 + Position.y;
+void _Camera::ConvertScreenToWorld(const glm::vec2 &ScreenPosition, glm::vec2 &WorldPosition) const {
+	WorldPosition.x = (ScreenPosition.x / (float)(Graphics.ViewportSize.x) - 0.5f) * Position.z * Graphics.AspectRatio * 2 + Position.x;
+	WorldPosition.y = (ScreenPosition.y / (float)(Graphics.ViewportSize.y) - 0.5f) * Position.z * 2 + Position.y;
 }
 
 // Converts world space to screen space
-void _Camera::ConvertWorldToScreen(const glm::vec2 &WorldPosition, glm::vec2 &Point) {
-	Point.x = (int)(Graphics.ViewportSize.x * (0.5f + ((WorldPosition.x - Position.x) / (Position.z * Graphics.AspectRatio * 2))));
-	Point.y = (int)(Graphics.ViewportSize.y * (0.5f + ((WorldPosition.y - Position.y) / (Position.z * 2))));
+void _Camera::ConvertWorldToScreen(const glm::vec2 &WorldPosition, glm::vec2 &ScreenPosition) const {
+	ScreenPosition.x = (int)(Graphics.ViewportSize.x * (0.5f + ((WorldPosition.x - Position.x) / (Position.z * Graphics.AspectRatio * 2))));
+	ScreenPosition.y = (int)(Graphics.ViewportSize.y * (0.5f + ((WorldPosition.y - Position.y) / (Position.z * 2))));
 }
 
 // Update camera
@@ -105,7 +105,7 @@ void _Camera::Update(double FrameTime) {
 }
 
 // Interpolate between position and last position
-void _Camera::GetDrawPosition(double BlendFactor, glm::vec3 &DrawPosition) {
+void _Camera::GetDrawPosition(double BlendFactor, glm::vec3 &DrawPosition) const {
 	if(Position == LastPosition)
 		DrawPosition = Position;
 	else

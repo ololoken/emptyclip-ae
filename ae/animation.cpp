@@ -50,7 +50,7 @@ void _Animation::Update(double FrameTime) {
 
 	// Update frame
 	if(Mode == PLAYING && Timer >= FramePeriod) {
-		Timer = 0;
+		Timer -= FramePeriod;
 		Frame += Direction;
 		if(Frame > Reels[Reel]->EndFrame) {
 			switch(Reels[Reel]->RepeatType) {

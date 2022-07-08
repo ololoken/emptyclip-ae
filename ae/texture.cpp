@@ -26,10 +26,10 @@
 namespace ae {
 
 // Load from file
-_Texture::_Texture(const std::string &Path, bool IsServer, bool Repeat, bool Mipmaps, bool Nearest) :
+_Texture::_Texture(const std::string &Path, const _TextureSettings &TextureSettings) :
 	_Texture(Path) {
 
-	if(IsServer)
+	if(TextureSettings.SetNameOnly)
 		return;
 
 	// Open file
@@ -37,15 +37,15 @@ _Texture::_Texture(const std::string &Path, bool IsServer, bool Repeat, bool Mip
 	if(!Image)
 		throw std::runtime_error("Error loading image: " + Path + " with error: " + IMG_GetError());
 
-	Load(Image, Repeat, Mipmaps, Nearest);
+	Load(Image, TextureSettings);
 	SDL_FreeSurface(Image);
 }
 
 // Load from file handle
-_Texture::_Texture(const std::string &Path, FILE *FileHandle, bool IsServer, bool Repeat, bool Mipmaps, bool Nearest) :
+_Texture::_Texture(const std::string &Path, FILE *FileHandle, const _TextureSettings &TextureSettings) :
 	_Texture(Path) {
 
-	if(IsServer)
+	if(TextureSettings.SetNameOnly)
 		return;
 
 	// Open file
@@ -56,12 +56,12 @@ _Texture::_Texture(const std::string &Path, FILE *FileHandle, bool IsServer, boo
 		throw std::runtime_error("Error loading image: " + Path + " with error: " + IMG_GetError());
 
 	// Load texture
-	Load(Image, Repeat, Mipmaps, Nearest);
+	Load(Image, TextureSettings);
 	SDL_FreeSurface(Image);
 }
 
 // Load texture from SDL_Surface
-void _Texture::Load(SDL_Surface *Image, bool Repeat, bool Mipmaps, bool Nearest) {
+void _Texture::Load(SDL_Surface *Image, const _TextureSettings &TextureSettings) {
 	Size.x = Image->w;
 	Size.y = Image->h;
 
@@ -81,34 +81,39 @@ void _Texture::Load(SDL_Surface *Image, bool Repeat, bool Mipmaps, bool Nearest)
 	// Create texture and upload to GPU
 	glGenTextures(1, &ID);
 	glBindTexture(GL_TEXTURE_2D, ID);
-	if(Repeat) {
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	}
-	else {
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	switch(TextureSettings.WrapMode) {
+		case REPEAT:
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		break;
+		case CLAMP_TO_EDGE:
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		break;
+		case CLAMP_TO_BORDER:
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+		break;
 	}
 
 	// Set magnification filter
 	GLfloat MagFilter = GL_LINEAR;
-	if(Nearest)
+	if(TextureSettings.Nearest)
 		MagFilter = GL_NEAREST;
 
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, MagFilter);
 
-	if(Mipmaps) {
+	if(TextureSettings.Mipmaps) {
 		if(Graphics.Anisotropy > 0)
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, Graphics.Anisotropy);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	}
-	else {
+	else
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	}
 
 	// Create texture
 	glTexImage2D(GL_TEXTURE_2D, 0, ColorFormat, Size.x, Size.y, 0, (GLenum)ColorFormat, GL_UNSIGNED_BYTE, Image->pixels);
-	if(Mipmaps)
+	if(TextureSettings.Mipmaps)
 		glGenerateMipmap(GL_TEXTURE_2D);
 }
 

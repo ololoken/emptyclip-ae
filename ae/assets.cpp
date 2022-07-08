@@ -271,7 +271,7 @@ void _Assets::LoadColors(const std::string &Path) {
 }
 
 // Load a directory full of textures
-void _Assets::LoadTextureDirectory(const std::string &Path, bool IsServer, bool Repeat, bool MipMaps, bool Nearest) {
+void _Assets::LoadTextureDirectory(const std::string &Path, const _TextureSettings &TextureSettings) {
 
 	// Get files
 	_Files Files(Path);
@@ -280,12 +280,12 @@ void _Assets::LoadTextureDirectory(const std::string &Path, bool IsServer, bool 
 	for(const auto &File : Files.Nodes) {
 		std::string Name = Path + File;
 		if(!Assets.Textures[Name])
-			Assets.Textures[Name] = new _Texture(Name, IsServer, Repeat, MipMaps, Nearest);
+			Assets.Textures[Name] = new _Texture(Name, TextureSettings);
 	}
 }
 
 // Load texture pack
-void _Assets::LoadTexturePack(const std::string &Path, bool IsServer, bool Repeat, bool MipMaps, bool Nearest) {
+void _Assets::LoadTexturePack(const std::string &Path, const _TextureSettings &TextureSetting) {
 
 	// Load file pack
 	_FilePack FilePack(Path);
@@ -300,7 +300,7 @@ void _Assets::LoadTexturePack(const std::string &Path, bool IsServer, bool Repea
 			continue;
 
 		fseek(FileHandle, File.second.Offset + FilePack.BodyOffset, SEEK_SET);
-		Assets.Textures[File.first] = new _Texture(File.first, FileHandle, IsServer, Repeat, MipMaps, Nearest);
+		Assets.Textures[File.first] = new _Texture(File.first, FileHandle, TextureSetting);
 	}
 
 	fclose(FileHandle);
@@ -386,7 +386,7 @@ void _Assets::LoadMeshDirectory(const std::string &Path) {
 }
 
 // Load animation reels
-void _Assets::LoadReels(const std::string &Path, bool IsServer) {
+void _Assets::LoadReels(const std::string &Path, const _TextureSettings &TextureSettings) {
 
 	// Load file
 	std::ifstream File(Path.c_str(), std::ios::in);
@@ -413,7 +413,7 @@ void _Assets::LoadReels(const std::string &Path, bool IsServer) {
 		std::string TextureFile;
 		std::getline(File, TextureFile, '\t');
 		if(!Assets.Textures[TextureFile])
-			Assets.Textures[TextureFile] = new _Texture(TextureFile, IsServer, false, false, false);
+			Assets.Textures[TextureFile] = new _Texture(TextureFile, TextureSettings);
 
 		Template->Texture = Assets.Textures[TextureFile];
 
@@ -422,7 +422,7 @@ void _Assets::LoadReels(const std::string &Path, bool IsServer) {
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Add to list
-		if(!IsServer) {
+		if(!TextureSettings.SetNameOnly) {
 			Template->FramesPerLine = Template->Texture->Size.x / Template->FrameSize.x;
 			Template->TextureScale = glm::vec2(Template->FrameSize) / glm::vec2(Template->Texture->Size);
 		}

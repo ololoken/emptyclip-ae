@@ -32,8 +32,11 @@ class _Framebuffer {
 		_Framebuffer(const glm::ivec2 &Size);
 		~_Framebuffer();
 
+		void BindTexture();
 		void Resize(const glm::ivec2 &Size);
 		void Clear();
+
+		static void Unbind();
 
 		GLuint ID;
 		GLuint TextureID;

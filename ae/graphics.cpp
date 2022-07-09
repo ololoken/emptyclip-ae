@@ -580,6 +580,11 @@ void _Graphics::SetDepthMask(bool Value) {
 	glDepthMask(Value);
 }
 
+// Set active texture
+void _Graphics::SetActiveTexture(int Unit) {
+	glActiveTexture(GL_TEXTURE0 + Unit);
+}
+
 // Enable stencil test
 void _Graphics::EnableStencilTest() {
 	glEnable(GL_STENCIL_TEST);

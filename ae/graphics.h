@@ -105,6 +105,7 @@ class _Graphics {
 		void SetCullFace(bool Value);
 		void SetScissor(const _Bounds &Bounds);
 		void SetDepthMask(bool Value);
+		void SetActiveTexture(int Unit);
 		void EnableStencilTest();
 		void DisableStencilTest();
 		void EnableScissorTest();

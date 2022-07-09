@@ -57,6 +57,11 @@ _Framebuffer::~_Framebuffer() {
 	glDeleteRenderbuffers(1, &RenderBufferID);
 }
 
+// Bind to active texture
+void _Framebuffer::BindTexture() {
+	glBindTexture(GL_TEXTURE_2D, TextureID);
+}
+
 // Resize framebuffer
 void _Framebuffer::Resize(const glm::ivec2 &Size) {
 	if(!TextureID)
@@ -74,6 +79,11 @@ void _Framebuffer::Clear() {
 	glBindFramebuffer(GL_FRAMEBUFFER, ID);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
+}
+
+// Unbind
+void _Framebuffer::Unbind() {
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 }

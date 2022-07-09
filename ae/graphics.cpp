@@ -37,7 +37,6 @@ _Graphics Graphics;
 void _Graphics::Init(const _WindowSettings &WindowSettings) {
 
 	// Initialize
-	Anisotropy = 0.0f;
 	FramesPerSecond = 0;
 	FrameCount = 0;
 	FrameRateTimer = 0;
@@ -63,6 +62,7 @@ void _Graphics::Init(const _WindowSettings &WindowSettings) {
 		CurrentSize = WindowSize;
 
 	// Set opengl attributes
+	Anisotropy = WindowSettings.Anisotrophy;
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
@@ -865,31 +865,28 @@ void _Graphics::DrawTextureArray(const _Bounds &Bounds, const _TextureArray *Tex
 }
 
 // Draw double-sided flat wall
-void _Graphics::DrawWall(const glm::vec3 &Position, const glm::vec3 &Scale, float Rotation, const ae::_Texture *Texture) {
+void _Graphics::DrawWall(const glm::vec3 &Position, const glm::vec3 &Scale, const ae::_Texture *Texture, int Side) {
 	SetVBO(VBO_CUBE);
 	SetTextureID(Texture->ID);
 
 	glm::mat4 ModelTransform(1.0f);
 	glm::mat4 TextureTransform(1.0f);
-	int Offset;
-	if(Rotation == 0) {
-		ModelTransform = glm::translate(ModelTransform, glm::vec3(Position.x, Position.y + 0.5f, Position.z));
+	if(Side == 1 || Side == 3) {
+		ModelTransform = glm::translate(ModelTransform, glm::vec3(Position.x, Position.y, Position.z));
 		TextureTransform[0][0] = Scale.x;
 		TextureTransform[1][1] = Scale.z;
-		Offset = 12;
 	}
 	else {
-		ModelTransform = glm::translate(ModelTransform, glm::vec3(Position.x + 0.5f, Position.y, Position.z));
+		ModelTransform = glm::translate(ModelTransform, glm::vec3(Position.x, Position.y, Position.z));
 		TextureTransform[0][0] = Scale.y;
 		TextureTransform[1][1] = Scale.z;
-		Offset = 8;
 	}
 	ModelTransform = glm::scale(ModelTransform, Scale);
 
 	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(ModelTransform));
 	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
 
-	glDrawArrays(GL_TRIANGLE_STRIP, Offset, 4);
+	glDrawArrays(GL_TRIANGLE_STRIP, Side * 4, 4);
 }
 
 // Draw 3d wall

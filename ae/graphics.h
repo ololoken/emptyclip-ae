@@ -51,11 +51,12 @@ enum VertexBufferType {
 };
 
 struct _WindowSettings {
-	_WindowSettings() : Size(0), Position(0), MSAA(0), Fullscreen(false), Vsync(false) { }
+	_WindowSettings() : Size(0), Position(0), MSAA(0), Anisotrophy(0.0f), Fullscreen(false), Vsync(false) { }
 	std::string WindowTitle;
 	glm::ivec2 Size;
 	glm::ivec2 Position;
 	int MSAA;
+	float Anisotrophy;
 	bool Fullscreen;
 	bool Vsync;
 };
@@ -125,7 +126,7 @@ class _Graphics {
 		void DrawAtlasTexture(const _Bounds &Bounds, const _Texture *Texture, const glm::vec4 &TextureCoords);
 		void DrawTextureArray(const _Bounds &Bounds, const _TextureArray *Texture, uint32_t Index);
 		void DrawRepeatable(const glm::vec3 &Start, const glm::vec3 &End, const _Texture *Texture, float Rotation, float ScaleX);
-		void DrawWall(const glm::vec3 &Position, const glm::vec3 &Scale, float Rotation, const _Texture *Texture);
+		void DrawWall(const glm::vec3 &Position, const glm::vec3 &Scale, const _Texture *Texture, int Side);
 		void DrawCube(const glm::vec3 &Start, const glm::vec3 &Scale, const _Texture *Texture);
 		void DrawWallDecal(const glm::vec3 &Position, const ae::_Texture *Texture, float Rotation=0.0f, const glm::vec2 &Scale=glm::vec2(1.0f));
 

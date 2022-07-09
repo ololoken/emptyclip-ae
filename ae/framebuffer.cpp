@@ -52,7 +52,7 @@ _Framebuffer::_Framebuffer(const glm::ivec2 &Size) :
 
 // Destructor
 _Framebuffer::~_Framebuffer() {
-	glDeleteBuffers(1, &ID);
+	glDeleteFramebuffers(1, &ID);
 	glDeleteTextures(1, &TextureID);
 	glDeleteRenderbuffers(1, &RenderBufferID);
 }

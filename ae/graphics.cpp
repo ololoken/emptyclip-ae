@@ -602,7 +602,7 @@ void _Graphics::DisableScissorTest() {
 
 // Enable blending mode for particles
 void _Graphics::EnableParticleBlending() {
-	glBlendFunc(GL_SRC_ALPHA, 1);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 }
 
 // Disable blending mode for particles

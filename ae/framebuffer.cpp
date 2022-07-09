@@ -67,7 +67,7 @@ void _Framebuffer::Resize(const glm::ivec2 &Size) {
 }
 
 // Enable
-void _Framebuffer::Use() {
+void _Framebuffer::Clear() {
 	if(!ID)
 		return;
 

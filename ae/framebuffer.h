@@ -33,7 +33,7 @@ class _Framebuffer {
 		~_Framebuffer();
 
 		void Resize(const glm::ivec2 &Size);
-		void Use();
+		void Clear();
 
 		GLuint ID;
 		GLuint TextureID;

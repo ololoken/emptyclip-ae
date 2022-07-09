@@ -85,12 +85,12 @@ _Program::_Program(const std::string &Name, const _Shader *VertexShader, const _
 	LightCountID = glGetUniformLocation(ID, "light_count");
 
 	for(int i = 0; i < MaxLights; i++) {
-		std::string LightPositionName = "lights[" + std::to_string(i) + "].position";
 		std::string LightColorName = "lights[" + std::to_string(i) + "].color";
-		std::string LightRadiusName = "lights[" + std::to_string(i) + "].radius";
-		Lights[i].PositionID = glGetUniformLocation(ID, LightPositionName.c_str());
+		std::string LightPositionName = "lights[" + std::to_string(i) + "].position";
+		std::string LightAttenuationName = "lights[" + std::to_string(i) + "].attenuation";
 		Lights[i].ColorID = glGetUniformLocation(ID, LightColorName.c_str());
-		Lights[i].RadiusID = glGetUniformLocation(ID, LightRadiusName.c_str());
+		Lights[i].PositionID = glGetUniformLocation(ID, LightPositionName.c_str());
+		Lights[i].AttenuationID = glGetUniformLocation(ID, LightAttenuationName.c_str());
 	}
 }
 
@@ -117,9 +117,9 @@ void _Program::Use() const {
 		glUniform1i(LightCountID, LightCount);
 
 	for(int i = 0; i < LightCount; i++) {
-		glUniform3fv(Lights[i].PositionID, 1, &Lights[i].Position[0]);
 		glUniform4fv(Lights[i].ColorID, 1, &Lights[i].Color[0]);
-		glUniform1fv(Lights[i].RadiusID, 1, &Lights[i].Radius);
+		glUniform3fv(Lights[i].PositionID, 1, &Lights[i].Position[0]);
+		glUniform3fv(Lights[i].AttenuationID, 1, &Lights[i].Attenuation[0]);
 	}
 }
 

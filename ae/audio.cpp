@@ -415,8 +415,8 @@ _Music *_Audio::LoadMusic(const std::string &Path) {
 	return Music;
 }
 
-// Play a sound for a channel
-const _AudioSource *_Audio::PlayChannelSound(const _Sound *Sound, const _SoundSettings &SoundSettings) {
+// Play a sound
+const _AudioSource *_Audio::PlaySound(const _Sound *Sound, const _SoundSettings &SoundSettings) {
 	if(!Enabled || !Sound)
 		return nullptr;
 
@@ -427,40 +427,38 @@ const _AudioSource *_Audio::PlayChannelSound(const _Sound *Sound, const _SoundSe
 			return nullptr;
 	}
 
-	// Get channel
-	const auto &Iterator = Channels.find(Sound);
-	if(Iterator == Channels.end())
-		return nullptr;
+	// Get audio source
+	const _AudioSource *AudioSource;
+	if(Sound->Limit) {
 
-	_Channel &Channel = Iterator->second;
+		// Get channel
+		const auto &Iterator = Channels.find(Sound);
+		if(Iterator == Channels.end())
+			return nullptr;
 
-	// Get next audio source
-	const _AudioSource *AudioSource = Channel.AudioSources[Channel.Index];
-	AudioSource->SetSettings(SoundSettings);
-	AudioSource->SetGain(SoundVolume * Sound->Volume * SoundSettings.Volume);
-	AudioSource->Play();
+		_Channel &Channel = Iterator->second;
 
-	// Update next channel index
-	Channel.Index++;
-	if(Channel.Index >= Channel.AudioSources.size())
-		Channel.Index = 0;
+		// Get next audio source
+		AudioSource = Channel.AudioSources[Channel.Index];
 
-	return AudioSource;
-}
+		// Update next channel index
+		Channel.Index++;
+		if(Channel.Index >= Channel.AudioSources.size())
+			Channel.Index = 0;
+	}
+	else {
 
-// Play a sound
-const _AudioSource *_Audio::PlaySound(const _Sound *Sound, const _SoundSettings &SoundSettings) {
-	if(!Enabled || !Sound)
-		return nullptr;
+		// Create new source
+		AudioSource = new _AudioSource(Sound);
+
+		// Add to list
+		Sources.push_back(AudioSource);
+	}
 
 	// Create audio source
-	const _AudioSource *AudioSource = new _AudioSource(Sound);
 	AudioSource->SetSettings(SoundSettings);
 	AudioSource->SetGain(SoundVolume * Sound->Volume * SoundSettings.Volume);
 	AudioSource->Play();
-
-	// Add to sources
-	Sources.push_back(AudioSource);
 
 	return AudioSource;
 }

@@ -157,7 +157,6 @@ class _Audio {
 		_Sound *LoadSound(const _AudioFile &AudioFile);
 		_Music *LoadMusic(const std::string &Path);
 
-		const _AudioSource *PlayChannelSound(const _Sound *Sound, const _SoundSettings &SoundSettings=_SoundSettings(1.0f));
 		const _AudioSource *PlaySound(const _Sound *Sound, const _SoundSettings &SoundSettings=_SoundSettings(1.0f));
 		void PlayMusic(_Music *Music, bool Loop=true);
 		void Stop();

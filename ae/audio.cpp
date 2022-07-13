@@ -84,7 +84,7 @@ size_t AudioFileRead(void *Destination, size_t Size, size_t Count, void *Source)
 }
 
 // Constructor
-_AudioSource::_AudioSource(const _Sound *Sound, float Volume) {
+_AudioSource::_AudioSource(const _Sound *Sound) {
 	SoundID = Sound->ID;
 
 	// Create source
@@ -92,12 +92,26 @@ _AudioSource::_AudioSource(const _Sound *Sound, float Volume) {
 
 	// Assign buffer to source
 	alSourcei(ID, AL_BUFFER, (ALint)Sound->ID);
-	alSourcef(ID, AL_GAIN, Sound->Volume * Volume);
+	alSourcef(ID, AL_GAIN, Sound->Volume);
 }
 
 // Destructor
 _AudioSource::~_AudioSource() {
 	alDeleteSources(1, &ID);
+}
+
+// Set various settings for a source
+void _AudioSource::SetSettings(const _SoundSettings &SoundSettings) const {
+	alSourcei(ID, AL_SOURCE_RELATIVE, SoundSettings.Relative);
+	alSourcei(ID, AL_LOOPING, SoundSettings.Loop);
+	if(!SoundSettings.Relative) {
+		alSourcef(ID, AL_MIN_GAIN, SoundSettings.MinGain);
+		alSourcef(ID, AL_MAX_GAIN, SoundSettings.MaxGain);
+		alSourcef(ID, AL_REFERENCE_DISTANCE, SoundSettings.ReferenceDistance);
+		alSourcef(ID, AL_MAX_DISTANCE, SoundSettings.MaxDistance);
+		alSourcef(ID, AL_ROLLOFF_FACTOR, SoundSettings.RollOff);
+		alSource3f(ID, AL_POSITION, SoundSettings.Position.x, SoundSettings.Position.y, SoundSettings.Position.z);
+	}
 }
 
 // Determine if source is actively playing
@@ -121,7 +135,7 @@ void _AudioSource::Stop() const {
 }
 
 // Returns true if the source is relative
-bool _AudioSource::IsRelative() {
+bool _AudioSource::IsRelative() const {
 	ALenum State;
 
 	alGetSourcei(ID, AL_SOURCE_RELATIVE, &State);
@@ -130,32 +144,32 @@ bool _AudioSource::IsRelative() {
 }
 
 // Set relative
-void _AudioSource::SetRelative(bool Value) {
+void _AudioSource::SetRelative(bool Value) const {
 	alSourcei(ID, AL_SOURCE_RELATIVE, Value);
 }
 
 // Set looping
-void _AudioSource::SetLooping(bool Value) {
+void _AudioSource::SetLooping(bool Value) const {
 	alSourcei(ID, AL_LOOPING, Value);
 }
 
 // Set pitch
-void _AudioSource::SetPitch(float Value) {
+void _AudioSource::SetPitch(float Value) const {
 	alSourcef(ID, AL_PITCH, Value);
 }
 
 // Set gain
-void _AudioSource::SetGain(float Value) {
+void _AudioSource::SetGain(float Value) const {
 	alSourcef(ID, AL_GAIN, Value);
 }
 
 // Set position
-void _AudioSource::SetPosition(const glm::vec3 &Position) {
+void _AudioSource::SetPosition(const glm::vec3 &Position) const {
 	alSource3f(ID, AL_POSITION, Position.x, Position.y, Position.z);
 }
 
 // Get source position
-glm::vec3 _AudioSource::GetPosition() {
+glm::vec3 _AudioSource::GetPosition() const {
 	float Position[3];
 	alGetSource3f(ID, AL_POSITION, &Position[0], &Position[1], &Position[2]);
 
@@ -237,6 +251,14 @@ void _Audio::Close() {
 	for(auto &Iterator : Sources)
 		delete Iterator;
 
+	// Delete channels
+	for(auto &Iterator : Channels) {
+		for(const auto &AudioSource : Iterator.second.AudioSources) {
+			delete AudioSource;
+		}
+	}
+	Channels.clear();
+
 	Sources.clear();
 
 	// Get active context
@@ -268,12 +290,6 @@ void _Audio::Update(double FrameTime) {
 
 		// Delete source
 		if(!Source->IsPlaying()) {
-
-			// Update number of sound ids playing
-			SoundsPlaying[Source->SoundID]--;
-			if(SoundsPlaying[Source->SoundID] <= 0)
-				SoundsPlaying.erase(Source->SoundID);
-
 			delete Source;
 			Iterator = Sources.erase(Iterator);
 		}
@@ -347,6 +363,19 @@ void _Audio::UpdateMusic() {
 	}
 }
 
+// Initialize a channel with a sound and sound limit
+void _Audio::LoadChannel(const _Sound *Sound) {
+	if(Sound->Limit <= 0)
+		throw std::runtime_error(std::string(__func__) + " bad sound limit for sound_id " + std::to_string(Sound->ID));
+
+	// Create audio sources
+	_Channel Channel;
+	for(int i = 0; i < Sound->Limit; i++)
+		Channel.AudioSources.push_back(new _AudioSource(Sound));
+
+	Channels[Sound] = Channel;
+}
+
 // Load sound
 _Sound *_Audio::LoadSound(const std::string &Path) {
 	if(!Enabled)
@@ -386,54 +415,48 @@ _Music *_Audio::LoadMusic(const std::string &Path) {
 	return Music;
 }
 
-// Play a sound
-const _AudioSource *_Audio::PlaySound(const _Sound *Sound, float Volume) {
-	if(!Enabled || !Sound)
-		return nullptr;
-
-	// Handle sound limits
-	CheckSoundLimit(Sound);
-
-	// Create audio source
-	const _AudioSource *AudioSource = new _AudioSource(Sound, SoundVolume * Volume);
-	alSourcei(AudioSource->ID, AL_SOURCE_RELATIVE, true);
-
-	// Play
-	AudioSource->Play();
-
-	// Add to sources
-	Sources.push_back(AudioSource);
-
-	return AudioSource;
-}
-
-// Play a positional sound
-const _AudioSource *_Audio::PlaySound(const _Sound *Sound, const glm::vec3 &Position, float Volume, bool Loop, float MinGain, float MaxGain, float ReferenceDistance, float MaxDistance, float RollOff) {
+// Play a sound for a channel
+const _AudioSource *_Audio::PlayChannelSound(const _Sound *Sound, const _SoundSettings &SoundSettings) {
 	if(!Enabled || !Sound)
 		return nullptr;
 
 	// Check max distance
-	float DistanceSquared = glm::distance2(Position, GetPosition());
-	if(DistanceSquared > MaxDistanceSquared)
+	if(!SoundSettings.Relative) {
+		float DistanceSquared = glm::distance2(SoundSettings.Position, GetPosition());
+		if(DistanceSquared > MaxDistanceSquared)
+			return nullptr;
+	}
+
+	// Get channel
+	const auto &Iterator = Channels.find(Sound);
+	if(Iterator == Channels.end())
 		return nullptr;
 
-	// Handle sound limits
-	CheckSoundLimit(Sound);
+	_Channel &Channel = Iterator->second;
+
+	// Get next audio source
+	const _AudioSource *AudioSource = Channel.AudioSources[Channel.Index];
+	AudioSource->SetSettings(SoundSettings);
+	AudioSource->SetGain(SoundVolume * Sound->Volume * SoundSettings.Volume);
+	AudioSource->Play();
+
+	// Update next channel index
+	Channel.Index++;
+	if(Channel.Index >= Channel.AudioSources.size())
+		Channel.Index = 0;
+
+	return AudioSource;
+}
+
+// Play a sound
+const _AudioSource *_Audio::PlaySound(const _Sound *Sound, const _SoundSettings &SoundSettings) {
+	if(!Enabled || !Sound)
+		return nullptr;
 
 	// Create audio source
-	const _AudioSource *AudioSource = new _AudioSource(Sound, SoundVolume * Volume);
-
-	// Set parameters
-	alSourcef(AudioSource->ID, AL_MIN_GAIN, MinGain);
-	alSourcef(AudioSource->ID, AL_MAX_GAIN, MaxGain);
-	alSourcef(AudioSource->ID, AL_REFERENCE_DISTANCE, ReferenceDistance);
-	alSourcef(AudioSource->ID, AL_MAX_DISTANCE, MaxDistance);
-	alSourcef(AudioSource->ID, AL_ROLLOFF_FACTOR, RollOff);
-	alSourcei(AudioSource->ID, AL_LOOPING, Loop);
-	alSourcei(AudioSource->ID, AL_SOURCE_RELATIVE, false);
-	alSource3f(AudioSource->ID, AL_POSITION, Position.x, Position.y, Position.z);
-
-	// Play
+	const _AudioSource *AudioSource = new _AudioSource(Sound);
+	AudioSource->SetSettings(SoundSettings);
+	AudioSource->SetGain(SoundVolume * Sound->Volume * SoundSettings.Volume);
 	AudioSource->Play();
 
 	// Add to sources
@@ -579,19 +602,6 @@ bool _Audio::QueueBuffers(_Music *Music, ALuint Buffer) {
 	}
 
 	return false;
-}
-
-// Check sound limit and stop oldest sound
-void _Audio::CheckSoundLimit(const _Sound *Sound) {
-	SoundsPlaying[Sound->ID]++;
-	if(Sound->Limit > 0 && SoundsPlaying[Sound->ID] > Sound->Limit) {
-		for(auto &Source : Sources) {
-			if(Source->IsPlaying() && Source->SoundID == Sound->ID) {
-				alSourceStop(Source->ID);
-				break;
-			}
-		}
-	}
 }
 
 // Set sound volume

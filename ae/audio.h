@@ -26,9 +26,40 @@
 #include <thread>
 #include <unordered_map>
 #include <list>
+#include <vector>
 #include <string>
 
 namespace ae {
+
+// Settings for audio sources
+struct _SoundSettings {
+
+	_SoundSettings(float Volume=1.0f) :
+		Volume(Volume),
+		Loop(false),
+		Relative(true) { }
+
+	_SoundSettings(const glm::vec3 &Position, float Volume=1.0f) :
+		Position(Position),
+		Volume(Volume),
+		MinGain(0.0f),
+		MaxGain(1.0f),
+		ReferenceDistance(10.0f),
+		MaxDistance(100.0f),
+		RollOff(2.5f),
+		Loop(false),
+		Relative(false) { }
+
+	glm::vec3 Position;
+	float Volume;
+	float MinGain;
+	float MaxGain;
+	float ReferenceDistance;
+	float MaxDistance;
+	float RollOff;
+	bool Loop : 1;
+	bool Relative : 1;
+};
 
 // Sound class
 class _Sound {
@@ -64,24 +95,34 @@ class _AudioSource {
 
 	public:
 
-		_AudioSource(const _Sound *Sound, float Volume=1.0f);
+		_AudioSource(const _Sound *Sound);
 		~_AudioSource();
 
+		void SetSettings(const _SoundSettings &SoundSettings) const;
 		void Play() const;
 		void Stop() const;
 
 		bool IsPlaying() const;
-		bool IsRelative();
+		bool IsRelative() const;
 
-		void SetRelative(bool Value);
-		void SetLooping(bool Value);
-		void SetPitch(float Value);
-		void SetGain(float Value);
-		void SetPosition(const glm::vec3 &Position);
-		glm::vec3 GetPosition();
+		void SetRelative(bool Value) const;
+		void SetLooping(bool Value) const;
+		void SetPitch(float Value) const;
+		void SetGain(float Value) const;
+		void SetPosition(const glm::vec3 &Position) const;
+		glm::vec3 GetPosition() const;
 
 		ALuint ID;
 		ALuint SoundID;
+};
+
+// Holds audio sources
+struct _Channel {
+
+	_Channel() : Index(0) {}
+
+	std::vector<const _AudioSource *> AudioSources;
+	size_t Index;
 };
 
 // Wrapper around file handle
@@ -111,12 +152,13 @@ class _Audio {
 		void Update(double FrameTime);
 		void UpdateMusic();
 
+		void LoadChannel(const _Sound *Sound);
 		_Sound *LoadSound(const std::string &Path);
 		_Sound *LoadSound(const _AudioFile &AudioFile);
 		_Music *LoadMusic(const std::string &Path);
 
-		const _AudioSource *PlaySound(const _Sound *Sound, float Volume=1.0f);
-		const _AudioSource *PlaySound(const _Sound *Sound, const glm::vec3 &Position, float Volume=1.0f, bool Loop=false, float MinGain=0.0f, float MaxGain=1.0f, float ReferenceDistance=10.0f, float MaxDistance=100.0f, float RollOff=2.5f);
+		const _AudioSource *PlayChannelSound(const _Sound *Sound, const _SoundSettings &SoundSettings=_SoundSettings(1.0f));
+		const _AudioSource *PlaySound(const _Sound *Sound, const _SoundSettings &SoundSettings=_SoundSettings(1.0f));
 		void PlayMusic(_Music *Music, bool Loop=true);
 		void Stop();
 		void StopSounds();
@@ -140,7 +182,6 @@ class _Audio {
 		void OpenVorbis(const _AudioFile &AudioFile, OggVorbis_File *VorbisFile);
 		void GetVorbisInfo(OggVorbis_File *VorbisFile, long &Rate, int &Format);
 		bool QueueBuffers(_Music *Music, ALuint Buffer);
-		void CheckSoundLimit(const _Sound *Sound);
 
 		bool Enabled;
 		float SoundVolume;
@@ -154,7 +195,7 @@ class _Audio {
 		_Music *NewSong;
 
 		std::list<const _AudioSource *> Sources;
-		std::unordered_map<ALuint, int> SoundsPlaying;
+		std::unordered_map<const _Sound *, _Channel> Channels;
 
 		std::thread *Thread;
 };

@@ -27,6 +27,7 @@ namespace ae {
 // Constructor
 _Animation::_Animation(ae::_BaseObject *Parent) :
 	_Component(Parent),
+	TextureCoords(0.0f),
 	Timer(0.0),
 	FramePeriod(1.0),
 	Reel(0),

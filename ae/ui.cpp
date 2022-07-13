@@ -509,27 +509,35 @@ void _Element::Render() const {
 			RenderColor.a *= 0.5f;
 
 		// Draw multiple lines
-		if(Texts.size()) {
+		if(Texts.size() > 1) {
 
 			// Handle alignment
-			float LineHeight = Font->MaxHeight + 2;
+			float LinePadding = 2 * GetUIScale();
+			float LineHeight = Font->MaxHeight + LinePadding;
+			float TotalHeight = LineHeight * Texts.size() - LinePadding;
+
+			// Adjust for drawing every line with baseline alignment
 			float Y = Bounds.Start.y;
 			switch(Alignment.Vertical) {
+				case _Alignment::TOP:
+					Y += Font->MaxAbove;
+				break;
 				case _Alignment::MIDDLE:
-					Y -= (LineHeight * Texts.size() - LineHeight) / 2;
+					Y += Font->MaxAbove - TotalHeight * 0.5f;
 				break;
 				case _Alignment::BOTTOM:
-					Y -= LineHeight * Texts.size() - LineHeight;
+					Y -= TotalHeight - LinePadding - Font->MaxAbove + Font->MaxBelow;
 				break;
 			}
 
 			// Draw text lines
+			_Alignment DrawAlignment(Alignment.Horizontal, _Alignment::BASELINE);
 			for(const auto &Token : Texts) {
 				glm::ivec2 DrawPosition(Bounds.Start.x, Y);
 				if(Format)
-					Font->DrawTextFormatted(Token, DrawPosition, Alignment, Fade);
+					Font->DrawTextFormatted(Token, DrawPosition, DrawAlignment, Fade);
 				else
-					Font->DrawText(Token, DrawPosition, Alignment, RenderColor);
+					Font->DrawText(Token, DrawPosition, DrawAlignment, RenderColor);
 
 				Y += LineHeight;
 			}

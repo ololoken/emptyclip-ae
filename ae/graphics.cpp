@@ -22,6 +22,7 @@
 #include <ae/program.h>
 #include <ae/texture.h>
 #include <ae/texture_array.h>
+#include <ae/mesh.h>
 #include <ae/ui.h>
 #include <SDL.h>
 #include <SDL_mouse.h>
@@ -953,6 +954,24 @@ void _Graphics::DrawWallDecal(const glm::vec3 &Position, const _Texture *Texture
 	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(ModelTransform));
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
+// Draw 3d mesh
+void _Graphics::DrawMesh(const glm::vec3 &Position, const _Mesh *Mesh, const _Texture *Texture) {
+	ae::Graphics.SetTextureID(Texture->ID);
+	ae::Graphics.SetVertexBufferID(Mesh->VertexBufferID);
+	ae::Graphics.SetAttribLevel(3);
+
+	glm::mat4 ModelTransform;
+	ModelTransform = glm::translate(glm::mat4(1.0f), Position);
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(glm::translate(glm::mat4(1.0f), Position)));
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(ae::_PackedVertex), ae::_PackedVertex::GetPositionOffset());
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(ae::_PackedVertex), ae::_PackedVertex::GetUVOffset());
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(ae::_PackedVertex), ae::_PackedVertex::GetNormalOffset());
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Mesh->ElementBufferID);
+
+	glDrawElements(GL_TRIANGLES, (GLsizei)Mesh->IndexCount, GL_UNSIGNED_INT, nullptr);
 }
 
 }

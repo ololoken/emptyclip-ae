@@ -33,6 +33,7 @@ namespace ae {
 // Forward Declarations
 class _Texture;
 class _TextureArray;
+class _Mesh;
 class _Program;
 class _Element;
 struct _Bounds;
@@ -130,6 +131,7 @@ class _Graphics {
 		void DrawWall(const glm::vec3 &Position, const glm::vec3 &Scale, const _Texture *Texture, int Side);
 		void DrawCube(const glm::vec3 &Start, const glm::vec3 &Scale, const _Texture *Texture);
 		void DrawWallDecal(const glm::vec3 &Position, const ae::_Texture *Texture, float Rotation=0.0f, const glm::vec2 &Scale=glm::vec2(1.0f));
+		void DrawMesh(const glm::vec3 &Position, const ae::_Mesh *Mesh, const _Texture *Texture);
 
 		_Element *Element;
 		glm::ivec2 CurrentSize;

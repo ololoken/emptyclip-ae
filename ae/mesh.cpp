@@ -82,7 +82,7 @@ _Mesh::~_Mesh() {
 }
 
 // Load .obj file
-void _Mesh::ConvertOBJ(const std::string &Path) {
+void _Mesh::ConvertOBJ(const std::string &Path, bool FlipTextureY) {
 
 	// Open file
 	std::ifstream File(Path.c_str());
@@ -116,6 +116,8 @@ void _Mesh::ConvertOBJ(const std::string &Path) {
 						File.get();
 						glm::vec2 UV;
 						File >> UV.s >> UV.t;
+						if(FlipTextureY)
+							UV.t = 1.0f - UV.t;
 						UVs.push_back(UV);
 
 						Flags |= HAS_UVS;
@@ -146,9 +148,10 @@ void _Mesh::ConvertOBJ(const std::string &Path) {
 
 					if(Flags & HAS_NORMALS) {
 						GLuint NormalIndex[3];
-						File	>> VertexIndex[2] >> Dummy >> UVIndex[2] >> Dummy >> NormalIndex[2]
-								>> VertexIndex[1] >> Dummy >> UVIndex[1] >> Dummy >> NormalIndex[1]
-								>> VertexIndex[0] >> Dummy >> UVIndex[0] >> Dummy >> NormalIndex[0];
+						File
+							>> VertexIndex[2] >> Dummy >> UVIndex[2] >> Dummy >> NormalIndex[2]
+							>> VertexIndex[1] >> Dummy >> UVIndex[1] >> Dummy >> NormalIndex[1]
+							>> VertexIndex[0] >> Dummy >> UVIndex[0] >> Dummy >> NormalIndex[0];
 
 						NormalIndices.push_back(NormalIndex[0]);
 						NormalIndices.push_back(NormalIndex[1]);

@@ -92,6 +92,10 @@ _Program::_Program(const std::string &Name, const _Shader *VertexShader, const _
 		Lights[i].PositionID = glGetUniformLocation(ID, LightPositionName.c_str());
 		Lights[i].AttenuationID = glGetUniformLocation(ID, LightAttenuationName.c_str());
 	}
+
+	// Initialize
+	Use();
+	ResetTextureTransform();
 }
 
 // Destructor

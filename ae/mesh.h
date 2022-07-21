@@ -57,7 +57,7 @@ class _Mesh {
 		_Mesh(const std::string &Path);
 		~_Mesh();
 
-		static void ConvertOBJ(const std::string &Path, bool FlipTextureY=true);
+		static void ConvertOBJ(const std::string &Path, bool FlipTextureY=true, bool SwitchYZ=false);
 
 		// Attributes
 		std::string ID;

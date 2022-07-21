@@ -82,7 +82,7 @@ _Mesh::~_Mesh() {
 }
 
 // Load .obj file
-void _Mesh::ConvertOBJ(const std::string &Path, bool FlipTextureY) {
+void _Mesh::ConvertOBJ(const std::string &Path, bool FlipTextureY, bool SwitchYZ) {
 
 	// Open file
 	std::ifstream File(Path.c_str());
@@ -126,7 +126,11 @@ void _Mesh::ConvertOBJ(const std::string &Path, bool FlipTextureY) {
 						File.get();
 						glm::vec3 Normal;
 						File >> Normal.x >> Normal.y >> Normal.z;
-						Normals.push_back(Normal);
+
+						if(SwitchYZ)
+							Normals.push_back(glm::vec3(Normal.x, Normal.z, Normal.y));
+						else
+							Normals.push_back(Normal);
 
 						Flags |= HAS_NORMALS;
 					} break;
@@ -134,7 +138,10 @@ void _Mesh::ConvertOBJ(const std::string &Path, bool FlipTextureY) {
 						glm::vec3 Vertex;
 						File >> Vertex.x >> Vertex.y >> Vertex.z;
 
-						Vertices.push_back(Vertex);
+						if(SwitchYZ)
+							Vertices.push_back(glm::vec3(Vertex.x, Vertex.z, Vertex.y));
+						else
+							Vertices.push_back(Vertex);
 					} break;
 				}
 			} break;

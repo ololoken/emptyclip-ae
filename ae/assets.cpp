@@ -125,7 +125,7 @@ void _Assets::LoadFonts(const std::string &Path, bool LoadFonts) {
 
 		// Check for duplicates
 		if(!LoadFonts && Fonts[Name])
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + Name + "'");
+			throw std::runtime_error(std::string(__func__) + " duplicate id '" + Name + "'");
 
 		// Find program
 		if(Programs.find(ProgramName) == Programs.end())
@@ -219,7 +219,7 @@ void _Assets::LoadPrograms(const std::string &Path) {
 
 		// Check for duplicates
 		if(Programs[Name])
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + Name + "'");
+			throw std::runtime_error(std::string(__func__) + " duplicate id '" + Name + "'");
 
 		// Load vertex shader
 		if(Shaders.find(VertexPath) == Shaders.end())
@@ -262,7 +262,7 @@ void _Assets::LoadColors(const std::string &Path) {
 
 		// Check for duplicates
 		if(Colors.find(Name) != Colors.end())
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + Name + "'");
+			throw std::runtime_error(std::string(__func__) + " duplicate id '" + Name + "'");
 
 		Colors[Name] = Color;
 	}
@@ -403,7 +403,7 @@ void _Assets::LoadReels(const std::string &Path, const _TextureSettings &Texture
 
 		// Check for duplicates
 		if(Reels[Name])
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + Name + "'");
+			throw std::runtime_error(std::string(__func__) + " duplicate id '" + Name + "'");
 
 		// Create template
 		_Reel *Template = new _Reel();
@@ -450,7 +450,7 @@ void _Assets::LoadAnimations(const std::string &Path) {
 
 		// Check for duplicates
 		if(Animations.find(ID) != Animations.end())
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + ID + "'");
+			throw std::runtime_error(std::string(__func__) + " duplicate id '" + ID + "'");
 
 		// Read rest of line into buffer
 		std::string Line;

@@ -35,9 +35,9 @@ class _TextureArray {
 
 		void AddTexture(const std::string &Path, GLfloat RepeatMode=GL_REPEAT, GLint MagFilter=GL_LINEAR, GLint MinFilter=GL_LINEAR_MIPMAP_LINEAR);
 
-		GLuint ID;
-		glm::ivec2 Size;
-		int Count;
+		GLuint ID{0};
+		glm::ivec2 Size{0};
+		int Count{0};
 
 	private:
 };

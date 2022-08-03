@@ -48,50 +48,6 @@ const glm::vec4 DebugColors[] = {
 const int DebugColorCount = sizeof(DebugColors) / sizeof(glm::vec4);
 static int BaseHeight = -1;
 
-// Constructor
-_Element::_Element() :
-	Parent(nullptr),
-	Index(-1),
-	UserData(nullptr),
-	Active(false),
-	Enabled(true),
-	Checked(false),
-	Clickable(false),
-	Draggable(false),
-	MaskOutside(false),
-	Stretch(true),
-	Wrap(false),
-	Format(false),
-	Scaled(true),
-	SizePercent{false, false},
-	Debug(0),
-	Color(1.0f),
-	Style(nullptr),
-	HoverStyle(nullptr),
-	DisabledStyle(nullptr),
-	Texture(nullptr),
-	TextureArray(nullptr),
-	Atlas(nullptr),
-	TextureIndex(0),
-	Fade(1.0f),
-	BaseOffset(0.0f, 0.0f),
-	BaseSize(0.0f, 0.0f),
-	Size(0.0f, 0.0f),
-	Offset(0.0f, 0.0f),
-	HitElement(nullptr),
-	PressedElement(nullptr),
-	ReleasedElement(nullptr),
-	HitOffset(0.0f, 0.0f),
-	PressedOffset(0.0f, 0.0f),
-	Font(nullptr),
-	MaxLength(0),
-	CursorPosition(0),
-	CursorTimer(0),
-	LastKeyPressed(SDL_SCANCODE_UNKNOWN),
-	Password(false),
-	ChildrenOffset(0.0f, 0.0f) {
-}
-
 // Constructor for loading from xml
 _Element::_Element(tinyxml2::XMLElement *Node, _Element *Parent) :
 	_Element() {

@@ -27,13 +27,8 @@ namespace ae {
 
 // Initialize
 _Camera::_Camera(const _CameraSettings &Settings) :
-	AABB(0),
-	LastPosition(0),
-	Position(0),
-	TargetPosition(0),
 	UpdateDivisor(Settings.UpdateDivisor),
 	SnappingThreshold(Settings.SnappingThreshold),
-	Frustum(0),
 	Fovy(Settings.Fovy),
 	Near(Settings.Near),
 	Far(Settings.Far) {

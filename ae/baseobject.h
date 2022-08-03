@@ -29,13 +29,12 @@ class _BaseObject {
 
 	public:
 
-		_BaseObject();
 		virtual ~_BaseObject();
 
 		virtual void Update(double FrameTime) = 0;
 
-		NetworkIDType NetworkID;
-		bool Deleted;
+		NetworkIDType NetworkID{0};
+		bool Deleted{false};
 
 	protected:
 

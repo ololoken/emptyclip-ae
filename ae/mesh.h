@@ -61,13 +61,13 @@ class _Mesh {
 
 		// Attributes
 		std::string ID;
-		uint32_t IndexCount;
-		uint32_t Flags;
-		uint8_t Version;
+		uint32_t IndexCount{0};
+		uint32_t Flags{0};
+		uint8_t Version{0};
 
 		// VBO
-		GLuint VertexBufferID;
-		GLuint ElementBufferID;
+		GLuint VertexBufferID{0};
+		GLuint ElementBufferID{0};
 
 	private:
 

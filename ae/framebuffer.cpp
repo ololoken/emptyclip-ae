@@ -23,10 +23,7 @@
 namespace ae {
 
 // Constructor
-_Framebuffer::_Framebuffer(const glm::ivec2 &Size) :
-	ID(0),
-	TextureID(0),
-	RenderBufferID(0) {
+_Framebuffer::_Framebuffer(const glm::ivec2 &Size) {
 
 	// Generate framebuffer
 	glGenFramebuffers(1, &ID);

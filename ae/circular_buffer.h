@@ -26,9 +26,6 @@ template<class T> class _CircularBuffer {
 
 	public:
 
-		// Constructor
-		_CircularBuffer() : Data(nullptr) { }
-
 		// Constructor with size
 		_CircularBuffer(int Size) {
 			Init(Size);
@@ -144,13 +141,15 @@ template<class T> class _CircularBuffer {
 	private:
 
 		// Data
-		T *Data;
+		T *Data{nullptr};
 
 		// Size
-		int CurrentSize, MaxSize;
+		int CurrentSize{0};
+		int MaxSize{0};
 
 		// Pointers
-		int ReadIndex, WriteIndex;
+		int ReadIndex{0};
+		int WriteIndex{0};
 };
 
 }

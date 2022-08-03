@@ -37,19 +37,9 @@ _Graphics Graphics;
 // Initialize
 void _Graphics::Init(const _WindowSettings &WindowSettings) {
 
-	// Initialize
-	FramesPerSecond = 0;
-	FrameCount = 0;
-	FrameRateTimer = 0;
-	Context = nullptr;
-	Window = nullptr;
-	VertexArrayID = 0;
-	Element = nullptr;
-
 	// Set sizes
 	SDL_DisplayMode DisplayMode;
 	WindowSize = WindowSettings.Size;
-	FullscreenSize = glm::ivec2(0);
 	if(SDL_GetDesktopDisplayMode(0, &DisplayMode) == 0)
 		FullscreenSize = glm::ivec2(DisplayMode.w, DisplayMode.h);
 
@@ -333,7 +323,6 @@ void _Graphics::ResetState() {
 	LastTextureID = (GLuint)-1;
 	LastAttribLevel = (GLuint)-1;
 	LastProgram = nullptr;
-	LastDepthTest = false;
 }
 
 // Throw opengl error
@@ -552,15 +541,10 @@ void _Graphics::SetProgram(const _Program *Program) {
 
 // Enable/disable depth test
 void _Graphics::SetDepthTest(bool DepthTest) {
-	if(DepthTest == LastDepthTest)
-		return;
-
 	if(DepthTest)
 		glEnable(GL_DEPTH_TEST);
 	else
 		glDisable(GL_DEPTH_TEST);
-
-	LastDepthTest = DepthTest;
 }
 
 // Set cull face

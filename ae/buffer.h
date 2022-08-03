@@ -78,10 +78,10 @@ class _Buffer {
 		void AlignBitIndex();
 		void AlignAndExpand(size_t NewWriteSize);
 
-		char *Data;
-		size_t AllocatedSize;
-		size_t CurrentByte;
-		unsigned char CurrentBit;
+		char *Data{nullptr};
+		size_t AllocatedSize{0};
+		size_t CurrentByte{0};
+		unsigned char CurrentBit{0};
 };
 
 }

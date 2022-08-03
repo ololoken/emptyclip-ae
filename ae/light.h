@@ -27,14 +27,12 @@ namespace ae {
 
 // Light
 struct _Light {
-	_Light() : ColorID(-1), PositionID(-1), AttenuationID(-1), Color(1.0f), Position(0.0f), Attenuation(1.0f, 0.0f, 0.0f) { }
-
-	GLint ColorID;
-	GLint PositionID;
-	GLint AttenuationID;
-	glm::vec4 Color;
-	glm::vec3 Position;
-	glm::vec3 Attenuation;
+	GLint ColorID{-1};
+	GLint PositionID{-1};
+	GLint AttenuationID{-1};
+	glm::vec4 Color{1.0f};
+	glm::vec3 Position{0.0f};
+	glm::vec3 Attenuation{1.0f, 0.0f, 0.0f};
 };
 
 }

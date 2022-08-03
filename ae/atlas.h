@@ -33,7 +33,7 @@ class _Atlas {
 	public:
 
 		_Atlas(const _Texture *Texture, const glm::vec2 &Size, float Padding);
-		~_Atlas();
+		~_Atlas() {}
 
 		glm::vec4 GetTextureCoords(uint32_t Index) const;
 

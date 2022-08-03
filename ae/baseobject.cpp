@@ -23,16 +23,8 @@
 
 namespace ae {
 
-// Constructor
-_BaseObject::_BaseObject() :
-	NetworkID(0),
-	Deleted(false) {
-
-}
-
 // Destructor
 _BaseObject::~_BaseObject() {
-
 }
 
 }

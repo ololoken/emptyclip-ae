@@ -33,10 +33,6 @@ _Atlas::_Atlas(const _Texture *Texture, const glm::vec2 &Size, float Padding) :
 	Columns = (uint32_t)(Texture->Size.x / Size.x);
 }
 
-// Destructor
-_Atlas::~_Atlas() {
-}
-
 // Returns coords given a texture index
 glm::vec4 _Atlas::GetTextureCoords(uint32_t Index) const {
 	float X = Index % Columns;

@@ -35,7 +35,7 @@ class _State;
 
 // Structure for an input binding
 struct _ActionMap {
-	_ActionMap(int Rank, size_t Action, float Scale, float DeadZone) : Rank(Rank), Action(Action), DeadZone(DeadZone), Scale(Scale) { }
+	_ActionMap(int Rank, size_t Action, float Scale, float DeadZone) : Rank(Rank), Action(Action), DeadZone(DeadZone), Scale(Scale) {}
 
 	int Rank;
 	size_t Action;

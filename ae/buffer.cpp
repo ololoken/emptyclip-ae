@@ -23,20 +23,13 @@
 namespace ae {
 
 // Constructor for a new buffer
-_Buffer::_Buffer(size_t InitialSize) :
-	Data(nullptr),
-	CurrentByte(0),
-	CurrentBit(0) {
-
+_Buffer::_Buffer(size_t InitialSize) {
 	AllocatedSize = InitialSize;
 	Data = new char[AllocatedSize];
 }
 
 // Constructor for an existing buffer
-_Buffer::_Buffer(const char *ExistingBuffer, size_t Length) :
-	CurrentByte(0),
-	CurrentBit(0) {
-
+_Buffer::_Buffer(const char *ExistingBuffer, size_t Length) {
 	AllocatedSize = Length;
 	Data = new char[AllocatedSize];
 
@@ -45,7 +38,6 @@ _Buffer::_Buffer(const char *ExistingBuffer, size_t Length) :
 
 // Destructor
 _Buffer::~_Buffer() {
-
 	delete[] Data;
 }
 

@@ -36,15 +36,21 @@ class _Program;
 
 // Contains glyph info
 struct _Glyph {
-	float Left, Top, Right, Bottom;
-	float Width, Height;
-	float Advance, OffsetX, OffsetY;
+	float Left{0.0f};
+	float Top{0.0f};
+	float Right{0.0f};
+	float Bottom{0.0f};
+	float Width{0.0f};
+	float Height{0.0f};
+	float Advance{0.0f};
+	float OffsetX{0.0f};
+	float OffsetY{0.0f};
 };
 
 struct _TextBounds {
-	int Width;
-	int AboveBase;
-	int BelowBase;
+	int Width{0};
+	int AboveBase{0};
+	int BelowBase{0};
 };
 
 // Classes
@@ -65,9 +71,9 @@ class _Font {
 
 		// Attributes
 		std::string ID;
-		float MaxHeight;
-		float MaxAbove;
-		float MaxBelow;
+		float MaxHeight{0.0f};
+		float MaxAbove{0.0f};
+		float MaxBelow{0.0f};
 
 	private:
 
@@ -77,17 +83,17 @@ class _Font {
 		void AdjustPosition(const std::string &Text, glm::vec2 &Position, bool UseFormatting, const _Alignment &Alignment, float Scale) const;
 
 		// Glyphs
-		_Glyph Glyphs[256];
+		_Glyph Glyphs[256]{{0}};
 
 		// Graphics
-		const _Program *Program;
-		_Texture *Texture;
+		const _Program *Program{nullptr};
+		_Texture *Texture{nullptr};
 
 		// Freetype
-		bool HasKerning;
-		FT_Library Library;
-		FT_Face Face;
-		FT_Int32 LoadFlags;
+		bool HasKerning{false};
+		FT_Library Library{nullptr};
+		FT_Face Face{nullptr};
+		FT_Int32 LoadFlags{0};
 };
 
 }

@@ -34,31 +34,18 @@ namespace ae {
 // Settings for audio sources
 struct _SoundSettings {
 
-	_SoundSettings(float Volume=1.0f) :
-		Volume(Volume),
-		Loop(false),
-		Relative(true) { }
+	_SoundSettings(float Volume=1.0f) : Volume(Volume) {}
+	_SoundSettings(const glm::vec3 &Position, float Volume=1.0f) : Position(Position), Volume(Volume), Relative(false) {}
 
-	_SoundSettings(const glm::vec3 &Position, float Volume=1.0f) :
-		Position(Position),
-		Volume(Volume),
-		MinGain(0.0f),
-		MaxGain(1.0f),
-		ReferenceDistance(10.0f),
-		MaxDistance(100.0f),
-		RollOff(2.5f),
-		Loop(false),
-		Relative(false) { }
-
-	glm::vec3 Position;
-	float Volume;
-	float MinGain;
-	float MaxGain;
-	float ReferenceDistance;
-	float MaxDistance;
-	float RollOff;
-	bool Loop : 1;
-	bool Relative : 1;
+	glm::vec3 Position{0.0f};
+	float Volume{1.0f};
+	float MinGain{0.0f};
+	float MaxGain{1.0f};
+	float ReferenceDistance{10.0f};
+	float MaxDistance{100.0f};
+	float RollOff{2.5f};
+	bool Loop{false};
+	bool Relative{true};
 };
 
 // Sound class
@@ -66,12 +53,11 @@ class _Sound {
 
 	public:
 
-		_Sound() : ID(0), Volume(1.0f), Limit(0) { }
 		~_Sound();
 
-		ALuint ID;
-		float Volume;
-		int Limit;
+		ALuint ID{0};
+		float Volume{1.0f};
+		int Limit{0};
 };
 
 // Music class
@@ -79,14 +65,13 @@ class _Music {
 
 	public:
 
-		_Music() : Loaded(false), Loop(false), Stop(false), Format(0), Frequency(0) { }
 		~_Music();
 
-		bool Loaded;
-		bool Loop;
-		bool Stop;
-		ALenum Format;
-		long Frequency;
+		bool Loaded{false};
+		bool Loop{false};
+		bool Stop{false};
+		ALenum Format{0};
+		long Frequency{0};
 		OggVorbis_File Stream;
 };
 
@@ -118,22 +103,18 @@ class _AudioSource {
 
 // Holds audio sources
 struct _Channel {
-
-	_Channel() : Index(0) {}
-
 	std::vector<const _AudioSource *> AudioSources;
-	size_t Index;
+	size_t Index{0};
 };
 
 // Wrapper around file handle
 struct _AudioFile {
 
-	_AudioFile() : FileHandle(nullptr), Start(0), Size(0) { }
-	_AudioFile(FILE *FileHandle, int Start, int Size) : FileHandle(FileHandle), Start(Start), Size(Size) { }
+	_AudioFile(FILE *FileHandle, int Start, int Size) : FileHandle(FileHandle), Start(Start), Size(Size) {}
 
-	FILE *FileHandle;
-	int Start;
-	int Size;
+	FILE *FileHandle{nullptr};
+	int Start{0};
+	int Size{0};
 };
 
 // Audio class
@@ -141,10 +122,8 @@ class _Audio {
 
 	public:
 
-		static const int BUFFER_COUNT = 3;
-		static const int BUFFER_SIZE = 4096;
-
-		_Audio();
+		static const int BUFFER_COUNT{3};
+		static const int BUFFER_SIZE{4096};
 
 		void Init(bool Enabled, bool StartMusicThread=true);
 		void Close();
@@ -170,7 +149,7 @@ class _Audio {
 		void SetDirection(const glm::vec3 &Look, const glm::vec3 &Up);
 		glm::vec3 GetPosition();
 
-		bool Done;
+		bool Done{false};
 
 	private:
 
@@ -182,21 +161,21 @@ class _Audio {
 		void GetVorbisInfo(OggVorbis_File *VorbisFile, long &Rate, int &Format);
 		bool QueueBuffers(_Music *Music, ALuint Buffer);
 
-		bool Enabled;
-		float SoundVolume;
-		float MusicVolume;
-		float MaxDistanceSquared;
+		bool Enabled{false};
+		float SoundVolume{1.0f};
+		float MusicVolume{1.0f};
+		float MaxDistanceSquared{10000.0f};
 
-		ALuint MusicSource;
-		ALuint MusicBuffers[BUFFER_COUNT];
+		ALuint MusicSource{0};
+		ALuint MusicBuffers[BUFFER_COUNT]{0};
 
-		_Music *CurrentSong;
-		_Music *NewSong;
+		_Music *CurrentSong{nullptr};
+		_Music *NewSong{nullptr};
 
 		std::list<const _AudioSource *> Sources;
 		std::unordered_map<const _Sound *, _Channel> Channels;
 
-		std::thread *Thread;
+		std::thread *Thread{nullptr};
 };
 
 extern _Audio Audio;

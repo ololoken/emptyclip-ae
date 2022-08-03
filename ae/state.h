@@ -35,22 +35,22 @@ class _State {
 		// Setup
 		_State();
 		virtual ~_State();
-		virtual void Init() { }
-		virtual void Close() { }
+		virtual void Init() {}
+		virtual void Close() {}
 
 		// Input
 		virtual bool HandleAction(int InputType, size_t Action, int Value) { return false; }
 		virtual bool HandleKey(const _KeyEvent &KeyEvent) { return true; }
-		virtual void HandleMouseButton(const _MouseEvent &MouseEvent) { }
-		virtual void HandleMouseMove(const glm::ivec2 &Position) { }
-		virtual void HandleMouseWheel(int Direction) { }
+		virtual void HandleMouseButton(const _MouseEvent &MouseEvent) {}
+		virtual void HandleMouseMove(const glm::ivec2 &Position) {}
+		virtual void HandleMouseWheel(int Direction) {}
 		virtual bool HandleCommand(_Console *Console) { return false; }
-		virtual void HandleWindow(uint8_t Event) { }
-		virtual void HandleQuit() { }
+		virtual void HandleWindow(uint8_t Event) {}
+		virtual void HandleQuit() {}
 
 		// Update
-		virtual void Update(double FrameTime) { }
-		virtual void Render(double BlendFactor) { }
+		virtual void Update(double FrameTime) {}
+		virtual void Render(double BlendFactor) {}
 
 	private:
 

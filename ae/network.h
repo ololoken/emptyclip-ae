@@ -40,8 +40,8 @@ class _Peer;
 
 // Network address
 struct _NetworkAddress {
-	_NetworkAddress() : Host(0), Port(0) { }
-	_NetworkAddress(uint32_t Host, uint16_t Port) : Host(Host), Port(Port) { }
+	_NetworkAddress() : Host(0), Port(0) {}
+	_NetworkAddress(uint32_t Host, uint16_t Port) : Host(Host), Port(Port) {}
 
 	void GetIP(char *IP);
 
@@ -59,7 +59,7 @@ struct _NetworkEvent {
 		PACKET,
 	};
 
-	_NetworkEvent() : Time(0.0), EventData(0), Data(nullptr), Peer(nullptr) { }
+	_NetworkEvent() : Time(0.0), EventData(0), Data(nullptr), Peer(nullptr) {}
 
 	EventType Type;
 	double Time;
@@ -115,8 +115,8 @@ class _Network {
 
 	protected:
 
-		virtual void CreateEvent(_NetworkEvent &Event, double Time, ENetEvent &EEvent) { }
-		virtual void HandleEvent(_NetworkEvent &Event, ENetEvent &EEvent) { }
+		virtual void CreateEvent(_NetworkEvent &Event, double Time, ENetEvent &EEvent) {}
+		virtual void HandleEvent(_NetworkEvent &Event, ENetEvent &EEvent) {}
 
 		// State
 		ENetHost *Connection;

@@ -34,7 +34,6 @@ template<class T> class _Manager {
 
 	public:
 
-		_Manager();
 		~_Manager();
 
 		// Updates
@@ -54,21 +53,15 @@ template<class T> class _Manager {
 
 		// IDs
 		std::unordered_map<NetworkIDType, T *> IDMap;
-		NetworkIDType NextID;
+		NetworkIDType NextID{0};
 
 };
-
-// Constructor
-template <class T>
-_Manager<T>::_Manager() :
-	NextID(0) {
-
-}
 
 // Destructor
 template <class T>
 _Manager<T>::~_Manager() {
 
+	// Delete objects
 	for(auto &Object : Objects)
 		delete Object;
 }

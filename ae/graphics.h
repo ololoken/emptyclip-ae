@@ -52,14 +52,13 @@ enum VertexBufferType {
 };
 
 struct _WindowSettings {
-	_WindowSettings() : Size(0), Position(0), MSAA(0), Anisotrophy(0.0f), Fullscreen(false), Vsync(false) { }
 	std::string WindowTitle;
-	glm::ivec2 Size;
-	glm::ivec2 Position;
-	int MSAA;
-	float Anisotrophy;
-	bool Fullscreen;
-	bool Vsync;
+	glm::ivec2 Size{0};
+	glm::ivec2 Position{0};
+	int MSAA{0};
+	float Anisotrophy{0.0f};
+	bool Fullscreen{false};
+	bool Vsync{false};
 };
 
 enum CursorType {
@@ -74,7 +73,6 @@ class _Graphics {
 
 	public:
 
-		_Graphics() : CircleVertices(32) { }
 		void Init(const _WindowSettings &WindowSettings);
 		void Close();
 
@@ -133,14 +131,14 @@ class _Graphics {
 		void DrawWallDecal(const glm::vec3 &Position, const ae::_Texture *Texture, float Rotation=0.0f, const glm::vec2 &Scale=glm::vec2(1.0f));
 		void DrawMesh(const glm::vec3 &Position, const ae::_Mesh *Mesh, const _Texture *Texture, float Rotation=0.0f, const glm::vec3 &Scale=glm::vec3(1.0f));
 
-		_Element *Element;
-		glm::ivec2 CurrentSize;
-		glm::ivec2 ViewportSize;
+		_Element *Element{nullptr};
+		glm::ivec2 CurrentSize{0};
+		glm::ivec2 ViewportSize{0};
 		glm::mat4 Ortho;
-		float AspectRatio;
-		GLfloat Anisotropy;
-		int FramesPerSecond;
-		int CircleVertices;
+		float AspectRatio{1};
+		GLfloat Anisotropy{0};
+		int FramesPerSecond{0};
+		int CircleVertices{32};
 
 	private:
 
@@ -148,28 +146,27 @@ class _Graphics {
 		void SetupOpenGL();
 
 		// Vertex buffers
-		GLuint VertexArrayID;
+		GLuint VertexArrayID{0};
 		GLuint VertexBuffer[VBO_COUNT];
 
 		// Data structures
-		SDL_Window *Window;
-		SDL_GLContext Context;
+		SDL_Window *Window{nullptr};
+		SDL_GLContext Context{nullptr};
 		SDL_Cursor *Cursors[CURSOR_COUNT];
 
 		// Sizes
-		glm::ivec2 WindowSize;
-		glm::ivec2 FullscreenSize;
+		glm::ivec2 WindowSize{0};
+		glm::ivec2 FullscreenSize{0};
 
 		// State changes
-		GLuint LastVertexBufferID;
-		GLuint LastTextureID;
-		GLuint LastAttribLevel;
-		const _Program *LastProgram;
-		bool LastDepthTest;
+		GLuint LastVertexBufferID{(GLuint)-1};
+		GLuint LastTextureID{(GLuint)-1};
+		GLuint LastAttribLevel{(GLuint)-1};
+		const _Program *LastProgram{nullptr};
 
 		// Benchmarking
-		double FrameRateTimer;
-		int FrameCount;
+		double FrameRateTimer{0.0};
+		int FrameCount{0};
 };
 
 extern _Graphics Graphics;

@@ -26,19 +26,11 @@
 namespace ae {
 
 struct _CameraSettings {
-
-	_CameraSettings() :
-		UpdateDivisor(0.1f),
-		Fovy(90.0f),
-		Near(0.1f),
-		Far(500.0f),
-		SnappingThreshold(0.005f) { }
-
-	float UpdateDivisor;
-	float Fovy;
-	float Near;
-	float Far;
-	float SnappingThreshold;
+	float UpdateDivisor{0.1f};
+	float Fovy{90.0f};
+	float Near{0.1f};
+	float Far{500.0f};
+	float SnappingThreshold{0.005f};
 };
 
 // Camera class
@@ -47,7 +39,7 @@ class _Camera {
 	public:
 
 		_Camera(const _CameraSettings &Settings);
-		~_Camera() { }
+		~_Camera() {}
 
 		// Updates
 		void CalculateFrustum(float AspectRatio);
@@ -71,22 +63,22 @@ class _Camera {
 		bool IsAABBInView(const glm::vec4 &Bounds) const;
 
 		glm::mat4 Transform;
-		glm::vec4 AABB;
+		glm::vec4 AABB{0.0f};
 
 	private:
 
 		glm::mat4 Projection;
 
-		glm::vec3 LastPosition;
-		glm::vec3 Position;
-		glm::vec3 TargetPosition;
-		float UpdateDivisor;
-		float SnappingThreshold;
+		glm::vec3 LastPosition{0.0f};
+		glm::vec3 Position{0.0f};
+		glm::vec3 TargetPosition{0.0f};
+		float UpdateDivisor{0.1f};
+		float SnappingThreshold{0.005f};
 
-		glm::vec2 Frustum;
-		float Fovy;
-		float Near;
-		float Far;
+		glm::vec2 Frustum{0.0f};
+		float Fovy{90.0f};
+		float Near{0.1f};
+		float Far{500.0f};
 };
 
 }

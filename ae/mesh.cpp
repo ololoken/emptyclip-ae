@@ -27,13 +27,7 @@
 namespace ae {
 
 // Constructor
-_Mesh::_Mesh(const std::string &Path) :
-	ID(Path),
-	IndexCount(0),
-	Flags(0),
-	Version(0),
-	VertexBufferID(0),
-	ElementBufferID(0) {
+_Mesh::_Mesh(const std::string &Path) : ID(Path) {
 
 	// Open file
 	std::ifstream File(Path.c_str(), std::ios_base::binary);

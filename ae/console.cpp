@@ -35,9 +35,7 @@ const glm::vec4 CONSOLE_BG_COLOR = glm::vec4(0.0f, 0.0f, 0.0f, 0.95f);
 const glm::vec4 TEXTBOX_BG_COLOR = glm::vec4(0.05f, 0.05f, 0.05f, 0.5f);
 
 // Initialize
-_Console::_Console(const _Program *Program, const _Font *Font) :
-	Element(nullptr),
-	Font(Font) {
+_Console::_Console(const _Program *Program, const _Font *Font) : Font(Font) {
 
 	if(!Graphics.Element)
 		throw std::runtime_error("Invalid graphics element!");

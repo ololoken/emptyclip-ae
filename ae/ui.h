@@ -58,8 +58,8 @@ struct _Alignment {
 		BASELINE,
 	};
 
-	_Alignment() : Horizontal(CENTER), Vertical(MIDDLE) { }
-	_Alignment(int Horizontal, int Vertical) : Horizontal(Horizontal), Vertical(Vertical) { }
+	_Alignment() : Horizontal(CENTER), Vertical(MIDDLE) {}
+	_Alignment(int Horizontal, int Vertical) : Horizontal(Horizontal), Vertical(Vertical) {}
 
 	int Horizontal;
 	int Vertical;
@@ -76,7 +76,7 @@ struct _Style {
 		HasBorderColor(false),
 		Program(nullptr),
 		Texture(nullptr),
-		Stretch(false) { }
+		Stretch(false) {}
 
 	// Attributes
 	std::string Name;
@@ -101,7 +101,7 @@ class _Element {
 
 	public:
 
-		_Element();
+		_Element() {}
 		_Element(tinyxml2::XMLElement *Node, _Element *Parent);
 		~_Element();
 
@@ -138,63 +138,63 @@ class _Element {
 
 		// Attributes
 		std::string Name;
-		_Element *Parent;
-		int Index;
-		void *UserData;
+		_Element *Parent{nullptr};
+		int Index{-1};
+		void *UserData{nullptr};
 
-		bool Active;
-		bool Enabled;
-		bool Checked;
-		bool Clickable;
-		bool Draggable;
-		bool MaskOutside;
-		bool Stretch;
-		bool Wrap;
-		bool Format;
-		bool Scaled;
-		bool SizePercent[2];
-		int Debug;
+		bool Active{false};
+		bool Enabled{true};
+		bool Checked{false};
+		bool Clickable{false};
+		bool Draggable{false};
+		bool MaskOutside{false};
+		bool Stretch{true};
+		bool Wrap{false};
+		bool Format{false};
+		bool Scaled{true};
+		bool SizePercent[2]{false, false};
+		int Debug{0};
 
 		// Graphics
-		glm::vec4 Color;
+		glm::vec4 Color{1.0f};
 		std::string ColorName;
-		const _Style *Style;
-		const _Style *HoverStyle;
-		const _Style *DisabledStyle;
-		const _Texture *Texture;
-		const _TextureArray *TextureArray;
-		const _Atlas *Atlas;
-		uint32_t TextureIndex;
-		float Fade;
+		const _Style *Style{nullptr};
+		const _Style *HoverStyle{nullptr};
+		const _Style *DisabledStyle{nullptr};
+		const _Texture *Texture{nullptr};
+		const _TextureArray *TextureArray{nullptr};
+		const _Atlas *Atlas{nullptr};
+		uint32_t TextureIndex{0};
+		float Fade{1.0f};
 
 		// Layout
 		_Bounds Bounds;
 		_Alignment Alignment;
-		glm::vec2 BaseOffset;
-		glm::vec2 BaseSize;
-		glm::vec2 Size;
-		glm::vec2 Offset;
+		glm::vec2 BaseOffset{0.0f};
+		glm::vec2 BaseSize{0.0f};
+		glm::vec2 Size{0.0f};
+		glm::vec2 Offset{0.0f};
 
 		// Input
-		_Element *HitElement;
-		_Element *PressedElement;
-		_Element *ReleasedElement;
-		glm::vec2 HitOffset;
-		glm::vec2 PressedOffset;
+		_Element *HitElement{nullptr};
+		_Element *PressedElement{nullptr};
+		_Element *ReleasedElement{nullptr};
+		glm::vec2 HitOffset{0.0f};
+		glm::vec2 PressedOffset{0.0f};
 
 		// Text
-		const _Font *Font;
+		const _Font *Font{nullptr};
 		std::string Text;
 		std::string AllowedCharacters;
-		size_t MaxLength;
-		size_t CursorPosition;
-		double CursorTimer;
-		int LastKeyPressed;
-		bool Password;
+		size_t MaxLength{0};
+		size_t CursorPosition{0};
+		double CursorTimer{0.0};
+		int LastKeyPressed{0};
+		bool Password{false};
 
 		// Children
 		std::vector<_Element *> Children;
-		glm::vec2 ChildrenOffset;
+		glm::vec2 ChildrenOffset{0.0f};
 
 	private:
 

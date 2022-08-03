@@ -38,9 +38,9 @@ class _Framebuffer {
 
 		static void Unbind();
 
-		GLuint ID;
-		GLuint TextureID;
-		GLuint RenderBufferID;
+		GLuint ID{0};
+		GLuint TextureID{0};
+		GLuint RenderBufferID{0};
 
 	private:
 

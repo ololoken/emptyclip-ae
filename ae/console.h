@@ -73,11 +73,11 @@ class _Console {
 		std::vector<std::string>::iterator CommandHistoryIterator;
 
 		// UI
-		_Element *Element;
-		_Element *TextboxElement;
-		_Style *Style;
-		_Style *InputStyle;
-		const _Font *Font;
+		_Element *Element{nullptr};
+		_Element *TextboxElement{nullptr};
+		_Style *Style{nullptr};
+		_Style *InputStyle{nullptr};
+		const _Font *Font{nullptr};
 
 };
 

@@ -30,25 +30,25 @@ class _Shape {
 
 	public:
 
-		_Shape() : HalfSize(0.0f, 0.0f) { }
+		_Shape() {}
 
 		// AABB
 		bool IsAABB() const { return HalfSize[1] != 0.0f; }
 		glm::vec4 GetAABB(const glm::vec2 &Position);
 
 		// Properties
-		glm::vec2 HalfSize;
+		glm::vec2 HalfSize{0.0f};
 };
 
 // Physics response
 struct _Manifold {
-	_Manifold() : ObjectA(nullptr), ObjectB(nullptr), Normal(0.0f, 0.0f), Penetration(0.0f) { }
+	_Manifold() {}
 	bool IsDiagonal() const { return Normal.x != 0 && Normal.y != 0; }
 
-	void *ObjectA;
-	void *ObjectB;
-	glm::vec2 Normal;
-	float Penetration;
+	void *ObjectA{nullptr};
+	void *ObjectB{nullptr};
+	glm::vec2 Normal{0.0f};
+	float Penetration = 0.0f;
 };
 
 // Rigid body
@@ -56,7 +56,7 @@ class _RigidBody {
 
 	public:
 
-		_RigidBody();
+		_RigidBody() {}
 		_RigidBody(const glm::vec2 &Position, const glm::vec2 &Velocity, const glm::vec2 &Acceleration);
 
 		// Update
@@ -65,15 +65,15 @@ class _RigidBody {
 		void SetMass(float Mass) { InverseMass = Mass > 0.0f ? 1.0f / Mass : 0.0f; }
 
 		// State
-		glm::vec2 LastPosition;
-		glm::vec2 Position;
-		glm::vec2 Velocity;
-		glm::vec2 Acceleration;
-		float InverseMass;
-		float Restitution;
-		int CollisionMask;
-		int CollisionGroup;
-		bool CollisionResponse;
+		glm::vec2 LastPosition{0.0f};
+		glm::vec2 Position{0.0f};
+		glm::vec2 Velocity{0.0f};
+		glm::vec2 Acceleration{0.0f};
+		float InverseMass{0.0f};
+		float Restitution{1.0f};
+		int CollisionMask{0};
+		int CollisionGroup{0};
+		bool CollisionResponse{true};
 
 	private:
 

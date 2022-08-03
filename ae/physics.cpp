@@ -22,20 +22,6 @@
 namespace ae {
 
 // Constructor
-_RigidBody::_RigidBody() :
-	LastPosition(0.0f, 0.0f),
-	Position(0.0f, 0.0f),
-	Velocity(0.0f, 0.0f),
-	Acceleration(0.0f, 0.0f),
-	InverseMass(0.0f),
-	Restitution(1.0f),
-	CollisionMask(0),
-	CollisionGroup(0),
-	CollisionResponse(true) {
-
-}
-
-// Constructor
 _RigidBody::_RigidBody(const glm::vec2 &Position, const glm::vec2 &Velocity, const glm::vec2 &Acceleration) :
 	LastPosition(Position),
 	Position(Position),

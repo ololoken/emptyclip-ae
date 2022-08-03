@@ -84,8 +84,7 @@ size_t AudioFileRead(void *Destination, size_t Size, size_t Count, void *Source)
 }
 
 // Constructor
-_AudioSource::_AudioSource(const _Sound *Sound) {
-	SoundID = Sound->ID;
+_AudioSource::_AudioSource(const _Sound *Sound) : SoundID(Sound->ID) {
 
 	// Create source
 	alGenSources(1, &ID);
@@ -185,22 +184,6 @@ _Sound::~_Sound() {
 _Music::~_Music() {
 	if(Loaded)
 		ov_clear(&Stream);
-}
-
-// Constructor
-_Audio::_Audio() :
-	Done(false),
-	Enabled(false),
-	SoundVolume(1.0f),
-	MusicVolume(1.0f),
-	MaxDistanceSquared(10000.0f),
-	MusicSource(0),
-	CurrentSong(nullptr),
-	NewSong(nullptr),
-	Thread(nullptr) {
-
-	for(int i = 0; i < BUFFER_COUNT; i++)
-		MusicBuffers[i] = 0;
 }
 
 // Initialize

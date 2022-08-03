@@ -28,9 +28,9 @@ struct SDL_Surface;
 namespace ae {
 
 struct _TextureSettings {
-	_TextureSettings() : WrapMode(1), SetNameOnly(false), Mipmaps(false), Nearest(false) { }
+	_TextureSettings() : SetNameOnly(false), Mipmaps(false), Nearest(false) {}
 
-	int WrapMode;
+	int WrapMode{1};
 	bool SetNameOnly : 1;
 	bool Mipmaps : 1;
 	bool Nearest : 1;
@@ -47,7 +47,7 @@ class _Texture {
 			CLAMP_TO_BORDER,
 		};
 
-		_Texture(const std::string &Path) : Name(Path), ID(0) { }
+		_Texture(const std::string &Path) : Name(Path) {}
 		_Texture(const std::string &Path, const _TextureSettings &TextureSettings);
 		_Texture(const std::string &Path, FILE *FileHandle, const _TextureSettings &TextureSettings);
 		_Texture(unsigned char *Data, const glm::ivec2 &Size, int InternalFormat, GLenum Format);
@@ -55,10 +55,10 @@ class _Texture {
 
 		// Info
 		std::string Name;
-		GLuint ID;
+		GLuint ID{0};
 
 		// Dimensions
-		glm::ivec2 Size;
+		glm::ivec2 Size{0};
 
 	private:
 

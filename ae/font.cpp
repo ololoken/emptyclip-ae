@@ -48,29 +48,7 @@ struct _SortCharacter {
 };
 
 // Constructor
-_Font::_Font() :
-	ID(""),
-	MaxHeight(0.0f),
-	MaxAbove(0.0f),
-	MaxBelow(0.0f),
-	Program(nullptr),
-	Texture(nullptr),
-	HasKerning(false),
-	Library(nullptr),
-	Face(nullptr) {
-
-	// Zero out glyphs
-	for(int i = 0; i < 256; i++) {
-		Glyphs[i].Left = 0.0f;
-		Glyphs[i].Top = 0.0f;
-		Glyphs[i].Right = 0.0f;
-		Glyphs[i].Bottom = 0.0f;
-		Glyphs[i].Width = 0.0f;
-		Glyphs[i].Height = 0.0f;
-		Glyphs[i].Advance = 0.0f;
-		Glyphs[i].OffsetX = 0.0f;
-		Glyphs[i].OffsetY = 0.0f;
-	}
+_Font::_Font() {
 
 	// Initialize library
 	if(FT_Init_FreeType(&Library) != 0)

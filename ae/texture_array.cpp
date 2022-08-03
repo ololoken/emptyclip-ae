@@ -24,10 +24,7 @@
 namespace ae {
 
 // Constructor
-_TextureArray::_TextureArray(const glm::ivec2 &Size, int Layers) :
-	Size(Size),
-	Count(0) {
-
+_TextureArray::_TextureArray(const glm::ivec2 &Size, int Layers) : Size(Size) {
 	glGenTextures(1, &ID);
 	glBindTexture(GL_TEXTURE_2D_ARRAY, ID);
 	glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA8, Size.x, Size.y, Layers, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
@@ -76,10 +73,12 @@ void _TextureArray::AddTexture(const std::string &Path, GLfloat RepeatMode, GLin
 	glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, Count, Size.x, Size.y, 1, (GLenum)ColorFormat, GL_UNSIGNED_BYTE, Image->pixels);
 	if(MinFilter != GL_NEAREST)
 		glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
-	Count++;
 
 	// Close
 	SDL_FreeSurface(Image);
+
+	// Update count
+	Count++;
 }
 
 }

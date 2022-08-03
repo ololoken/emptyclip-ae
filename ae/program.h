@@ -37,7 +37,7 @@ class _Program {
 
 	public:
 
-		_Program(const std::string &Name, const _Shader *VertexShader, const _Shader *FragmentShader, GLuint Attribs, int MaxLights);
+		_Program(const std::string &Name, const _Shader *VertexShader, const _Shader *FragmentShader, GLuint Attribs, size_t MaxLights);
 		~_Program();
 
 		void Use() const;
@@ -50,18 +50,18 @@ class _Program {
 		std::string Name;
 
 		GLuint ID;
-		GLint ViewProjectionTransformID;
-		GLint ModelTransformID;
-		GLint TextureTransformID;
-		GLint ColorID;
-		GLint AmbientLightID;
-		GLint LightCountID;
-		GLuint Attribs;
+		GLint ViewProjectionTransformID{-1};
+		GLint ModelTransformID{-1};
+		GLint TextureTransformID{-1};
+		GLint ColorID{-1};
+		GLint AmbientLightID{-1};
+		GLint LightCountID{-1};
+		GLuint Attribs{0};
 
-		int MaxLights;
-		int LightCount;
-		_Light *Lights;
-		glm::vec4 AmbientLight;
+		size_t MaxLights{0};
+		int LightCount{0};
+		_Light *Lights{nullptr};
+		glm::vec4 AmbientLight{1.0f};
 
 	private:
 

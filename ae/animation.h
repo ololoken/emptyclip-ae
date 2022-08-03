@@ -64,10 +64,10 @@ class _Animation : public ae::_Component {
 			BOUNCE
 		};
 
-		_Animation(ae::_BaseObject *Parent);
-		~_Animation();
+		_Animation(ae::_BaseObject *ParentObject);
+		~_Animation() override;
 
-		void Update(double FrameTime);
+		void Update(double FrameTime) override;
 		void Play(size_t Reel, double Speed=1.0);
 		void Stop();
 		void CalculateTextureCoords();
@@ -76,14 +76,14 @@ class _Animation : public ae::_Component {
 		bool IsStopped() const { return Mode == STOPPED; }
 
 		std::vector<const ae::_Reel *> Reels;
-		glm::vec4 TextureCoords;
-		double Timer;
-		double FramePeriod;
-		size_t Reel;
-		int Mode;
-		int Frame;
-		int LastFrame;
-		int Direction;
+		glm::vec4 TextureCoords{0.0f};
+		double Timer{0.0};
+		double FramePeriod{1.0};
+		size_t Reel{0};
+		int Mode{STOPPED};
+		int Frame{0};
+		int LastFrame{-1};
+		int Direction{1};
 
 };
 

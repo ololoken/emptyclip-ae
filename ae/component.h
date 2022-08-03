@@ -33,21 +33,21 @@ class _Component {
 
 	public:
 
-		_Component(_BaseObject *Parent) : Parent(Parent), UpdateAutomatically(true) { }
-		virtual ~_Component() { }
+		_Component(_BaseObject *ParentObject) : Parent(ParentObject) {}
+		virtual ~_Component() {}
 
 		// Updates
-		virtual void Update(double FrameTime) { }
+		virtual void Update(double FrameTime) {}
 
 		// Network
-		virtual void NetworkSerialize(ae::_Buffer &Buffer) { }
-		virtual void NetworkUnserialize(ae::_Buffer &Buffer) { }
-		virtual void NetworkSerializeUpdate(ae::_Buffer &Buffer, uint16_t TimeSteps) { }
-		virtual void NetworkUnserializeUpdate(ae::_Buffer &Buffer, uint16_t TimeSteps) { }
+		virtual void NetworkSerialize(ae::_Buffer &Buffer) {}
+		virtual void NetworkUnserialize(ae::_Buffer &Buffer) {}
+		virtual void NetworkSerializeUpdate(ae::_Buffer &Buffer, uint16_t TimeSteps) {}
+		virtual void NetworkUnserializeUpdate(ae::_Buffer &Buffer, uint16_t TimeSteps) {}
 
 		// Attributes
-		_BaseObject *Parent;
-		bool UpdateAutomatically;
+		_BaseObject *Parent{nullptr};
+		bool UpdateAutomatically{true};
 
 };
 

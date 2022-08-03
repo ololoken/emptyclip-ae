@@ -31,7 +31,6 @@ class _LogFile {
 
 	public:
 
-		_LogFile() : ToStdOut(true), PrependDate(true), TokenCount(0) { }
 		~_LogFile() {
 			Close();
 		}
@@ -92,15 +91,15 @@ class _LogFile {
 			return *this;
 		}
 
-		bool ToStdOut;
-		bool PrependDate;
+		bool ToStdOut{true};
+		bool PrependDate{true};
 
 	private:
 
 		void GetDateString(char *Buffer);
 
 		std::ofstream File;
-		int TokenCount;
+		int TokenCount{0};
 };
 
 // Get ISO 8601 timestamp

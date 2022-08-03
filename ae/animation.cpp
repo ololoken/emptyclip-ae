@@ -25,16 +25,7 @@
 namespace ae {
 
 // Constructor
-_Animation::_Animation(ae::_BaseObject *Parent) :
-	_Component(Parent),
-	TextureCoords(0.0f),
-	Timer(0.0),
-	FramePeriod(1.0),
-	Reel(0),
-	Mode(STOPPED),
-	Frame(0),
-	LastFrame(-1),
-	Direction(1) {
+_Animation::_Animation(ae::_BaseObject *ParentObject) : _Component(ParentObject) {
 }
 
 // Destructor

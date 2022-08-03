@@ -45,11 +45,10 @@ struct _Reel;
 struct _TextureSettings;
 
 struct _Layer {
-	_Layer() : Layer(0), DepthTest(0), DepthMask(0), EditorOnly(0) { }
-	int Layer;
-	int DepthTest;
-	int DepthMask;
-	int EditorOnly;
+	int Layer{0};
+	int DepthTest{0};
+	int DepthMask{0};
+	int EditorOnly{0};
 };
 
 // Classes

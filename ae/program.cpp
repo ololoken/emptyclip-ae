@@ -28,19 +28,10 @@
 namespace ae {
 
 // Load a program from two shaders
-_Program::_Program(const std::string &Name, const _Shader *VertexShader, const _Shader *FragmentShader, GLuint Attribs, int MaxLights) :
+_Program::_Program(const std::string &Name, const _Shader *VertexShader, const _Shader *FragmentShader, GLuint Attribs, size_t MaxLights) :
 	Name(Name),
-	ViewProjectionTransformID(-1),
-	ModelTransformID(-1),
-	TextureTransformID(-1),
-	ColorID(-1),
-	AmbientLightID(-1),
-	LightCountID(-1),
 	Attribs(Attribs),
-	MaxLights(MaxLights),
-	LightCount(0),
-	Lights(nullptr),
-	AmbientLight(1.0f) {
+	MaxLights(MaxLights) {
 
 	// Create program
 	ID = glCreateProgram();
@@ -84,7 +75,7 @@ _Program::_Program(const std::string &Name, const _Shader *VertexShader, const _
 	AmbientLightID = glGetUniformLocation(ID, "ambient_light");
 	LightCountID = glGetUniformLocation(ID, "light_count");
 
-	for(int i = 0; i < MaxLights; i++) {
+	for(size_t i = 0; i < MaxLights; i++) {
 		std::string LightColorName = "lights[" + std::to_string(i) + "].color";
 		std::string LightPositionName = "lights[" + std::to_string(i) + "].position";
 		std::string LightAttenuationName = "lights[" + std::to_string(i) + "].attenuation";

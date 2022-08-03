@@ -212,7 +212,7 @@ void _Assets::LoadPrograms(const std::string &Path) {
 
 		// Get integer parameters
 		GLuint Attribs;
-		int MaxLights;
+		size_t MaxLights;
 		File >> Attribs >> MaxLights;
 
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');

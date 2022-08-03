@@ -30,7 +30,7 @@ class _FrameLimit {
 	public:
 
 		// Constructor
-		_FrameLimit(double FrameRate) : FrameRate(FrameRate), ExtraTime(0.0) { Reset(); }
+		_FrameLimit(double FrameRate) : FrameRate(FrameRate) { Reset(); }
 
 		// Reset timer
 		void Reset() {
@@ -64,8 +64,8 @@ class _FrameLimit {
 	private:
 
 		std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds> Timer;
-		double FrameRate;
-		double ExtraTime;
+		double FrameRate{0.0};
+		double ExtraTime{0.0};
 
 };
 

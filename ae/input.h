@@ -26,7 +26,7 @@
 namespace ae {
 
 struct _KeyEvent {
-	_KeyEvent(const char *Text, int Scancode, bool Pressed, bool Repeat) : Text(Text), Scancode(Scancode), Pressed(Pressed), Repeat(Repeat) { }
+	_KeyEvent(const char *Text, int Scancode, bool Pressed, bool Repeat) : Text(Text), Scancode(Scancode), Pressed(Pressed), Repeat(Repeat) {}
 	const char *Text;
 	int Scancode;
 	bool Pressed;
@@ -34,7 +34,7 @@ struct _KeyEvent {
 };
 
 struct _MouseEvent {
-	_MouseEvent(const glm::ivec2 &Position, int Button, bool Pressed) : Position(Position), Button(Button), Pressed(Pressed) { }
+	_MouseEvent(const glm::ivec2 &Position, int Button, bool Pressed) : Position(Position), Button(Button), Pressed(Pressed) {}
 	glm::ivec2 Position;
 	int Button;
 	bool Pressed;
@@ -54,8 +54,6 @@ class _Input {
 			INPUT_COUNT,
 		};
 
-		_Input() : KeyState(nullptr), MouseState(0), Mouse(0) { }
-
 		// Update
 		void Update(double FrameTime);
 
@@ -70,9 +68,9 @@ class _Input {
 	private:
 
 		// States
-		const uint8_t *KeyState;
-		uint32_t MouseState;
-		glm::ivec2 Mouse;
+		const uint8_t *KeyState{nullptr};
+		uint32_t MouseState{0};
+		glm::ivec2 Mouse{0};
 };
 
 extern _Input Input;

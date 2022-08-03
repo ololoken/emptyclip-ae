@@ -31,7 +31,6 @@ class _Files {
 
 	public:
 
-		_Files() { }
 		_Files(const std::string &Path);
 		void Load(const std::string &Path, bool PrependPath=false);
 
@@ -45,21 +44,20 @@ class _FilePack {
 	public:
 
 		struct _File {
-			_File() { }
-			_File(const std::string &Name, int Size, int Offset) : Name(Name), Size(Size), Offset(Offset) { }
+			_File() {}
+			_File(const std::string &Name, int Size, int Offset) : Name(Name), Size(Size), Offset(Offset) {}
 
 			std::string Name;
-			int Size;
-			int Offset;
+			int Size{0};
+			int Offset{0};
 		};
 
-		_FilePack() : BodyOffset(0) { }
 		_FilePack(const std::string &Path);
 		void Load(const std::string &Path);
 
 		std::unordered_map<std::string, _File> Data;
 		std::string Path;
-		int BodyOffset;
+		int BodyOffset{0};
 
 };
 

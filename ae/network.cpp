@@ -27,16 +27,7 @@
 namespace ae {
 
 // Constructor
-_Network::_Network() :
-	Connection(nullptr),
-	PingSocket(-1),
-	Time(0.0),
-	UpdateTimer(0.0),
-	UpdatePeriod(1 / 20.0),
-	SentSpeed(0),
-	ReceiveSpeed(0),
-	SecondTimer(0.0),
-	FakeLag(0.0) {
+_Network::_Network() {
 
 	// Create ping socket
 	PingSocket = enet_socket_create(ENET_SOCKET_TYPE_DATAGRAM);

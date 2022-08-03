@@ -37,11 +37,11 @@ class _Peer {
 		_Peer(_ENetPeer *ENetPeer);
 		~_Peer();
 
-		_ENetPeer *ENetPeer;
-		_Object *Object;
-		uint32_t AccountID;
-		uint32_t CharacterID;
-		uint16_t LastAck;
+		_ENetPeer *ENetPeer{nullptr};
+		_Object *Object{nullptr};
+		uint32_t AccountID{0};
+		uint32_t CharacterID{0};
+		uint16_t LastAck{0};
 
 };
 

@@ -40,13 +40,13 @@ class _Peer;
 
 // Network address
 struct _NetworkAddress {
-	_NetworkAddress() : Host(0), Port(0) {}
+	_NetworkAddress() {}
 	_NetworkAddress(uint32_t Host, uint16_t Port) : Host(Host), Port(Port) {}
 
 	void GetIP(char *IP);
 
-	uint32_t Host;
-	uint16_t Port;
+	uint32_t Host{0};
+	uint16_t Port{0};
 };
 
 // Network Event
@@ -59,13 +59,11 @@ struct _NetworkEvent {
 		PACKET,
 	};
 
-	_NetworkEvent() : Time(0.0), EventData(0), Data(nullptr), Peer(nullptr) {}
-
-	EventType Type;
-	double Time;
-	int EventData;
-	_Buffer *Data;
-	_Peer *Peer;
+	EventType Type{PACKET};
+	double Time{0.0};
+	int EventData{0};
+	_Buffer *Data{nullptr};
+	_Peer *Peer{nullptr};
 };
 
 class _Network {
@@ -119,20 +117,21 @@ class _Network {
 		virtual void HandleEvent(_NetworkEvent &Event, ENetEvent &EEvent) {}
 
 		// State
-		ENetHost *Connection;
-		int PingSocket;
-		double Time;
+		ENetHost *Connection{nullptr};
+		int PingSocket{-1};
+		double Time{0.0};
 
 		// Updates
-		double UpdateTimer, UpdatePeriod;
+		double UpdateTimer{0.0};
+		double UpdatePeriod{1.0 / 20.0};
 
 		// Stats
-		double SentSpeed;
-		double ReceiveSpeed;
-		double SecondTimer;
+		double SentSpeed{0.0};
+		double ReceiveSpeed{0.0};
+		double SecondTimer{0.0};
 
 		// Fake lag
-		double FakeLag;
+		double FakeLag{0.0};
 		std::queue<_NetworkEvent> NetworkEvents;
 };
 

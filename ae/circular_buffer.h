@@ -26,6 +26,9 @@ template<class T> class _CircularBuffer {
 
 	public:
 
+		// Default constructor
+		_CircularBuffer() {}
+
 		// Constructor with size
 		_CircularBuffer(int Size) {
 			Init(Size);

@@ -27,9 +27,7 @@
 namespace ae {
 
 // Constructor
-_ClientNetwork::_ClientNetwork() :
-	ConnectionState(State::DISCONNECTED),
-	Peer(nullptr) {
+_ClientNetwork::_ClientNetwork() {
 
 	// Create client connection
 	Connection = enet_host_create(nullptr, 1, 0, 0, 0);

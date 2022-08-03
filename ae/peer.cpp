@@ -24,11 +24,7 @@
 namespace ae {
 
 // Constructor
-_Peer::_Peer(_ENetPeer *ENetPeer) :
-	ENetPeer(ENetPeer),
-	Object(nullptr),
-	AccountID(0),
-	LastAck(0) {
+_Peer::_Peer(_ENetPeer *ENetPeer) : ENetPeer(ENetPeer) {
 }
 
 // Destructor

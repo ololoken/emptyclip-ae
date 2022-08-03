@@ -70,10 +70,10 @@ class _ClientNetwork : public _Network {
 		void HandleEvent(_NetworkEvent &Event, ENetEvent &EEvent) override;
 
 		// State
-		State ConnectionState;
+		State ConnectionState{State::DISCONNECTED};
 
 		// Peers
-		_Peer *Peer;
+		_Peer *Peer{nullptr};
 };
 
 }

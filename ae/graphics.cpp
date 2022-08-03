@@ -957,13 +957,16 @@ void _Graphics::DrawWallDecal(const glm::vec3 &Position, const _Texture *Texture
 }
 
 // Draw 3d mesh
-void _Graphics::DrawMesh(const glm::vec3 &Position, const _Mesh *Mesh, const _Texture *Texture, const glm::vec3 &Scale) {
+void _Graphics::DrawMesh(const glm::vec3 &Position, const _Mesh *Mesh, const _Texture *Texture, float Rotation, const glm::vec3 &Scale) {
 	ae::Graphics.SetTextureID(Texture->ID);
 	ae::Graphics.SetVertexBufferID(Mesh->VertexBufferID);
 	ae::Graphics.SetAttribLevel(3);
 
 	glm::mat4 ModelTransform;
 	ModelTransform = glm::translate(glm::mat4(1.0f), Position);
+	if(Rotation != 0.0f)
+		ModelTransform = glm::rotate(ModelTransform, glm::radians(Rotation), glm::vec3(0, 0, 1));
+
 	ModelTransform = glm::scale(ModelTransform, Scale);
 	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(ModelTransform));
 

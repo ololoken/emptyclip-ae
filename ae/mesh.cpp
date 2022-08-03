@@ -141,8 +141,6 @@ void _Mesh::ConvertOBJ(const std::string &Path, bool FlipTextureY, bool SwitchYZ
 			} break;
 			case 'f': {
 				GLuint VertexIndex[3];
-
-				// Blender exports CW, so load them in reverse
 				if(Flags & HAS_UVS) {
 					GLuint UVIndex[3];
 					char Dummy;
@@ -150,16 +148,16 @@ void _Mesh::ConvertOBJ(const std::string &Path, bool FlipTextureY, bool SwitchYZ
 					if(Flags & HAS_NORMALS) {
 						GLuint NormalIndex[3];
 						File
-							>> VertexIndex[2] >> Dummy >> UVIndex[2] >> Dummy >> NormalIndex[2]
+							>> VertexIndex[0] >> Dummy >> UVIndex[0] >> Dummy >> NormalIndex[0]
 							>> VertexIndex[1] >> Dummy >> UVIndex[1] >> Dummy >> NormalIndex[1]
-							>> VertexIndex[0] >> Dummy >> UVIndex[0] >> Dummy >> NormalIndex[0];
+							>> VertexIndex[2] >> Dummy >> UVIndex[2] >> Dummy >> NormalIndex[2];
 
 						NormalIndices.push_back(NormalIndex[0]);
 						NormalIndices.push_back(NormalIndex[1]);
 						NormalIndices.push_back(NormalIndex[2]);
 					}
 					else {
-						File >> VertexIndex[2] >> Dummy >> UVIndex[2] >> VertexIndex[1] >> Dummy >> UVIndex[1] >> VertexIndex[0] >> Dummy >> UVIndex[0];
+						File >> VertexIndex[0] >> Dummy >> UVIndex[0] >> VertexIndex[1] >> Dummy >> UVIndex[1] >> VertexIndex[2] >> Dummy >> UVIndex[2];
 					}
 
 					UVIndices.push_back(UVIndex[0]);
@@ -167,7 +165,7 @@ void _Mesh::ConvertOBJ(const std::string &Path, bool FlipTextureY, bool SwitchYZ
 					UVIndices.push_back(UVIndex[2]);
 				}
 				else {
-					File >> VertexIndex[2] >> VertexIndex[1] >> VertexIndex[0];
+					File >> VertexIndex[0] >> VertexIndex[1] >> VertexIndex[2];
 				}
 
 				VertexIndices.push_back(VertexIndex[0]);

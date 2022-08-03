@@ -31,6 +31,7 @@ class _Files {
 
 	public:
 
+		_Files() {}
 		_Files(const std::string &Path);
 		void Load(const std::string &Path, bool PrependPath=false);
 

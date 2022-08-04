@@ -75,7 +75,7 @@ void _Texture::Load(SDL_Surface *Image, const _TextureSettings &TextureSettings)
 			ColorFormat = GL_RGBA;
 		break;
 		default:
-			throw std::runtime_error("Unsupported bpp " + std::to_string(Image->format->BitsPerPixel) + " for texture " + Name);
+			throw std::runtime_error(std::string(__func__) + " unsupported bpp '" + std::to_string(Image->format->BitsPerPixel) + "' for texture '" + Name + "'");
 	}
 
 	// Create texture and upload to GPU

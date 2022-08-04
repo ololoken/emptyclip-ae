@@ -109,19 +109,19 @@ _Element::_Element(tinyxml2::XMLElement *Node, _Element *Parent) :
 
 	// Check ids
 	if(Assets.Elements.find(Name) != Assets.Elements.end())
-		throw std::runtime_error("duplicate element id '" + Name + "'");
+		throw std::runtime_error(std::string(__func__) + " duplicate element id '" + Name + "'");
 	if(TextureName != "" && Assets.Textures.find(TextureName) == Assets.Textures.end())
-		throw std::runtime_error("unknown texture '" + TextureName + "' for image '" + Name + "'");
+		throw std::runtime_error(std::string(__func__) + " unknown texture '" + TextureName + "' for image '" + Name + "'");
 	if(StyleName != "" && Assets.Styles.find(StyleName) == Assets.Styles.end())
-		throw std::runtime_error("unknown style '" + StyleName + "' for element '" + Name + "'");
+		throw std::runtime_error(std::string(__func__) + " unknown style '" + StyleName + "' for element '" + Name + "'");
 	if(HoverStyleName != "" && Assets.Styles.find(HoverStyleName) == Assets.Styles.end())
-		throw std::runtime_error("unknown hover_style '" + HoverStyleName + "' for element '" + Name + "'");
+		throw std::runtime_error(std::string(__func__) + " unknown hover_style '" + HoverStyleName + "' for element '" + Name + "'");
 	if(DisabledStyleName != "" && Assets.Styles.find(DisabledStyleName) == Assets.Styles.end())
-		throw std::runtime_error("unknown disabled_style '" + DisabledStyleName + "' for element '" + Name + "'");
+		throw std::runtime_error(std::string(__func__) + " unknown disabled_style '" + DisabledStyleName + "' for element '" + Name + "'");
 	if(ColorName != "" && Assets.Colors.find(ColorName) == Assets.Colors.end())
-		throw std::runtime_error("unknown color '" + ColorName + "' for element '" + Name + "'");
+		throw std::runtime_error(std::string(__func__) + " unknown color '" + ColorName + "' for element '" + Name + "'");
 	if(FontName != "" && Assets.Fonts.find(FontName) == Assets.Fonts.end())
-		throw std::runtime_error("unknown font '" + FontName + "' for element '" + Name + "'");
+		throw std::runtime_error(std::string(__func__) + " unknown font '" + FontName + "' for element '" + Name + "'");
 
 	// Assign pointers
 	Texture = Assets.Textures[TextureName];

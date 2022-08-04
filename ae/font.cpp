@@ -52,7 +52,7 @@ _Font::_Font() {
 
 	// Initialize library
 	if(FT_Init_FreeType(&Library) != 0)
-		throw std::runtime_error("Error initializing FreeType");
+		throw std::runtime_error(std::string(__func__) + " error initializing FreeType");
 }
 
 // Destructor
@@ -75,7 +75,7 @@ void _Font::Close() {
 }
 
 // Load the font
-void _Font::Load(const std::string &ID, const std::string &FontFile, const _Program *Program, uint32_t FontSize, uint32_t TextureWidth) {
+void _Font::Load(const std::string &ID, const std::string &Path, const _Program *Program, uint32_t FontSize, uint32_t TextureWidth) {
 
 	// Delete existing font
 	Close();
@@ -84,12 +84,12 @@ void _Font::Load(const std::string &ID, const std::string &FontFile, const _Prog
 	this->Program = Program;
 
 	// Load the font
-	if(FT_New_Face(Library, FontFile.c_str(), 0, &Face) != 0)
-		throw std::runtime_error("Error loading font file: " + FontFile);
+	if(FT_New_Face(Library, Path.c_str(), 0, &Face) != 0)
+		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
 
 	// Set font size
 	if(FT_Set_Pixel_Sizes(Face, 0, FontSize))
-		throw std::runtime_error("Error setting pixel size");
+		throw std::runtime_error(std::string(__func__) + " error setting pixel size");
 
 	HasKerning = !!FT_HAS_KERNING(Face);
 	LoadFlags = FT_LOAD_RENDER;

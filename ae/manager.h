@@ -115,7 +115,7 @@ T *_Manager<T>::Create() {
 		NextID++;
 	}
 
-	throw std::runtime_error("Ran out of object ids");
+	throw std::runtime_error(std::string(__func__) + " ran out of object ids");
 }
 
 // Create object with existing id

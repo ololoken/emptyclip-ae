@@ -42,7 +42,7 @@ _Framebuffer::_Framebuffer(const glm::ivec2 &Size) {
 	glBindRenderbuffer(GL_RENDERBUFFER, RenderBufferID);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_RGB, Size.x, Size.y);
 	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		throw std::runtime_error("glCheckFramebufferStatus not ready");
+		throw std::runtime_error(std::string(__func__) + " glCheckFramebufferStatus not ready");
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

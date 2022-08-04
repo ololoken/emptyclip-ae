@@ -30,7 +30,7 @@ _TileMap::_TileMap(const std::string &Path) {
 	// Load file
 	std::ifstream File(Path.c_str(), std::ios::in);
 	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
 
 	// Skip header
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');

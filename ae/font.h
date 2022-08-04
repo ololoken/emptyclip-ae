@@ -62,7 +62,7 @@ class _Font {
 		~_Font();
 
 		void Close();
-		void Load(const std::string &ID, const std::string &FontFile, const _Program *Program, uint32_t FontSize, uint32_t TextureWidth=256);
+		void Load(const std::string &ID, const std::string &Path, const _Program *Program, uint32_t FontSize, uint32_t TextureWidth=256);
 
 		float DrawText(const std::string &Text, glm::vec2 Position, const _Alignment &Alignment=LEFT_BASELINE, const glm::vec4 &Color=glm::vec4(1.0f), float Scale=1.0f) const;
 		void DrawTextFormatted(const std::string &Text, glm::vec2 Position, const _Alignment &Alignment=LEFT_BASELINE, float Alpha=1.0f, float Scale=1.0f) const;

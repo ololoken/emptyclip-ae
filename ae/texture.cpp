@@ -35,7 +35,7 @@ _Texture::_Texture(const std::string &Path, const _TextureSettings &TextureSetti
 	// Open file
 	SDL_Surface *Image = IMG_Load(Path.c_str());
 	if(!Image)
-		throw std::runtime_error("Error loading image: " + Path + " with error: " + IMG_GetError());
+		throw std::runtime_error(std::string(__func__) + " error loading image '" + Path + "' with error: " + IMG_GetError());
 
 	Load(Image, TextureSettings);
 	SDL_FreeSurface(Image);
@@ -53,7 +53,7 @@ _Texture::_Texture(const std::string &Path, FILE *FileHandle, const _TextureSett
 	SDL_Surface *Image = IMG_Load_RW(SDLBuffer, SDL_FALSE);
 	SDL_RWclose(SDLBuffer);
 	if(!Image)
-		throw std::runtime_error("Error loading image: " + Path + " with error: " + IMG_GetError());
+		throw std::runtime_error(std::string(__func__) + " error loading image '" + Path + "' with error: " + IMG_GetError());
 
 	// Load texture
 	Load(Image, TextureSettings);

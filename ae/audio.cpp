@@ -194,7 +194,7 @@ void _Audio::Init(bool Enabled, bool StartMusicThread) {
 	// Open device
 	ALCdevice *Device = alcOpenDevice(nullptr);
 	if(Device == nullptr)
-		throw std::runtime_error("alcOpenDevice failed");
+		throw std::runtime_error(std::string(__func__) + " alcOpenDevice failed");
 
 	// Create context
 	ALCcontext *Context = alcCreateContext(Device, nullptr);
@@ -512,7 +512,7 @@ void _Audio::OpenVorbis(const std::string &Path, OggVorbis_File *VorbisFile) {
 	// Open file
 	int ReturnCode = ov_fopen(Path.c_str(), VorbisFile);
 	if(ReturnCode != 0)
-		throw std::runtime_error("ov_fopen failed: ReturnCode=" + std::to_string(ReturnCode));
+		throw std::runtime_error(std::string(__func__) + " ov_fopen failed: ReturnCode=" + std::to_string(ReturnCode));
 }
 
 // Open vorbis file from a handle and return format/rate
@@ -529,7 +529,7 @@ void _Audio::OpenVorbis(const _AudioFile &AudioFile, OggVorbis_File *VorbisFile)
 	// Open file
 	int ReturnCode = ov_open_callbacks((void *)&AudioFile, VorbisFile, nullptr, 0, Callbacks);
 	if(ReturnCode != 0)
-		throw std::runtime_error("ov_fopen failed: ReturnCode=" + std::to_string(ReturnCode));
+		throw std::runtime_error(std::string(__func__) + " ov_fopen failed: ReturnCode=" + std::to_string(ReturnCode));
 }
 
 // Get stream info
@@ -548,7 +548,7 @@ void _Audio::GetVorbisInfo(OggVorbis_File *VorbisFile, long &Rate, int &Format) 
 			Format = AL_FORMAT_STEREO16;
 		break;
 		default:
-			throw std::runtime_error("Unsupported number of channels: " + std::to_string(Info->channels));
+			throw std::runtime_error(std::string(__func__) + " unsupported number of channels: " + std::to_string(Info->channels));
 	}
 }
 

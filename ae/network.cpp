@@ -53,7 +53,7 @@ _Network::~_Network() {
 // Initializes enet
 void _Network::InitializeSystem() {
 	if(enet_initialize() != 0)
-		throw std::runtime_error("enet_initialize() error");
+		throw std::runtime_error(std::string(__func__) + " enet_initialize() error");
 }
 
 // Closes enet

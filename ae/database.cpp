@@ -74,7 +74,7 @@ void _Database::RunQuery(const std::string &Query) {
 // Runs a query that returns data
 void _Database::PrepareQuery(const std::string &Query, int Handle) {
 	if(QueryHandle[Handle])
-		throw std::runtime_error("Query handle already exists!");
+		throw std::runtime_error(std::string(__func__) + " query handle already exists!");
 
 	// Prepare query
 	int Result = sqlite3_prepare_v2(Database, Query.c_str(), -1, &QueryHandle[Handle], nullptr);
@@ -127,7 +127,7 @@ int64_t _Database::GetLastInsertID() {
 // Get column name by index
 int _Database::GetColumnIndex(const std::string &Name, int Handle) {
 	if(ColumnIndexes[Handle].find(Name) == ColumnIndexes[Handle].end())
-		throw std::runtime_error("unknown column " + Name);
+		throw std::runtime_error(std::string(__func__) + " unknown column '" + Name + "'");
 
 	return ColumnIndexes[Handle][Name];
 }

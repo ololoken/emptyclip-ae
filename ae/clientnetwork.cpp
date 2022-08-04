@@ -32,7 +32,7 @@ _ClientNetwork::_ClientNetwork() {
 	// Create client connection
 	Connection = enet_host_create(nullptr, 1, 0, 0, 0);
 	if(!Connection)
-		throw std::runtime_error("enet_host_create failed");
+		throw std::runtime_error(std::string(__func__) + " enet_host_create failed");
 
 	// Set ping socket options
 	enet_socket_set_option(PingSocket, ENET_SOCKOPT_NONBLOCK, 1);
@@ -59,7 +59,7 @@ void _ClientNetwork::Connect(const std::string &HostAddress, uint16_t Port) {
 	// Connect to server
 	_ENetPeer *ENetPeer = enet_host_connect(Connection, &Address, 2, 0);
 	if(ENetPeer == nullptr)
-		throw std::runtime_error("enet_host_connect returned nullptr");
+		throw std::runtime_error(std::string(__func__) + " enet_host_connect returned nullptr");
 
 	Peer->ENetPeer = ENetPeer;
 	ConnectionState = State::CONNECTING;

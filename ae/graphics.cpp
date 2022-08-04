@@ -73,12 +73,12 @@ void _Graphics::Init(const _WindowSettings &WindowSettings) {
 	// Create window
 	Window = SDL_CreateWindow(WindowSettings.WindowTitle.c_str(), WindowSettings.Position.x, WindowSettings.Position.y, CurrentSize.x, CurrentSize.y, VideoFlags);
 	if(Window == nullptr)
-		throw std::runtime_error("SDL_CreateWindow failed");
+		throw std::runtime_error(std::string(__func__) + " SDL_CreateWindow failed");
 
 	// Set up opengl context
 	Context = SDL_GL_CreateContext(Window);
 	if(Context == nullptr)
-		throw std::runtime_error("SDL_GL_CreateContext failed");
+		throw std::runtime_error(std::string(__func__) + " SDL_GL_CreateContext failed");
 
 	InitGLFunctions();
 
@@ -329,7 +329,7 @@ void _Graphics::ResetState() {
 void _Graphics::CheckError() {
 	GLenum Error = glGetError();
 	if(Error)
-		throw std::runtime_error("glGetError returned " + std::to_string(Error));
+		throw std::runtime_error(std::string(__func__) + " glGetError returned " + std::to_string(Error));
 }
 
 // Sets up the projection matrix for drawing 2D objects

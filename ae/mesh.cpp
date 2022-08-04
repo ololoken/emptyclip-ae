@@ -32,7 +32,7 @@ _Mesh::_Mesh(const std::string &Path) : ID(Path) {
 	// Open file
 	std::ifstream File(Path.c_str(), std::ios_base::binary);
 	if(!File)
-		throw std::runtime_error("Failed to open .mesh file for reading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
 
 	// Read header
 	File.read((char *)&Version, sizeof(Version));
@@ -81,7 +81,7 @@ void _Mesh::ConvertOBJ(const std::string &Path, bool FlipTextureY, bool SwitchYZ
 	// Open file
 	std::ifstream File(Path.c_str());
 	if(!File)
-		throw std::runtime_error("Failed to open .obj file for reading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
 
 	// Clear mesh
 	uint32_t Flags = 0;
@@ -208,7 +208,7 @@ void _Mesh::ConvertOBJ(const std::string &Path, bool FlipTextureY, bool SwitchYZ
 	std::string OutPath = RemoveExtension(Path) + ".mesh";
 	std::ofstream OutFile(OutPath.c_str(), std::ios_base::binary);
 	if(!OutFile)
-		throw std::runtime_error("Failed to open .mesh file for writing: " + OutPath);
+		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
 
 	// Write header
 	OutFile.write((char *)&Version, sizeof(Version));

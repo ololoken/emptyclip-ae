@@ -52,7 +52,7 @@ _Program::_Program(const std::string &Name, const _Shader *VertexShader, const _
 		std::string ErrorMessage((size_t)ResultLength, 0);
 		glGetProgramInfoLog(ID, ResultLength, nullptr, (GLchar *)&ErrorMessage[0]);
 
-		throw std::runtime_error(ErrorMessage);
+		throw std::runtime_error(std::string(__func__) + " " + ErrorMessage);
 	}
 
 	// Setup lights
@@ -150,7 +150,7 @@ _Shader::_Shader(const std::string &Path, GLenum ProgramType) {
 	// Load program from file
 	const char *ShaderSource = LoadFileIntoMemory(Path.c_str());
 	if(!ShaderSource)
-		throw std::runtime_error("Failed to load shader file: " + Path);
+		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
 
 	// Create the shader
 	ID = glCreateShader(ProgramType);
@@ -174,7 +174,7 @@ _Shader::_Shader(const std::string &Path, GLenum ProgramType) {
 		std::string ErrorMessage((size_t)ResultLength, 0);
 		glGetShaderInfoLog(ID, ResultLength, nullptr, (GLchar *)&ErrorMessage[0]);
 
-		throw std::runtime_error("Error in " + Path + '\n' + ErrorMessage);
+		throw std::runtime_error(std::string(__func__) + " error in " + Path + '\n' + ErrorMessage);
 	}
 }
 

@@ -42,11 +42,11 @@ void _TextureArray::AddTexture(const std::string &Path, GLfloat RepeatMode, GLin
 	// Open file
 	SDL_Surface *Image = IMG_Load(Path.c_str());
 	if(!Image)
-		throw std::runtime_error("Error loading image: " + Path + " with error: " + IMG_GetError());
+		throw std::runtime_error(std::string(__func__) + " error loading image '" + Path + "' with error: " + IMG_GetError());
 
 	// Check size
 	if(Size.x != Image->w || Size.y != Image->h)
-		throw std::runtime_error("Bad texture size for " + Path);
+		throw std::runtime_error(std::string(__func__) + " bad texture size for '" + Path + "'");
 
 	// Determine OpenGL format
 	GLint ColorFormat;
@@ -61,7 +61,7 @@ void _TextureArray::AddTexture(const std::string &Path, GLfloat RepeatMode, GLin
 			ColorFormat = GL_RGBA;
 		break;
 		default:
-			throw std::runtime_error("Unsupported bpp " + std::to_string(Image->format->BitsPerPixel) + " for texture " + Path);
+			throw std::runtime_error(std::string(__func__) + " unsupported bpp '" + std::to_string(Image->format->BitsPerPixel) + "' for texture '" + Path + "'");
 	}
 
 	// Copy pixel data to texture array slice

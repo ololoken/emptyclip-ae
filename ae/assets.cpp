@@ -386,7 +386,7 @@ void _Assets::LoadMeshDirectory(const std::string &Path) {
 }
 
 // Load animation reels
-void _Assets::LoadReels(const std::string &Path, const _TextureSettings &TextureSettings) {
+void _Assets::LoadReels(const std::string &Path, bool SetNameOnly) {
 
 	// Load file
 	std::ifstream File(Path.c_str(), std::ios::in);
@@ -413,7 +413,7 @@ void _Assets::LoadReels(const std::string &Path, const _TextureSettings &Texture
 		std::string TextureFile;
 		std::getline(File, TextureFile, '\t');
 		if(!Assets.Textures[TextureFile])
-			Assets.Textures[TextureFile] = new _Texture(TextureFile, TextureSettings);
+			throw std::runtime_error(std::string(__func__) + " unknown texture '" + TextureFile + "'");
 
 		Template->Texture = Assets.Textures[TextureFile];
 
@@ -422,7 +422,7 @@ void _Assets::LoadReels(const std::string &Path, const _TextureSettings &Texture
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Add to list
-		if(!TextureSettings.SetNameOnly) {
+		if(!SetNameOnly) {
 			Template->FramesPerLine = Template->Texture->Size.x / Template->FrameSize.x;
 			Template->TextureScale = glm::vec2(Template->FrameSize) / glm::vec2(Template->Texture->Size);
 		}

@@ -67,7 +67,7 @@ class _Assets {
 		void LoadSoundPack(const std::string &Path);
 		void LoadMusic(const std::string &Path);
 		void LoadMeshDirectory(const std::string &Path);
-		void LoadReels(const std::string &Path, const _TextureSettings &TextureSettings);
+		void LoadReels(const std::string &Path, bool SetNameOnly=false);
 		void LoadAnimations(const std::string &Path);
 		void LoadFonts(const std::string &Path, bool LoadFonts=true);
 		void LoadLayers(const std::string &Path);

@@ -147,6 +147,9 @@ class _Audio {
 		void SetMusicVolume(float Volume);
 		void SetPosition(const glm::vec3 &Position);
 		void SetDirection(const glm::vec3 &Look, const glm::vec3 &Up);
+
+		float GetSoundVolume() const { return SoundVolume; }
+		float GetMusicVolume() const { return MusicVolume; }
 		glm::vec3 GetPosition();
 
 		bool Done{false};

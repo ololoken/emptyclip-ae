@@ -36,6 +36,7 @@ struct _SoundSettings {
 
 	_SoundSettings(float Volume=1.0f) : Volume(Volume) {}
 	_SoundSettings(const glm::vec3 &Position, float Volume=1.0f) : Position(Position), Volume(Volume), Relative(false) {}
+	_SoundSettings(const glm::vec3 &Position, float Volume, float ReferenceDistance, float MaxDistance, float RollOff) : Position(Position), Volume(Volume), ReferenceDistance(ReferenceDistance), MaxDistance(MaxDistance), RollOff(RollOff), Relative(false) {}
 
 	glm::vec3 Position{0.0f};
 	float Volume{1.0f};

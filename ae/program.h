@@ -46,12 +46,14 @@ class _Program {
 		void SetUniformVec4(const std::string &Name, const glm::vec4 &Value) const;
 		void SetUniformMat4(const std::string &Name, const glm::mat4 &Value) const;
 		void ResetTextureTransform() const;
+		void ResetTransform(GLint TransformID) const;
 
 		std::string Name;
 
 		GLuint ID;
 		GLint ViewProjectionTransformID{-1};
 		GLint ModelTransformID{-1};
+		GLint NormalTransformID{-1};
 		GLint TextureTransformID{-1};
 		GLint ColorID{-1};
 		GLint AmbientLightID{-1};

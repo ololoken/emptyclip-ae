@@ -946,13 +946,25 @@ void _Graphics::DrawMesh(const glm::vec3 &Position, const _Mesh *Mesh, const _Te
 	ae::Graphics.SetVertexBufferID(Mesh->VertexBufferID);
 	ae::Graphics.SetAttribLevel(3);
 
-	glm::mat4 ModelTransform;
-	ModelTransform = glm::translate(glm::mat4(1.0f), Position);
-	if(Rotation != 0.0f)
-		ModelTransform = glm::rotate(ModelTransform, glm::radians(Rotation), glm::vec3(0, 0, 1));
+	// Initialize transforms
+	glm::mat4 ModelTransform(1.0f);
+	glm::mat4 NormalTransform(1.0f);
 
+	// Translate;
+	ModelTransform = glm::translate(ModelTransform, Position);
+
+	// Rotate;
+	if(Rotation != 0.0f) {
+		NormalTransform = glm::rotate(NormalTransform, glm::radians(Rotation), glm::vec3(0, 0, 1));
+		ModelTransform *= NormalTransform;
+	}
+
+	// Scale
 	ModelTransform = glm::scale(ModelTransform, Scale);
+
+	// Set transforms
 	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(ModelTransform));
+	glUniformMatrix4fv(LastProgram->NormalTransformID, 1, GL_FALSE, glm::value_ptr(NormalTransform));
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(ae::_PackedVertex), ae::_PackedVertex::GetPositionOffset());
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(ae::_PackedVertex), ae::_PackedVertex::GetUVOffset());

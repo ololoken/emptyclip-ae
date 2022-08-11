@@ -70,6 +70,7 @@ _Program::_Program(const std::string &Name, const _Shader *VertexShader, const _
 
 	ViewProjectionTransformID = glGetUniformLocation(ID, "view_projection_transform");
 	ModelTransformID = glGetUniformLocation(ID, "model_transform");
+	NormalTransformID = glGetUniformLocation(ID, "normal_transform");
 	TextureTransformID = glGetUniformLocation(ID, "texture_transform");
 	ColorID = glGetUniformLocation(ID, "color");
 	AmbientLightID = glGetUniformLocation(ID, "ambient_light");
@@ -86,7 +87,8 @@ _Program::_Program(const std::string &Name, const _Shader *VertexShader, const _
 
 	// Initialize
 	Use();
-	ResetTextureTransform();
+	ResetTransform(TextureTransformID);
+	ResetTransform(NormalTransformID);
 }
 
 // Destructor
@@ -142,6 +144,12 @@ void _Program::SetUniformMat4(const std::string &Name, const glm::mat4 &Value) c
 void _Program::ResetTextureTransform() const {
 	if(TextureTransformID)
 		glUniformMatrix4fv(TextureTransformID, 1, GL_FALSE, glm::value_ptr(glm::mat4(1)));
+}
+
+// Reset transform by id
+void _Program::ResetTransform(GLint TransformID) const {
+	if(TransformID)
+		glUniformMatrix4fv(TransformID, 1, GL_FALSE, glm::value_ptr(glm::mat4(1)));
 }
 
 // Loads a shader

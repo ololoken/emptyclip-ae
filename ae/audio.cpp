@@ -103,9 +103,12 @@ _AudioSource::~_AudioSource() {
 void _AudioSource::SetSettings(const _SoundSettings &SoundSettings) const {
 	alSourcei(ID, AL_SOURCE_RELATIVE, SoundSettings.Relative);
 	alSourcei(ID, AL_LOOPING, SoundSettings.Loop);
-	if(!SoundSettings.Relative) {
-		alSourcef(ID, AL_MIN_GAIN, SoundSettings.MinGain);
-		alSourcef(ID, AL_MAX_GAIN, SoundSettings.MaxGain);
+	alSourcef(ID, AL_MIN_GAIN, SoundSettings.MinGain);
+	alSourcef(ID, AL_MAX_GAIN, SoundSettings.MaxGain);
+	if(SoundSettings.Relative) {
+		alSource3f(ID, AL_POSITION, 0.0f, 0.0f, 0.0f);
+	}
+	else {
 		alSourcef(ID, AL_REFERENCE_DISTANCE, SoundSettings.ReferenceDistance);
 		alSourcef(ID, AL_MAX_DISTANCE, SoundSettings.MaxDistance);
 		alSourcef(ID, AL_ROLLOFF_FACTOR, SoundSettings.RollOff);

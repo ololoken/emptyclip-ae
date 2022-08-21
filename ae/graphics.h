@@ -128,7 +128,7 @@ class _Graphics {
 		void DrawRepeatable(const glm::vec3 &Start, const glm::vec3 &End, const _Texture *Texture, float Rotation, float ScaleX);
 		void DrawWall(const glm::vec3 &Position, const glm::vec3 &Scale, const _Texture *Texture, int Side);
 		void DrawCube(const glm::vec3 &Start, const glm::vec3 &Scale, const _Texture *Texture);
-		void DrawWallDecal(const glm::vec3 &Position, const ae::_Texture *Texture, float Rotation=0.0f, const glm::vec2 &Scale=glm::vec2(1.0f));
+		void DrawWallDecal(const glm::vec3 &Position, const ae::_Texture *Texture, int Side=0, const glm::vec2 &Scale=glm::vec2(1.0f));
 		void DrawMesh(const glm::vec3 &Position, const ae::_Mesh *Mesh, const _Texture *Texture, float Rotation=0.0f, const glm::vec3 &Scale=glm::vec3(1.0f));
 
 		_Element *Element{nullptr};

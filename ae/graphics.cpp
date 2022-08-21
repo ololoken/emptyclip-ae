@@ -861,13 +861,12 @@ void _Graphics::DrawWall(const glm::vec3 &Position, const glm::vec3 &Scale, cons
 
 	glm::mat4 ModelTransform(1.0f);
 	glm::mat4 TextureTransform(1.0f);
+	ModelTransform = glm::translate(ModelTransform, glm::vec3(Position.x, Position.y, Position.z));
 	if(Side == 1 || Side == 3) {
-		ModelTransform = glm::translate(ModelTransform, glm::vec3(Position.x, Position.y, Position.z));
 		TextureTransform[0][0] = Scale.x;
 		TextureTransform[1][1] = Scale.z;
 	}
 	else {
-		ModelTransform = glm::translate(ModelTransform, glm::vec3(Position.x, Position.y, Position.z));
 		TextureTransform[0][0] = Scale.y;
 		TextureTransform[1][1] = Scale.z;
 	}
@@ -923,21 +922,47 @@ void _Graphics::DrawCube(const glm::vec3 &Start, const glm::vec3 &Scale, const _
 }
 
 // Vertical texture
-void _Graphics::DrawWallDecal(const glm::vec3 &Position, const _Texture *Texture, float Rotation, const glm::vec2 &Scale) {
-	SetVBO(VBO_SPRITE);
+void _Graphics::DrawWallDecal(const glm::vec3 &Position, const _Texture *Texture, int Side, const glm::vec2 &Scale) {
+	SetVBO(VBO_CUBE);
 	SetTextureID(Texture->ID);
 
 	glm::mat4 ModelTransform;
-	ModelTransform = glm::translate(glm::mat4(1.0f), Position);
-	if(Rotation != 0.0f)
-		ModelTransform = glm::rotate(ModelTransform, glm::radians(Rotation), glm::vec3(0, 0, 1));
 
-	ModelTransform = glm::rotate(ModelTransform, glm::radians(90.0f), glm::vec3(1, 0, 0));
-	ModelTransform = glm::scale(ModelTransform, glm::vec3(Scale.x, Scale.y, 0.0f));
+	// Set scale
+	switch(Side) {
+		case 1:
+		case 3:
+			ModelTransform[0] = glm::vec4(Scale.x, 0.0f, 0.0f, 0.0f);
+			ModelTransform[1] = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+			ModelTransform[2] = glm::vec4(0.0f, 0.0f, Scale.y, 0.0f);
+		break;
+		case 2:
+		case 4:
+			ModelTransform[0] = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
+			ModelTransform[1] = glm::vec4(0.0f, Scale.x, 0.0f, 0.0f);
+			ModelTransform[2] = glm::vec4(0.0f, 0.0f, Scale.y, 0.0f);
+		break;
+	}
 
+	// Set position
+	switch(Side) {
+		case 1:
+			ModelTransform[3] = glm::vec4(Position.x - 0.5f * Scale.x, Position.y - 1.0f, Position.z - 0.5f * Scale.y, 1.0f);
+		break;
+		case 2:
+			ModelTransform[3] = glm::vec4(Position.x, Position.y - 0.5f * Scale.x, Position.z - 0.5f * Scale.y, 1.0f);
+		break;
+		case 3:
+			ModelTransform[3] = glm::vec4(Position.x - 0.5f * Scale.x, Position.y, Position.z - 0.5f * Scale.y, 1.0f);
+		break;
+		case 4:
+			ModelTransform[3] = glm::vec4(Position.x - 1.0f, Position.y - 0.5f * Scale.x, Position.z - 0.5f * Scale.y, 1.0f);
+		break;
+	}
+
+	// Draw
 	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(ModelTransform));
-
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glDrawArrays(GL_TRIANGLE_STRIP, Side * 4, 4);
 }
 
 // Draw 3d mesh

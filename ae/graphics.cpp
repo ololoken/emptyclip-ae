@@ -101,12 +101,13 @@ void _Graphics::SetupOpenGL() {
 
 	// Anisotropic filtering
 	if(SDL_GL_ExtensionSupported("GL_EXT_texture_filter_anisotropic")) {
-		GLfloat MaxAnisotropy;
 		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &MaxAnisotropy);
-
 		if(Anisotropy > MaxAnisotropy)
 			Anisotropy = MaxAnisotropy;
 	}
+
+	// Get MSAA limit
+	glGetIntegerv(GL_MAX_SAMPLES, &MaxSamples);
 
 	// Default state
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);

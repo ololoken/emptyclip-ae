@@ -135,8 +135,10 @@ class _Graphics {
 		glm::ivec2 CurrentSize{0};
 		glm::ivec2 ViewportSize{0};
 		glm::mat4 Ortho;
-		float AspectRatio{1};
 		GLfloat Anisotropy{0};
+		GLfloat MaxAnisotropy{0};
+		float AspectRatio{1};
+		GLint MaxSamples{0};
 		int FramesPerSecond{0};
 		int CircleVertices{32};
 

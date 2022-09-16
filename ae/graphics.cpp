@@ -53,7 +53,6 @@ void _Graphics::Init(const _WindowSettings &WindowSettings) {
 		CurrentSize = WindowSize;
 
 	// Set opengl attributes
-	Anisotropy = WindowSettings.Anisotrophy;
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
@@ -100,11 +99,8 @@ void _Graphics::Init(const _WindowSettings &WindowSettings) {
 void _Graphics::SetupOpenGL() {
 
 	// Anisotropic filtering
-	if(SDL_GL_ExtensionSupported("GL_EXT_texture_filter_anisotropic")) {
+	if(SDL_GL_ExtensionSupported("GL_EXT_texture_filter_anisotropic"))
 		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &MaxAnisotropy);
-		if(Anisotropy > MaxAnisotropy)
-			Anisotropy = MaxAnisotropy;
-	}
 
 	// Get MSAA limit
 	glGetIntegerv(GL_MAX_SAMPLES, &MaxSamples);

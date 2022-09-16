@@ -104,8 +104,8 @@ void _Texture::Load(SDL_Surface *Image, const _TextureSettings &TextureSettings)
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, MagFilter);
 
 	if(TextureSettings.Mipmaps) {
-		if(Graphics.Anisotropy > 0)
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, Graphics.Anisotropy);
+		if(TextureSettings.Anisotropy > 0)
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, TextureSettings.Anisotropy);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	}
 	else

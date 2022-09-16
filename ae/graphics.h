@@ -56,7 +56,6 @@ struct _WindowSettings {
 	glm::ivec2 Size{0};
 	glm::ivec2 Position{0};
 	int MSAA{0};
-	float Anisotrophy{0.0f};
 	bool Fullscreen{false};
 	bool Vsync{false};
 };
@@ -135,7 +134,6 @@ class _Graphics {
 		glm::ivec2 CurrentSize{0};
 		glm::ivec2 ViewportSize{0};
 		glm::mat4 Ortho;
-		GLfloat Anisotropy{0};
 		GLfloat MaxAnisotropy{0};
 		float AspectRatio{1};
 		GLint MaxSamples{0};

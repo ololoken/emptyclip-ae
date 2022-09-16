@@ -30,6 +30,7 @@ namespace ae {
 struct _TextureSettings {
 	_TextureSettings() : SetNameOnly(false), Mipmaps(false), Nearest(false) {}
 
+	float Anisotropy{1.0f};
 	int WrapMode{1};
 	bool SetNameOnly : 1;
 	bool Mipmaps : 1;

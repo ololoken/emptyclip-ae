@@ -64,6 +64,7 @@ _Texture::_Texture(const std::string &Path, FILE *FileHandle, const _TextureSett
 void _Texture::Load(SDL_Surface *Image, const _TextureSettings &TextureSettings) {
 	Size.x = Image->w;
 	Size.y = Image->h;
+	Mipmaps = TextureSettings.Mipmaps;
 
 	// Determine OpenGL format
 	GLint ColorFormat;
@@ -103,8 +104,8 @@ void _Texture::Load(SDL_Surface *Image, const _TextureSettings &TextureSettings)
 
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, MagFilter);
 
-	if(TextureSettings.Mipmaps) {
-		if(TextureSettings.Anisotropy > 0)
+	if(Mipmaps) {
+		if(TextureSettings.Anisotropy >= 1.0f)
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, TextureSettings.Anisotropy);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	}
@@ -113,7 +114,7 @@ void _Texture::Load(SDL_Surface *Image, const _TextureSettings &TextureSettings)
 
 	// Create texture
 	glTexImage2D(GL_TEXTURE_2D, 0, ColorFormat, Size.x, Size.y, 0, (GLenum)ColorFormat, GL_UNSIGNED_BYTE, Image->pixels);
-	if(TextureSettings.Mipmaps)
+	if(Mipmaps)
 		glGenerateMipmap(GL_TEXTURE_2D);
 }
 
@@ -135,6 +136,15 @@ _Texture::_Texture(unsigned char *Data, const glm::ivec2 &Size, GLint InternalFo
 _Texture::~_Texture() {
 	if(ID)
 		glDeleteTextures(1, &ID);
+}
+
+// Update anisotropic filtering for textures with mipmaps
+void _Texture::UpdateAnisotropicFiltering(float Value) const {
+	if(!ID || !Mipmaps || Value < 1.0f)
+		return;
+
+	glBindTexture(GL_TEXTURE_2D, ID);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, Value);
 }
 
 }

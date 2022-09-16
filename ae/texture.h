@@ -54,9 +54,12 @@ class _Texture {
 		_Texture(unsigned char *Data, const glm::ivec2 &Size, int InternalFormat, GLenum Format);
 		~_Texture();
 
+		void UpdateAnisotropicFiltering(float Value) const;
+
 		// Info
 		std::string Name;
 		GLuint ID{0};
+		bool Mipmaps{false};
 
 		// Dimensions
 		glm::ivec2 Size{0};

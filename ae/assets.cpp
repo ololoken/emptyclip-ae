@@ -279,8 +279,8 @@ void _Assets::LoadTextureDirectory(const std::string &Path, const _TextureSettin
 	// Load textures
 	for(const auto &File : Files.Nodes) {
 		std::string Name = Path + File;
-		if(!Assets.Textures[Name])
-			Assets.Textures[Name] = new _Texture(Name, TextureSettings);
+		if(!Textures[Name])
+			Textures[Name] = new _Texture(Name, TextureSettings);
 	}
 }
 
@@ -296,11 +296,11 @@ void _Assets::LoadTexturePack(const std::string &Path, const _TextureSettings &T
 		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
 
 	for(const auto &File : FilePack.Data) {
-		if(Assets.Textures[File.first])
+		if(Textures[File.first])
 			continue;
 
 		fseek(FileHandle, File.second.Offset + FilePack.BodyOffset, SEEK_SET);
-		Assets.Textures[File.first] = new _Texture(File.first, FileHandle, TextureSetting);
+		Textures[File.first] = new _Texture(File.first, FileHandle, TextureSetting);
 	}
 
 	fclose(FileHandle);
@@ -315,8 +315,8 @@ void _Assets::LoadAtlasDirectory(const std::string &Path, const glm::ivec2 &Size
 	// Create atlases
 	for(const auto &File : Files.Nodes) {
 		std::string Name = Path + File;
-		if(!Assets.Atlases[Name])
-			Assets.Atlases[Name] = new _Atlas(Assets.Textures[Name], Size, Padding);
+		if(!Atlases[Name])
+			Atlases[Name] = new _Atlas(Textures[Name], Size, Padding);
 	}
 }
 
@@ -328,8 +328,8 @@ void _Assets::LoadSounds(const std::string &Path) {
 
 	// Load audio
 	for(const auto &File : Files.Nodes) {
-		if(!Assets.Sounds[File])
-			Assets.Sounds[File] = Audio.LoadSound(Path + File);
+		if(!Sounds[File])
+			Sounds[File] = Audio.LoadSound(Path + File);
 	}
 }
 
@@ -345,12 +345,12 @@ void _Assets::LoadSoundPack(const std::string &Path) {
 		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
 
 	for(const auto &File : FilePack.Data) {
-		if(Assets.Sounds[File.first])
+		if(Sounds.find(File.second.Name) != Sounds.end())
 			continue;
 
 		int Start = File.second.Offset + FilePack.BodyOffset;
 		fseek(FileHandle, Start, SEEK_SET);
-		Assets.Sounds[File.second.Name] = Audio.LoadSound(_AudioFile(FileHandle, Start, File.second.Size));
+		Sounds[File.second.Name] = Audio.LoadSound(_AudioFile(FileHandle, Start, File.second.Size));
 	}
 
 	// Close
@@ -365,8 +365,8 @@ void _Assets::LoadMusic(const std::string &Path) {
 
 	// Load audio
 	for(const auto &File : Files.Nodes) {
-		if(!Assets.Music[File])
-			Assets.Music[File] = Audio.LoadMusic(Path + File);
+		if(!Music[File])
+			Music[File] = Audio.LoadMusic(Path + File);
 	}
 }
 
@@ -380,7 +380,7 @@ void _Assets::LoadMeshDirectory(const std::string &Path) {
 	for(const auto &File : Files.Nodes) {
 		if(File.find(".mesh") != std::string::npos) {
 			std::string Name = Path + File;
-			Assets.Meshes[Name] = new _Mesh(Name);
+			Meshes[Name] = new _Mesh(Name);
 		}
 	}
 }
@@ -412,10 +412,10 @@ void _Assets::LoadReels(const std::string &Path, bool SetNameOnly) {
 		// Load texture
 		std::string TextureFile;
 		std::getline(File, TextureFile, '\t');
-		if(!Assets.Textures[TextureFile])
+		if(!Textures[TextureFile])
 			throw std::runtime_error(std::string(__func__) + " unknown texture '" + TextureFile + "'");
 
-		Template->Texture = Assets.Textures[TextureFile];
+		Template->Texture = Textures[TextureFile];
 
 		// Read data
 		File >> Template->FramePeriod >> Template->FrameSize.x >> Template->FrameSize.y >> Template->StartFrame >> Template->EndFrame >> Template->DefaultFrame >> Template->RepeatType;

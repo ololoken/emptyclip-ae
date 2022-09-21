@@ -26,6 +26,7 @@
 #include <ae/texture.h>
 #include <ae/texture_array.h>
 #include <ae/atlas.h>
+#include <ae/audio.h>
 #include <constants.h>
 #include <SDL_keycode.h>
 #include <tinyxml2/tinyxml2.h>
@@ -54,19 +55,20 @@ _Element::_Element(tinyxml2::XMLElement *Node, _Element *Parent) :
 
 	// Load attributes
 	this->Parent = Parent;
-	std::string TextureName;
-	std::string StyleName;
-	std::string HoverStyleName;
-	std::string DisabledStyleName;
-	std::string FontName;
+	std::string TextureID;
+	std::string StyleID;
+	std::string HoverStyleID;
+	std::string DisabledStyleID;
+	std::string FontID;
 	std::string BaseSizeString[2];
-	AssignAttributeString(Node, "id", Name);
-	AssignAttributeString(Node, "texture", TextureName);
-	AssignAttributeString(Node, "style", StyleName);
-	AssignAttributeString(Node, "hover_style", HoverStyleName);
-	AssignAttributeString(Node, "disabled_style", DisabledStyleName);
-	AssignAttributeString(Node, "color", ColorName);
-	AssignAttributeString(Node, "font", FontName);
+	AssignAttributeString(Node, "id", ID);
+	AssignAttributeString(Node, "sound", SoundID);
+	AssignAttributeString(Node, "texture", TextureID);
+	AssignAttributeString(Node, "style", StyleID);
+	AssignAttributeString(Node, "hover_style", HoverStyleID);
+	AssignAttributeString(Node, "disabled_style", DisabledStyleID);
+	AssignAttributeString(Node, "color", ColorID);
+	AssignAttributeString(Node, "font", FontID);
 	AssignAttributeString(Node, "text", Text);
 	AssignAttributeString(Node, "size_x", BaseSizeString[0]);
 	AssignAttributeString(Node, "size_y", BaseSizeString[1]);
@@ -108,32 +110,35 @@ _Element::_Element(tinyxml2::XMLElement *Node, _Element *Parent) :
 	Offset = BaseOffset * ScaleFactor;
 
 	// Check ids
-	if(Assets.Elements.find(Name) != Assets.Elements.end())
-		throw std::runtime_error(std::string(__func__) + " duplicate element id '" + Name + "'");
-	if(TextureName != "" && Assets.Textures.find(TextureName) == Assets.Textures.end())
-		throw std::runtime_error(std::string(__func__) + " unknown texture '" + TextureName + "' for image '" + Name + "'");
-	if(StyleName != "" && Assets.Styles.find(StyleName) == Assets.Styles.end())
-		throw std::runtime_error(std::string(__func__) + " unknown style '" + StyleName + "' for element '" + Name + "'");
-	if(HoverStyleName != "" && Assets.Styles.find(HoverStyleName) == Assets.Styles.end())
-		throw std::runtime_error(std::string(__func__) + " unknown hover_style '" + HoverStyleName + "' for element '" + Name + "'");
-	if(DisabledStyleName != "" && Assets.Styles.find(DisabledStyleName) == Assets.Styles.end())
-		throw std::runtime_error(std::string(__func__) + " unknown disabled_style '" + DisabledStyleName + "' for element '" + Name + "'");
-	if(ColorName != "" && Assets.Colors.find(ColorName) == Assets.Colors.end())
-		throw std::runtime_error(std::string(__func__) + " unknown color '" + ColorName + "' for element '" + Name + "'");
-	if(FontName != "" && Assets.Fonts.find(FontName) == Assets.Fonts.end())
-		throw std::runtime_error(std::string(__func__) + " unknown font '" + FontName + "' for element '" + Name + "'");
+	if(Assets.Elements.find(ID) != Assets.Elements.end())
+		throw std::runtime_error(std::string(__func__) + " duplicate element id '" + ID + "'");
+	if(SoundID.size() && Assets.Sounds.find(SoundID) == Assets.Sounds.end())
+		throw std::runtime_error(std::string(__func__) + " unknown sound '" + SoundID + "' for element '" + ID + "'");
+	if(TextureID.size() && Assets.Textures.find(TextureID) == Assets.Textures.end())
+		throw std::runtime_error(std::string(__func__) + " unknown texture '" + TextureID + "' for element '" + ID + "'");
+	if(StyleID.size() && Assets.Styles.find(StyleID) == Assets.Styles.end())
+		throw std::runtime_error(std::string(__func__) + " unknown style '" + StyleID + "' for element '" + ID + "'");
+	if(HoverStyleID.size() && Assets.Styles.find(HoverStyleID) == Assets.Styles.end())
+		throw std::runtime_error(std::string(__func__) + " unknown hover_style '" + HoverStyleID + "' for element '" + ID + "'");
+	if(DisabledStyleID.size() && Assets.Styles.find(DisabledStyleID) == Assets.Styles.end())
+		throw std::runtime_error(std::string(__func__) + " unknown disabled_style '" + DisabledStyleID + "' for element '" + ID + "'");
+	if(ColorID.size() && Assets.Colors.find(ColorID) == Assets.Colors.end())
+		throw std::runtime_error(std::string(__func__) + " unknown color '" + ColorID + "' for element '" + ID + "'");
+	if(FontID.size() && Assets.Fonts.find(FontID) == Assets.Fonts.end())
+		throw std::runtime_error(std::string(__func__) + " unknown font '" + FontID + "' for element '" + ID + "'");
 
 	// Assign pointers
-	Texture = Assets.Textures[TextureName];
-	Style = Assets.Styles[StyleName];
-	HoverStyle = Assets.Styles[HoverStyleName];
-	DisabledStyle = Assets.Styles[DisabledStyleName];
-	Color = Assets.Colors[ColorName];
-	Font = Assets.Fonts[FontName];
+	Sound = Assets.Sounds[SoundID];
+	Texture = Assets.Textures[TextureID];
+	Style = Assets.Styles[StyleID];
+	HoverStyle = Assets.Styles[HoverStyleID];
+	DisabledStyle = Assets.Styles[DisabledStyleID];
+	Color = Assets.Colors[ColorID];
+	Font = Assets.Fonts[FontID];
 
 	// Assign to list
-	if(Name != "")
-		Assets.Elements[Name] = this;
+	if(ID != "")
+		Assets.Elements[ID] = this;
 
 	// Load children
 	for(tinyxml2::XMLElement *ChildNode = Node->FirstChildElement(); ChildNode != nullptr; ChildNode = ChildNode->NextSiblingElement()) {
@@ -173,7 +178,9 @@ void _Element::SerializeElement(tinyxml2::XMLDocument &Document, tinyxml2::XMLEl
 	if(ParentNode) {
 		std::stringstream Buffer;
 
-		Node->SetAttribute("id", Name.c_str());
+		Node->SetAttribute("id", ID.c_str());
+		if(SoundID.size())
+			Node->SetAttribute("sound", SoundID.c_str());
 		if(Texture)
 			Node->SetAttribute("texture", Texture->Name.c_str());
 		if(Style)
@@ -182,8 +189,8 @@ void _Element::SerializeElement(tinyxml2::XMLDocument &Document, tinyxml2::XMLEl
 			Node->SetAttribute("hover_style", HoverStyle->Name.c_str());
 		if(DisabledStyle)
 			Node->SetAttribute("disabled_style", DisabledStyle->Name.c_str());
-		if(ColorName.size())
-			Node->SetAttribute("color", ColorName.c_str());
+		if(ColorID.size())
+			Node->SetAttribute("color", ColorID.c_str());
 		if(Font)
 			Node->SetAttribute("font", Font->ID.c_str());
 		if(Text.size())
@@ -341,8 +348,11 @@ void _Element::HandleMouseButton(bool Pressed) {
 	}
 
 	// Get released element
-	if(!Pressed && PressedElement && HitElement)
+	if(!Pressed && PressedElement && HitElement) {
 		ReleasedElement = PressedElement;
+		if(Sound)
+			Audio.PlaySound(Sound);
+	}
 
 	// Unset pressed element
 	if(!Pressed)

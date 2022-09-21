@@ -40,6 +40,7 @@ class _Texture;
 class _TextureArray;
 class _Atlas;
 class _Program;
+class _Sound;
 struct _KeyEvent;
 
 // Alignment struct
@@ -137,7 +138,7 @@ class _Element {
 		glm::vec2 GetOffsetPercent() { return Offset / (Parent->Size - Size); }
 
 		// Attributes
-		std::string Name;
+		std::string ID;
 		_Element *Parent{nullptr};
 		int Index{-1};
 		void *UserData{nullptr};
@@ -157,13 +158,15 @@ class _Element {
 
 		// Graphics
 		glm::vec4 Color{1.0f};
-		std::string ColorName;
+		std::string ColorID;
+		std::string SoundID;
 		const _Style *Style{nullptr};
 		const _Style *HoverStyle{nullptr};
 		const _Style *DisabledStyle{nullptr};
 		const _Texture *Texture{nullptr};
 		const _TextureArray *TextureArray{nullptr};
 		const _Atlas *Atlas{nullptr};
+		const _Sound *Sound{nullptr};
 		uint32_t TextureIndex{0};
 		float Fade{1.0f};
 

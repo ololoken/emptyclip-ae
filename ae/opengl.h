@@ -32,12 +32,14 @@
 	#include <GL/glext.h>
 	#include <GL/wglext.h>
 
-	#undef DrawText
-	#undef DrawTextA
 	#undef CreateEvent
 	#undef CreateEventA
+	#undef DrawText
+	#undef DrawTextA
 	#undef GetObject
 	#undef GetObjectA
+	#undef LoadCursor
+	#undef LoadCursorA
 	#undef SendMessage
 	#undef SendMessageA
 #else

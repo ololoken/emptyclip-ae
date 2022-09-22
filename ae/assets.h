@@ -26,6 +26,8 @@
 #include <vector>
 #include <string>
 
+struct SDL_Cursor;
+
 namespace ae {
 
 // Forward Declarations
@@ -73,6 +75,7 @@ class _Assets {
 		void LoadLayers(const std::string &Path);
 		void LoadPrograms(const std::string &Path);
 		void LoadStyles(const std::string &Path);
+		void LoadCursor(const std::string &ID, const std::string &Path, const glm::ivec2 &Offset);
 		void LoadUI(const std::string &Path, bool CalculateBounds=true);
 		void SaveUI(const std::string &Path);
 
@@ -91,6 +94,7 @@ class _Assets {
 		std::unordered_map<std::string, _Sound *> Sounds;
 		std::unordered_map<std::string, _Music *> Music;
 		std::unordered_map<std::string, _Element *> Elements;
+		std::unordered_map<std::string, SDL_Cursor *> Cursors;
 
 	private:
 

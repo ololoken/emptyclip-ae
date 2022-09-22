@@ -37,6 +37,7 @@
 #include <iostream>
 #include <fstream>
 #include <limits>
+#include <SDL_image.h>
 #include <tinyxml2/tinyxml2.h>
 
 namespace ae {
@@ -86,6 +87,9 @@ void _Assets::Close() {
 	for(const auto &Reel : Reels)
 		delete Reel.second;
 
+	for(const auto &Cursor : Cursors)
+		SDL_FreeCursor(Cursor.second);
+
 	Fonts.clear();
 	Layers.clear();
 	Textures.clear();
@@ -99,6 +103,7 @@ void _Assets::Close() {
 	Sounds.clear();
 	Music.clear();
 	Elements.clear();
+	Cursors.clear();
 }
 
 // Loads the fonts
@@ -552,6 +557,20 @@ void _Assets::LoadStyles(const std::string &Path) {
 	}
 
 	File.close();
+}
+
+// Load a custom cursor image
+void _Assets::LoadCursor(const std::string &ID, const std::string &Path, const glm::ivec2 &Offset) {
+
+	// Open file
+	SDL_Surface *Image = IMG_Load(Path.c_str());
+	if(!Image)
+		throw std::runtime_error(std::string(__func__) + " error loading image '" + Path + "' with error: " + IMG_GetError());
+
+	// Create cursor
+	SDL_Cursor *Cursor = SDL_CreateColorCursor(Image, Offset.x, Offset.y);
+	Cursors[ID] = Cursor;
+	SDL_FreeSurface(Image);
 }
 
 // Load the UI xml file

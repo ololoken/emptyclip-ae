@@ -453,6 +453,12 @@ void _Graphics::SetCursor(int Type) {
 	}
 }
 
+// Set custom mouse cursor
+void _Graphics::SetCursor(SDL_Cursor *Cursor) {
+	SDL_ShowCursor(true);
+	SDL_SetCursor(Cursor);
+}
+
 // Enable state for VBO
 void _Graphics::SetVBO(GLuint VBO) {
 	if(LastVertexBufferID == VBO)

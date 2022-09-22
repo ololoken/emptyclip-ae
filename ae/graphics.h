@@ -93,6 +93,7 @@ class _Graphics {
 		bool SetVsync(bool Vsync);
 		bool GetVsync();
 		void SetCursor(int Type);
+		void SetCursor(SDL_Cursor *Cursor);
 		void SetVBO(GLuint Type);
 		void SetAttribLevel(GLuint AttribLevel);
 		void SetColor(const glm::vec4 &Color);

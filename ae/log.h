@@ -36,8 +36,8 @@ class _LogFile {
 		}
 
 		// Open log file
-		void Open(const char *Filename) {
-			File.open(Filename, std::ios::app);
+		void Open(const char *Filename, bool Append=true) {
+			File.open(Filename, Append ? std::ios::app : std::ios::out);
 		}
 
 		// Close file

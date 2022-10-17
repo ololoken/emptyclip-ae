@@ -76,6 +76,7 @@ class _Graphics {
 		void Close();
 
 		GLuint CreateVBO(float *Vertices, GLsizeiptr Size, GLenum Type);
+		void DeleteVBO(GLuint BufferID);
 
 		void ResetState();
 		void CheckError();

@@ -311,6 +311,11 @@ GLuint _Graphics::CreateVBO(float *Vertices, GLsizeiptr Size, GLenum Type) {
 	return BufferID;
 }
 
+// Delete vertex buffer
+void _Graphics::DeleteVBO(GLuint BufferID) {
+	glDeleteBuffers(1, &BufferID);
+}
+
 // Resets all the last used variables
 void _Graphics::ResetState() {
 	SetAttribLevel(0);

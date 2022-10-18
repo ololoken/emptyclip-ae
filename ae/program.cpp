@@ -59,11 +59,6 @@ _Program::_Program(const std::string &Name, const _Shader *VertexShader, const _
 	if(MaxLights)
 		Lights = new _Light[MaxLights]();
 
-	// Set attrib locations
-	glBindAttribLocation(ID, 0, "vertex_pos");
-	glBindAttribLocation(ID, 1, "vertex_uv");
-	glBindAttribLocation(ID, 2, "vertex_norm");
-
 	// Get uniforms
 	for(int i = 0; i < SAMPLER_COUNT; i++)
 		SamplerIDs[i] = glGetUniformLocation(ID, std::string("sampler" + std::to_string(i)).c_str());

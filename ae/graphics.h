@@ -53,6 +53,7 @@ enum VertexBufferType {
 
 struct _WindowSettings {
 	std::string WindowTitle;
+	std::string IconPath;
 	glm::ivec2 Size{0};
 	glm::ivec2 Position{0};
 	int MSAA{0};

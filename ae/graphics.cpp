@@ -25,6 +25,7 @@
 #include <ae/mesh.h>
 #include <ae/ui.h>
 #include <SDL.h>
+#include <SDL_image.h>
 #include <SDL_mouse.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -73,6 +74,13 @@ void _Graphics::Init(const _WindowSettings &WindowSettings) {
 	Window = SDL_CreateWindow(WindowSettings.WindowTitle.c_str(), WindowSettings.Position.x, WindowSettings.Position.y, CurrentSize.x, CurrentSize.y, VideoFlags);
 	if(Window == nullptr)
 		throw std::runtime_error(std::string(__func__) + " SDL_CreateWindow failed");
+
+	// Attach icon
+	if(WindowSettings.IconPath.size()) {
+		SDL_Surface *IconSurface = IMG_Load(WindowSettings.IconPath.c_str());
+		SDL_SetWindowIcon(Window, IconSurface);
+		SDL_FreeSurface(IconSurface);
+	}
 
 	// Set up opengl context
 	Context = SDL_GL_CreateContext(Window);

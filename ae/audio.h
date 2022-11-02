@@ -25,7 +25,6 @@
 #include <glm/vec3.hpp>
 #include <thread>
 #include <unordered_map>
-#include <list>
 #include <vector>
 #include <string>
 
@@ -176,7 +175,7 @@ class _Audio {
 		_Music *CurrentSong{nullptr};
 		_Music *NewSong{nullptr};
 
-		std::list<const _AudioSource *> Sources;
+		std::vector<const _AudioSource *> Sources;
 		std::unordered_map<const _Sound *, _Channel> Channels;
 
 		std::thread *Thread{nullptr};

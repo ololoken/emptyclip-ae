@@ -271,16 +271,15 @@ void _Audio::Update(double FrameTime) {
 		return;
 
 	// Update sources
-	for(auto Iterator = Sources.begin(); Iterator != Sources.end(); ) {
-		const _AudioSource *Source = *Iterator;
+	for(size_t i = 0; i < Sources.size(); i++) {
+		const _AudioSource *Source = Sources[i];
 
 		// Delete source
 		if(!Source->IsPlaying()) {
 			delete Source;
-			Iterator = Sources.erase(Iterator);
-		}
-		else {
-			++Iterator;
+			if(i < Sources.size() - 1)
+				Sources[i] = Sources.back();
+			Sources.pop_back();
 		}
 	}
 }
@@ -289,9 +288,8 @@ void _Audio::Update(double FrameTime) {
 void _Audio::UpdateMusic() {
 
 	// Check for stopped song
-	if(CurrentSong && CurrentSong->Stop) {
+	if(CurrentSong && CurrentSong->Stop)
 		CurrentSong = nullptr;
-	}
 
 	// Check for track change
 	if(NewSong) {

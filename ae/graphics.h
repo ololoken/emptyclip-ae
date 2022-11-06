@@ -133,9 +133,16 @@ class _Graphics {
 		void DrawWallDecal(const glm::vec3 &Position, const ae::_Texture *Texture, int Side=0, const glm::vec2 &Scale=glm::vec2(1.0f));
 		void DrawMesh(const glm::vec3 &Position, const ae::_Mesh *Mesh, const _Texture *Texture, float Rotation=0.0f, const glm::vec3 &Scale=glm::vec3(1.0f));
 
+		// UI
 		_Element *Element{nullptr};
+
+		// Window
+		glm::ivec2 WindowSize{0};
+		glm::ivec2 FullscreenSize{0};
 		glm::ivec2 CurrentSize{0};
 		glm::ivec2 ViewportSize{0};
+
+		// Graphics
 		glm::mat4 Ortho;
 		GLfloat MaxAnisotropy{0};
 		float AspectRatio{1};
@@ -156,10 +163,6 @@ class _Graphics {
 		SDL_Window *Window{nullptr};
 		SDL_GLContext Context{nullptr};
 		SDL_Cursor *Cursors[CURSOR_COUNT];
-
-		// Sizes
-		glm::ivec2 WindowSize{0};
-		glm::ivec2 FullscreenSize{0};
 
 		// State changes
 		GLuint LastVertexBufferID{(GLuint)-1};

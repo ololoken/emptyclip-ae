@@ -152,6 +152,8 @@ class _Audio {
 		float GetMusicVolume() const { return MusicVolume; }
 		glm::vec3 GetPosition();
 
+		bool IsEnabled() const { return Enabled; }
+
 		bool Done{false};
 
 	private:

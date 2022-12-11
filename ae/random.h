@@ -25,9 +25,7 @@ namespace ae {
 
 extern std::mt19937 RandomGenerator;
 
-int GetRandomInt(int Min, int Max);
-uint32_t GetRandomInt(uint32_t Min, uint32_t Max);
-uint64_t GetRandomInt(uint64_t Min, uint64_t Max);
+template<typename T> T GetRandomInt(T Min, T Max);
 double GetRandomReal(double Min, double Max);
 
 }

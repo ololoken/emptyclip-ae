@@ -23,18 +23,8 @@ namespace ae {
 
 std::mt19937 RandomGenerator;
 
-int GetRandomInt(int Min, int Max) {
-	std::uniform_int_distribution<int> Distribution(Min, Max);
-	return Distribution(RandomGenerator);
-}
-
-uint32_t GetRandomInt(uint32_t Min, uint32_t Max) {
-	std::uniform_int_distribution<uint32_t> Distribution(Min, Max);
-	return Distribution(RandomGenerator);
-}
-
-uint64_t GetRandomInt(uint64_t Min, uint64_t Max) {
-	std::uniform_int_distribution<uint64_t> Distribution(Min, Max);
+template<typename T> T GetRandomInt(T Min, T Max) {
+	std::uniform_int_distribution<T> Distribution(Min, Max);
 	return Distribution(RandomGenerator);
 }
 
@@ -42,5 +32,10 @@ double GetRandomReal(double Min, double Max) {
 	std::uniform_real_distribution<double> Distribution(Min, Max);
 	return Distribution(RandomGenerator);
 }
+
+template int32_t GetRandomInt<int32_t>(int32_t Min, int32_t Max);
+template int64_t GetRandomInt<int64_t>(int64_t Min, int64_t Max);
+template uint32_t GetRandomInt<uint32_t>(uint32_t Min, uint32_t Max);
+template uint64_t GetRandomInt<uint64_t>(uint64_t Min, uint64_t Max);
 
 }

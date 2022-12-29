@@ -22,7 +22,6 @@
 // Libraries
 #include <ae/type.h>
 #include <unordered_map>
-#include <list>
 #include <vector>
 #include <limits>
 #include <stdexcept>
@@ -46,8 +45,7 @@ template<class T> class _Manager {
 		void Clear();
 
 		// Storage
-		std::list<T *> Objects;
-		std::vector<T *> DeleteList;
+		std::vector<T *> Objects;
 
 	private:
 
@@ -74,26 +72,18 @@ void _Manager<T>::Update(double FrameTime) {
 	for(auto Iterator = Objects.begin(); Iterator != Objects.end(); ) {
 		T *Object = *Iterator;
 
-		// Update the object
+		// Update object
 		Object->Update(FrameTime);
 
-		// Move deleted objects to deleted list
+		// Delete object
 		if(Object->Deleted) {
-			DeleteList.push_back(Object);
+			IDMap[Object->NetworkID] = nullptr;
+			delete Object;
 			Iterator = Objects.erase(Iterator);
 		}
-		else {
+		else
 			++Iterator;
-		}
 	}
-
-	// Delete objects
-	for(auto &Object : DeleteList) {
-		IDMap[Object->NetworkID] = nullptr;
-		delete Object;
-	}
-
-	DeleteList.clear();
 }
 
 // Generate object with new network id

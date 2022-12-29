@@ -73,7 +73,7 @@ void _ClientNetwork::Disconnect(bool Force, int Data) {
 
 		// Disconnect from host
 		if(Peer->ENetPeer)
-			enet_peer_disconnect(Peer->ENetPeer, Data);
+			enet_peer_disconnect(Peer->ENetPeer, (enet_uint32)Data);
 
 		// Force disconnection state
 		if(Force)

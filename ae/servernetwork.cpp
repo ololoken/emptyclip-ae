@@ -99,7 +99,7 @@ void _ServerNetwork::DisconnectPeer(const _Peer *Peer, int Data) {
 	if(!Peer || !Peer->ENetPeer)
 		return;
 
-	enet_peer_disconnect(Peer->ENetPeer, Data);
+	enet_peer_disconnect(Peer->ENetPeer, (enet_uint32)Data);
 }
 
 // Disconnect all peers
@@ -107,7 +107,7 @@ void _ServerNetwork::DisconnectAll(int Data) {
 
 	// Disconnect all connected peers
 	for(auto &Peer : Peers)
-		enet_peer_disconnect(Peer->ENetPeer, Data);
+		enet_peer_disconnect(Peer->ENetPeer, (enet_uint32)Data);
 }
 
 // Create a _NetworkEvent from an enet event

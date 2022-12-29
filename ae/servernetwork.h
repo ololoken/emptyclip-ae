@@ -51,7 +51,7 @@ class _ServerNetwork : public _Network {
 		void BroadcastPacket(const _Buffer &Buffer, _Peer *ExceptionPeer, SendType Type=RELIABLE, uint8_t Channel=0);
 
 		// Peers
-		const std::list<_Peer *> &GetPeers() const { return Peers; }
+		const std::vector<_Peer *> &GetPeers() const { return Peers; }
 		void DeletePeer(_Peer *Peer);
 
 	private:
@@ -63,7 +63,7 @@ class _ServerNetwork : public _Network {
 		void ClearPeers();
 
 		// Peers
-		std::list<_Peer *> Peers;
+		std::vector<_Peer *> Peers;
 };
 
 }

@@ -21,7 +21,7 @@
 #pragma once
 
 // Libraries
-#include <list>
+#include <vector>
 #include <queue>
 #include <cstdint>
 

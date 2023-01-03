@@ -69,20 +69,25 @@ template <class T>
 void _Manager<T>::Update(double FrameTime) {
 
 	// Update objects
-	for(auto Iterator = Objects.begin(); Iterator != Objects.end(); ) {
-		T *Object = *Iterator;
+	bool Delete = false;
+	size_t ObjectCount = Objects.size();
+	for(size_t i = 0; i < ObjectCount; i++) {
+		Objects[i]->Update(FrameTime);
+		if(Objects[i]->Deleted)
+			Delete = true;
+	}
 
-		// Update object
-		Object->Update(FrameTime);
+	if(!Delete)
+		return;
 
-		// Delete object
-		if(Object->Deleted) {
-			IDMap[Object->NetworkID] = nullptr;
-			delete Object;
-			Iterator = Objects.erase(Iterator);
-		}
-		else
-			++Iterator;
+	// Clean up deleted objects
+	for(size_t i = Objects.size() - 1; i < Objects.size(); i--) {
+		if(!Objects[i]->Deleted)
+			continue;
+
+		IDMap[Objects[i]->NetworkID] = nullptr;
+		delete Objects[i];
+		Objects.erase(Objects.begin() + (int)i);
 	}
 }
 

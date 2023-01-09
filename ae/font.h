@@ -64,11 +64,13 @@ class _Font {
 
 		static void Init(size_t DrawCount);
 		static void Close();
+		static void Draw();
 
 		void Load(const std::string &ID, const std::string &Path, const _Program *Program, uint32_t FontSize, uint32_t TextureWidth=256);
 
-		float DrawText(const std::string &Text, glm::vec2 Position, const _Alignment &Alignment=LEFT_BASELINE, const glm::vec4 &Color=glm::vec4(1.0f), float Scale=1.0f) const;
+		float DrawText(const std::string &Text, glm::vec2 Position, const _Alignment &Alignment=LEFT_BASELINE, const glm::vec4 &Color=glm::vec4(1.0f), float Scale=1.0f, bool ForceDraw=true) const;
 		void DrawTextFormatted(const std::string &Text, glm::vec2 Position, const _Alignment &Alignment=LEFT_BASELINE, float Alpha=1.0f, float Scale=1.0f) const;
+		void SetupProgram() const;
 		void GetStringDimensions(const std::string &Text, _TextBounds &TextBounds, bool UseFormatting=false) const;
 		void BreakupString(const std::string &Text, float Width, std::vector<std::string> &Strings, bool UseFormatting=false) const;
 
@@ -80,8 +82,6 @@ class _Font {
 
 	private:
 
-		void SetupProgram() const;
-		void Draw() const;
 		void DeleteFont();
 		void CreateFontTexture(std::string SortedCharacters, uint32_t TextureWidth);
 		void SortCharacters(FT_Face &Face, const std::string &Characters, std::string &SortedCharacters);

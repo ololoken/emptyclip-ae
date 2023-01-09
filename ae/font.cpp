@@ -273,6 +273,8 @@ void _Font::CreateFontTexture(std::string SortedCharacters, uint32_t TextureWidt
 
 // Adjust position based on alignment
 void _Font::AdjustPosition(const std::string &Text, glm::vec2 &Position, bool UseFormatting, const _Alignment &Alignment, float Scale) const {
+	if(Alignment.Horizontal == _Alignment::LEFT && Alignment.Vertical == _Alignment::BASELINE)
+		return;
 
 	// Adjust for alignment
 	_TextBounds TextBounds;
@@ -306,8 +308,7 @@ void _Font::AdjustPosition(const std::string &Text, glm::vec2 &Position, bool Us
 void _Font::AddGlyph(glm::vec2 &Position, char Char, float Scale) const {
 
 	// Check max
-	size_t CurrentIndex = VertexIndex;
-	if(CurrentIndex + VERTICES_PER_DRAW > MaxVertices)
+	if(VertexIndex + VERTICES_PER_DRAW > MaxVertices)
 		return;
 
 	// Get glyph data
@@ -319,33 +320,32 @@ void _Font::AddGlyph(glm::vec2 &Position, char Char, float Scale) const {
 	float TextureCoords[4]{Glyph.Left, Glyph.Top, Glyph.Right, Glyph.Bottom};
 
 	// First triangle of quad
-	RenderVertices[CurrentIndex++] = Start[0];
-	RenderVertices[CurrentIndex++] = Start[1];
-	RenderVertices[CurrentIndex++] = TextureCoords[0];
-	RenderVertices[CurrentIndex++] = TextureCoords[1];
-	RenderVertices[CurrentIndex++] = Start[0];
-	RenderVertices[CurrentIndex++] = End[1];
-	RenderVertices[CurrentIndex++] = TextureCoords[0];
-	RenderVertices[CurrentIndex++] = TextureCoords[3];
-	RenderVertices[CurrentIndex++] = End[0];
-	RenderVertices[CurrentIndex++] = End[1];
-	RenderVertices[CurrentIndex++] = TextureCoords[2];
-	RenderVertices[CurrentIndex++] = TextureCoords[3];
+	RenderVertices[VertexIndex++] = Start[0];
+	RenderVertices[VertexIndex++] = Start[1];
+	RenderVertices[VertexIndex++] = TextureCoords[0];
+	RenderVertices[VertexIndex++] = TextureCoords[1];
+	RenderVertices[VertexIndex++] = Start[0];
+	RenderVertices[VertexIndex++] = End[1];
+	RenderVertices[VertexIndex++] = TextureCoords[0];
+	RenderVertices[VertexIndex++] = TextureCoords[3];
+	RenderVertices[VertexIndex++] = End[0];
+	RenderVertices[VertexIndex++] = End[1];
+	RenderVertices[VertexIndex++] = TextureCoords[2];
+	RenderVertices[VertexIndex++] = TextureCoords[3];
 
 	// Second triangle of quad
-	RenderVertices[CurrentIndex++] = End[0];
-	RenderVertices[CurrentIndex++] = End[1];
-	RenderVertices[CurrentIndex++] = TextureCoords[2];
-	RenderVertices[CurrentIndex++] = TextureCoords[3];
-	RenderVertices[CurrentIndex++] = End[0];
-	RenderVertices[CurrentIndex++] = Start[1];
-	RenderVertices[CurrentIndex++] = TextureCoords[2];
-	RenderVertices[CurrentIndex++] = TextureCoords[1];
-	RenderVertices[CurrentIndex++] = Start[0];
-	RenderVertices[CurrentIndex++] = Start[1];
-	RenderVertices[CurrentIndex++] = TextureCoords[0];
-	RenderVertices[CurrentIndex++] = TextureCoords[1];
-	VertexIndex = CurrentIndex;
+	RenderVertices[VertexIndex++] = End[0];
+	RenderVertices[VertexIndex++] = End[1];
+	RenderVertices[VertexIndex++] = TextureCoords[2];
+	RenderVertices[VertexIndex++] = TextureCoords[3];
+	RenderVertices[VertexIndex++] = End[0];
+	RenderVertices[VertexIndex++] = Start[1];
+	RenderVertices[VertexIndex++] = TextureCoords[2];
+	RenderVertices[VertexIndex++] = TextureCoords[1];
+	RenderVertices[VertexIndex++] = Start[0];
+	RenderVertices[VertexIndex++] = Start[1];
+	RenderVertices[VertexIndex++] = TextureCoords[0];
+	RenderVertices[VertexIndex++] = TextureCoords[1];
 
 	// Update position
 	Position.x += Scale * Glyph.Advance;
@@ -362,17 +362,18 @@ void _Font::SetupProgram() const {
 }
 
 // Render current vertex buffer
-void _Font::Draw() const {
+void _Font::Draw() {
 	glBufferSubData(GL_ARRAY_BUFFER, 0, (GLsizeiptr)(VertexIndex * sizeof(float)), RenderVertices);
 	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)(VertexIndex >> 2));
 	VertexIndex = 0;
 }
 
 // Draws a string
-float _Font::DrawText(const std::string &Text, glm::vec2 Position, const _Alignment &Alignment, const glm::vec4 &Color, float Scale) const {
+float _Font::DrawText(const std::string &Text, glm::vec2 Position, const _Alignment &Alignment, const glm::vec4 &Color, float Scale, bool ForceDraw) const {
 
 	// Set up program
-	SetupProgram();
+	if(ForceDraw)
+		SetupProgram();
 	Graphics.SetColor(Color);
 
 	// Set position
@@ -396,7 +397,8 @@ float _Font::DrawText(const std::string &Text, glm::vec2 Position, const _Alignm
 	}
 
 	// Draw vertex buffer
-	Draw();
+	if(ForceDraw)
+		Draw();
 
 	return Position.x;
 }

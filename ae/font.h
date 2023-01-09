@@ -47,6 +47,7 @@ struct _Glyph {
 	float OffsetY{0.0f};
 };
 
+// Contains text dimensions
 struct _TextBounds {
 	int Width{0};
 	int AboveBase{0};
@@ -58,10 +59,12 @@ class _Font {
 
 	public:
 
-		_Font();
+		_Font() { }
 		~_Font();
 
-		void Close();
+		static void Init(size_t DrawCount);
+		static void Close();
+
 		void Load(const std::string &ID, const std::string &Path, const _Program *Program, uint32_t FontSize, uint32_t TextureWidth=256);
 
 		float DrawText(const std::string &Text, glm::vec2 Position, const _Alignment &Alignment=LEFT_BASELINE, const glm::vec4 &Color=glm::vec4(1.0f), float Scale=1.0f) const;
@@ -77,9 +80,12 @@ class _Font {
 
 	private:
 
+		void SetupProgram() const;
+		void Draw() const;
+		void DeleteFont();
 		void CreateFontTexture(std::string SortedCharacters, uint32_t TextureWidth);
 		void SortCharacters(FT_Face &Face, const std::string &Characters, std::string &SortedCharacters);
-		void DrawGlyph(glm::vec2 &Position, char Char, float Scale) const;
+		void AddGlyph(glm::vec2 &Position, char Char, float Scale) const;
 		void AdjustPosition(const std::string &Text, glm::vec2 &Position, bool UseFormatting, const _Alignment &Alignment, float Scale) const;
 
 		// Glyphs
@@ -90,10 +96,9 @@ class _Font {
 		_Texture *Texture{nullptr};
 
 		// Freetype
-		bool HasKerning{false};
-		FT_Library Library{nullptr};
 		FT_Face Face{nullptr};
 		FT_Int32 LoadFlags{0};
+		bool HasKerning{false};
 };
 
 }

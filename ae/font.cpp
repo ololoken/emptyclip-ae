@@ -25,10 +25,17 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <queue>
 #include <stdexcept>
-#include <cstdint>
 #include <functional>
 
 namespace ae {
+
+// Static variables
+const static size_t VERTICES_PER_DRAW = 24;
+static uint32_t RenderVBO{0};
+static float *RenderVertices{nullptr};
+static size_t VertexIndex = 0;
+static size_t MaxVertices = 0;
+static FT_Library Library{nullptr};
 
 // Get next power of two
 inline uint32_t GetNextPowerOf2(uint32_t Value) {
@@ -47,24 +54,40 @@ struct _SortCharacter {
 	FT_UInt Height;
 };
 
-// Constructor
-_Font::_Font() {
+// Destructor
+_Font::~_Font() {
+	DeleteFont();
+}
+
+// Initialize font system
+void _Font::Init(size_t DrawCount) {
 
 	// Initialize library
 	if(FT_Init_FreeType(&Library) != 0)
 		throw std::runtime_error(std::string(__func__) + " error initializing FreeType");
+
+	// Create vertex buffer
+	MaxVertices = VERTICES_PER_DRAW * DrawCount;
+	RenderVBO = ae::Graphics.CreateVBO(nullptr, (GLsizeiptr)(MaxVertices * sizeof(float)), GL_DYNAMIC_DRAW);
+	RenderVertices = new float[MaxVertices];
 }
 
-// Destructor
-_Font::~_Font() {
-	Close();
-
-	// Close freetype
-	FT_Done_FreeType(Library);
-}
-
-// Reset internal variables
+// Close font system
 void _Font::Close() {
+
+	// Free memory
+	delete[] RenderVertices;
+	ae::Graphics.DeleteVBO(RenderVBO);
+	RenderVertices = nullptr;
+	RenderVBO = 0;
+
+	// Close library
+	FT_Done_FreeType(Library);
+	Library = nullptr;
+}
+
+// Destroy font
+void _Font::DeleteFont() {
 
 	// Free OpenGL texture
 	delete Texture;
@@ -72,13 +95,14 @@ void _Font::Close() {
 
 	// Close face
 	FT_Done_Face(Face);
+	Face = nullptr;
 }
 
 // Load the font
 void _Font::Load(const std::string &ID, const std::string &Path, const _Program *Program, uint32_t FontSize, uint32_t TextureWidth) {
 
 	// Delete existing font
-	Close();
+	DeleteFont();
 
 	this->ID = ID;
 	this->Program = Program;
@@ -278,41 +302,78 @@ void _Font::AdjustPosition(const std::string &Text, glm::vec2 &Position, bool Us
 	}
 }
 
-// Draw one glyph
-void _Font::DrawGlyph(glm::vec2 &Position, char Char, float Scale) const {
+// Add a glyph to the vertex buffer
+void _Font::AddGlyph(glm::vec2 &Position, char Char, float Scale) const {
+
+	// Check max
+	size_t CurrentIndex = VertexIndex;
+	if(CurrentIndex + VERTICES_PER_DRAW > MaxVertices)
+		return;
 
 	// Get glyph data
 	const _Glyph &Glyph = Glyphs[(FT_Byte)Char];
 
-	// Get vertices
-	glm::vec2 DrawPosition(Position.x + Scale * Glyph.OffsetX, Position.y - Scale * Glyph.OffsetY);
+	// Get coordinates
+	float Start[2]{Position.x + Scale * Glyph.OffsetX, Position.y - Scale * Glyph.OffsetY};
+	float End[2]{Start[0] + Scale * Glyph.Width, Start[1] + Scale * Glyph.Height};
+	float TextureCoords[4]{Glyph.Left, Glyph.Top, Glyph.Right, Glyph.Bottom};
 
-	// Model transform
-	glm::mat4 Transform(1.0f);
-	Transform[3][0] = DrawPosition.x;
-	Transform[3][1] = DrawPosition.y;
-	Transform[0][0] = Scale * Glyph.Width;
-	Transform[1][1] = Scale * Glyph.Height;
-	glUniformMatrix4fv(Program->ModelTransformID, 1, GL_FALSE, glm::value_ptr(Transform));
+	// First triangle of quad
+	RenderVertices[CurrentIndex++] = Start[0];
+	RenderVertices[CurrentIndex++] = Start[1];
+	RenderVertices[CurrentIndex++] = TextureCoords[0];
+	RenderVertices[CurrentIndex++] = TextureCoords[1];
+	RenderVertices[CurrentIndex++] = Start[0];
+	RenderVertices[CurrentIndex++] = End[1];
+	RenderVertices[CurrentIndex++] = TextureCoords[0];
+	RenderVertices[CurrentIndex++] = TextureCoords[3];
+	RenderVertices[CurrentIndex++] = End[0];
+	RenderVertices[CurrentIndex++] = End[1];
+	RenderVertices[CurrentIndex++] = TextureCoords[2];
+	RenderVertices[CurrentIndex++] = TextureCoords[3];
 
-	// Texture transform
-	glm::mat4 TextureTransform(1.0f);
-	TextureTransform[3][0] = Glyph.Left;
-	TextureTransform[3][1] = Glyph.Top;
-	TextureTransform[0][0] = Glyph.Right - Glyph.Left;
-	TextureTransform[1][1] = Glyph.Bottom - Glyph.Top;
-	glUniformMatrix4fv(Program->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	// Second triangle of quad
+	RenderVertices[CurrentIndex++] = End[0];
+	RenderVertices[CurrentIndex++] = End[1];
+	RenderVertices[CurrentIndex++] = TextureCoords[2];
+	RenderVertices[CurrentIndex++] = TextureCoords[3];
+	RenderVertices[CurrentIndex++] = End[0];
+	RenderVertices[CurrentIndex++] = Start[1];
+	RenderVertices[CurrentIndex++] = TextureCoords[2];
+	RenderVertices[CurrentIndex++] = TextureCoords[1];
+	RenderVertices[CurrentIndex++] = Start[0];
+	RenderVertices[CurrentIndex++] = Start[1];
+	RenderVertices[CurrentIndex++] = TextureCoords[0];
+	RenderVertices[CurrentIndex++] = TextureCoords[1];
+	VertexIndex = CurrentIndex;
 
+	// Update position
 	Position.x += Scale * Glyph.Advance;
+}
+
+// Set up program for font rendering
+void _Font::SetupProgram() const {
+	Graphics.SetProgram(Program);
+	Graphics.SetTextureID(Texture->ID);
+	Graphics.SetVertexBufferID(RenderVBO);
+	Graphics.SetAttribLevel(2);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, nullptr);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (GLvoid *)(sizeof(float) * 2));
+}
+
+// Render current vertex buffer
+void _Font::Draw() const {
+	glBufferSubData(GL_ARRAY_BUFFER, 0, (GLsizeiptr)(VertexIndex * sizeof(float)), RenderVertices);
+	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)(VertexIndex >> 2));
+	VertexIndex = 0;
 }
 
 // Draws a string
 float _Font::DrawText(const std::string &Text, glm::vec2 Position, const _Alignment &Alignment, const glm::vec4 &Color, float Scale) const {
-	Graphics.SetProgram(Program);
-	Graphics.SetVBO(VBO_QUAD_UV);
+
+	// Set up program
+	SetupProgram();
 	Graphics.SetColor(Color);
-	Graphics.SetTextureID(Texture->ID);
 
 	// Set position
 	AdjustPosition(Text, Position, false, Alignment, Scale);
@@ -331,28 +392,31 @@ float _Font::DrawText(const std::string &Text, glm::vec2 Position, const _Alignm
 		PreviousGlyphIndex = GlyphIndex;
 
 		// Draw glyph
-		DrawGlyph(Position, Text[i], Scale);
+		AddGlyph(Position, Text[i], Scale);
 	}
+
+	// Draw vertex buffer
+	Draw();
 
 	return Position.x;
 }
 
 // Draw formatted text with colors: "Example [c red]red[c white] text here"
 void _Font::DrawTextFormatted(const std::string &Text, glm::vec2 Position, const _Alignment &Alignment, float Alpha, float Scale) const {
-	Graphics.SetProgram(Program);
-	Graphics.SetVBO(VBO_QUAD_UV);
+
+	// Set up program
+	SetupProgram();
 	Graphics.SetColor(glm::vec4(1.0f, 1.0f, 1.0f, Alpha));
-	Graphics.SetTextureID(Texture->ID);
-	bool InTag = false;
-	int TagIndex = 0;
-	int Mode = 0;
-	std::string Attribute = "";
 
 	// Set position
 	AdjustPosition(Text, Position, true, Alignment, Scale);
 
 	// Draw string
 	FT_UInt PreviousGlyphIndex = 0;
+	bool InTag = false;
+	int TagIndex = 0;
+	int Mode = 0;
+	std::string Attribute = "";
 	for(size_t i = 0; i < Text.size(); i++) {
 		FT_UInt GlyphIndex = FT_Get_Char_Index(Face, (FT_ULong)Text[i]);
 
@@ -373,6 +437,7 @@ void _Font::DrawTextFormatted(const std::string &Text, glm::vec2 Position, const
 			InTag = false;
 
 			if(Mode == 1) {
+				Draw();
 				glm::vec4 Color = Assets.Colors[Attribute];
 				Graphics.SetColor(glm::vec4(Color.x, Color.y, Color.z, Alpha));
 			}
@@ -383,7 +448,7 @@ void _Font::DrawTextFormatted(const std::string &Text, glm::vec2 Position, const
 		else if(!InTag) {
 
 			// Draw glyph
-			DrawGlyph(Position, Text[i], Scale);
+			AddGlyph(Position, Text[i], Scale);
 		}
 		else {
 
@@ -391,13 +456,15 @@ void _Font::DrawTextFormatted(const std::string &Text, glm::vec2 Position, const
 				if(Text[i] == 'c')
 					Mode = 1;
 			}
-			else if(TagIndex >= 2 && Mode) {
+			else if(TagIndex >= 2 && Mode)
 				Attribute += Text[i];
-			}
 
 			TagIndex++;
 		}
 	}
+
+	// Draw vertex buffer
+	Draw();
 }
 
 // Get width and height of a string

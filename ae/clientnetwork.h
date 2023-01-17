@@ -56,7 +56,7 @@ class _ClientNetwork : public _Network {
 		uint32_t GetPacketsLost();
 
 		// Packets
-		void SendPacket(_Buffer &Buffer, SendType Type=RELIABLE, uint8_t Channel=0);
+		void SendPacket(_Buffer &Buffer, SendType Type=SEND_RELIABLE, uint8_t Channel=0);
 
 		// State
 		bool IsDisconnected() { return ConnectionState == State::DISCONNECTED; }

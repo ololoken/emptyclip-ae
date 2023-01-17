@@ -95,10 +95,11 @@ void _ServerNetwork::ClearPeers() {
 }
 
 // Disconnect a single peer
-void _ServerNetwork::DisconnectPeer(const _Peer *Peer, int Data) {
+void _ServerNetwork::DisconnectPeer(_Peer *Peer, int Data) {
 	if(!Peer || !Peer->ENetPeer)
 		return;
 
+	Peer->DisconnectFlag = Data;
 	enet_peer_disconnect(Peer->ENetPeer, (enet_uint32)Data);
 }
 
@@ -106,8 +107,10 @@ void _ServerNetwork::DisconnectPeer(const _Peer *Peer, int Data) {
 void _ServerNetwork::DisconnectAll(int Data) {
 
 	// Disconnect all connected peers
-	for(auto &Peer : Peers)
+	for(auto &Peer : Peers) {
+		Peer->DisconnectFlag = Data;
 		enet_peer_disconnect(Peer->ENetPeer, (enet_uint32)Data);
+	}
 }
 
 // Create a _NetworkEvent from an enet event
@@ -133,8 +136,10 @@ void _ServerNetwork::HandleEvent(_NetworkEvent &Event, ENetEvent &EEvent) {
 			EEvent.peer->data = Event.Peer;
 			Peers.push_back(Event.Peer);
 		} break;
-		case _NetworkEvent::DISCONNECT:
-		break;
+		case _NetworkEvent::DISCONNECT: {
+			if(Event.Peer->DisconnectFlag == DISCONNECT_NULL)
+				Event.Peer->DisconnectFlag = Event.EventData;
+		} break;
 		case _NetworkEvent::PACKET: {
 			Event.Data = new _Buffer((char *)EEvent.packet->data, EEvent.packet->dataLength);
 			enet_packet_destroy(EEvent.packet);

@@ -72,8 +72,15 @@ class _Network {
 
 		// Different ways to send data
 		enum SendType {
-			RELIABLE = 1,
-			UNSEQUENCED = 2,
+			SEND_RELIABLE = 1,
+			SEND_UNSEQUENCED = 2,
+		};
+
+		enum DisconnectFlagType {
+			DISCONNECT_NULL = -1,
+			DISCONNECT_TIMEOUT,
+			DISCONNECT_CLIENT,
+			DISCONNECT_SERVER,
 		};
 
 		_Network();

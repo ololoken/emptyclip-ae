@@ -43,12 +43,12 @@ class _ServerNetwork : public _Network {
 		// Connections
 		uint16_t GetListenPort();
 		size_t GetMaxPeers();
-		void DisconnectPeer(const _Peer *Peer, int Data=0);
+		void DisconnectPeer(_Peer *Peer, int Data=0);
 		void DisconnectAll(int Data=0);
 
 		// Packets
-		void SendPacket(const _Buffer &Buffer, const _Peer *Peer, SendType Type=RELIABLE, uint8_t Channel=0);
-		void BroadcastPacket(const _Buffer &Buffer, _Peer *ExceptionPeer, SendType Type=RELIABLE, uint8_t Channel=0);
+		void SendPacket(const _Buffer &Buffer, const _Peer *Peer, SendType Type=SEND_RELIABLE, uint8_t Channel=0);
+		void BroadcastPacket(const _Buffer &Buffer, _Peer *ExceptionPeer, SendType Type=SEND_RELIABLE, uint8_t Channel=0);
 
 		// Peers
 		const std::vector<_Peer *> &GetPeers() const { return Peers; }

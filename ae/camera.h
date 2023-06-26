@@ -44,8 +44,8 @@ class _Camera {
 		// Updates
 		void CalculateFrustum(float AspectRatio);
 		void Set3DProjection(double BlendFactor);
-		void ConvertScreenToWorld(const glm::vec2 &ScreenPosition, glm::vec2 &WorldPosition) const;
-		void ConvertWorldToScreen(const glm::vec2 &WorldPosition, glm::vec2 &ScreenPosition) const;
+		void ConvertScreenToWorld(const glm::vec2 &ScreenPosition, glm::vec2 &WorldPosition, double BlendFactor=0.0f) const;
+		void ConvertWorldToScreen(const glm::vec2 &WorldPosition, glm::vec2 &ScreenPosition, double BlendFactor=0.0f) const;
 
 		void Update(double FrameTime);
 		void UpdatePosition(const glm::vec2 &UpdatePosition) { this->TargetPosition += glm::vec3(UpdatePosition, 0.0f); }

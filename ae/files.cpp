@@ -112,13 +112,17 @@ void _FilePack::Load(const std::string &Path) {
 	int FileCount = 0;
 	Input.read((char *)&FileCount, 4);
 
-	// Load header
-	char Buffer[256];
+	// Load files
+	const int MAX_SIZE = 255;
+	char Buffer[MAX_SIZE+1];
 	int Offset = 0;
 	for(int i = 0; i < FileCount; i++) {
 
 		// Read file name
 		int NameSize = Input.get();
+		if(NameSize > MAX_SIZE)
+			throw std::runtime_error(std::string(__func__) + " NameSize exceeds limit: '" + Path + "'");
+
 		Input.read(Buffer, NameSize);
 		Buffer[NameSize] = 0;
 

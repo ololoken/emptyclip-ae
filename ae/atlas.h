@@ -43,6 +43,9 @@ class _Atlas {
 		// Dimension for a single texture in the atlas
 		glm::vec2 Size;
 
+		// Number of possible textures
+		uint32_t TextureCount;
+
 	private:
 
 		// Internal attributes
@@ -50,6 +53,7 @@ class _Atlas {
 		glm::vec2 TextureSizeInTexels;
 		float Padding;
 		uint32_t Columns;
+		uint32_t Rows;
 
 };
 

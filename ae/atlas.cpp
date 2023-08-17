@@ -30,7 +30,9 @@ _Atlas::_Atlas(const _Texture *Texture, const glm::vec2 &Size, float Padding) :
 	TextureSizeInTexels(Size / (glm::vec2)Texture->Size),
 	Padding(Padding) {
 
-	Columns = (uint32_t)(Texture->Size.x / Size.x);
+	Columns = (uint32_t)(Texture->Size.x / (Padding * 2 + Size.x));
+	Rows = (uint32_t)(Texture->Size.y / (Padding * 2 + Size.y));
+	TextureCount = Columns * Rows;
 }
 
 // Returns coords given a texture index

@@ -24,6 +24,7 @@
 #include <iostream>
 #include <iomanip>
 #include <regex>
+#include <cmath>
 #include <SDL_timer.h>
 
 namespace ae {
@@ -101,6 +102,24 @@ void PrintTimer(const std::string &Message, bool Reset) {
 	std::cout << std::fixed << std::setprecision(5) << Time << std::endl;
 	if(Reset)
 		StartTimer();
+}
+
+// Format integers larger than 9999 with SI suffix
+void FormatSI(std::stringstream &Buffer, int64_t Number, RoundFunction *RoundFunction) {
+	if(std::abs(Number) >= 1e18)
+		Buffer << RoundFunction(Number * 1e-18) << "E";
+	else if(std::abs(Number) >= 1e15)
+		Buffer << RoundFunction(Number * 1e-15) << "P";
+	else if(std::abs(Number) >= 1e12)
+		Buffer << RoundFunction(Number * 1e-12) << "T";
+	else if(std::abs(Number) >= 1e9)
+		Buffer << RoundFunction(Number * 1e-9) << "G";
+	else if(std::abs(Number) >= 1e6)
+		Buffer << RoundFunction(Number * 1e-6) << "M";
+	else if(std::abs(Number) >= 1e4)
+		Buffer << RoundFunction(Number * 1e-3) << "K";
+	else
+		Buffer << Number;
 }
 
 }

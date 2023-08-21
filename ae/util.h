@@ -50,4 +50,16 @@ inline double Round1(double Number) { return std::round(Number * 10) / 10.0; }
 inline double Round2(double Number) { return std::round(Number * 100) / 100.0; }
 inline double Round3(double Number) { return std::round(Number * 1000) / 1000.0; }
 
+inline double RoundUp1(double Number) { return std::ceil(Number * 10) / 10.0; }
+inline double RoundUp2(double Number) { return std::ceil(Number * 100) / 100.0; }
+inline double RoundUp3(double Number) { return std::ceil(Number * 1000) / 1000.0; }
+
+inline double RoundDown1(double Number) { return std::floor(Number * 10) / 10.0; }
+inline double RoundDown2(double Number) { return std::floor(Number * 100) / 100.0; }
+inline double RoundDown3(double Number) { return std::floor(Number * 1000) / 1000.0; }
+
+typedef double RoundFunction(double);
+
+void FormatSI(std::stringstream &Buffer, int64_t Number, RoundFunction *RoundFunction=RoundDown2);
+
 }

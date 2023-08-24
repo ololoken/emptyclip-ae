@@ -104,8 +104,8 @@ void PrintTimer(const std::string &Message, bool Reset) {
 		StartTimer();
 }
 
-// Format integers larger than 9999 with SI suffix
-void FormatSI(std::stringstream &Buffer, int64_t Number, RoundFunction *RoundFunction) {
+// Format numbers larger than 9999 with SI suffix
+template<typename T> void FormatSI(std::stringstream &Buffer, T Number, RoundFunction *RoundFunction) {
 	if(std::abs(Number) >= 1e18)
 		Buffer << RoundFunction(Number * 1e-18) << "E";
 	else if(std::abs(Number) >= 1e15)
@@ -121,5 +121,8 @@ void FormatSI(std::stringstream &Buffer, int64_t Number, RoundFunction *RoundFun
 	else
 		Buffer << Number;
 }
+
+template void FormatSI<int64_t>(std::stringstream &Buffer, int64_t Number, RoundFunction *RoundFunction);
+template void FormatSI<double>(std::stringstream &Buffer, double Number, RoundFunction *RoundFunction);
 
 }

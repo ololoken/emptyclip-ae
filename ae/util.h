@@ -60,6 +60,6 @@ inline double RoundDown3(double Number) { return std::floor(Number * 1000) / 100
 
 typedef double RoundFunction(double);
 
-void FormatSI(std::stringstream &Buffer, int64_t Number, RoundFunction *RoundFunction=RoundDown2);
+template<typename T> void FormatSI(std::stringstream &Buffer, T Number, RoundFunction *RoundFunction=RoundDown2);
 
 }

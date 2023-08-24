@@ -217,7 +217,8 @@ void _Audio::Init(bool Enabled, bool StartMusicThread) {
 	this->Enabled = Enabled;
 
 	// Start thread
-	Thread = new std::thread(RunThread, this);
+	if(StartMusicThread)
+		Thread = new std::thread(RunThread, this);
 }
 
 // Close

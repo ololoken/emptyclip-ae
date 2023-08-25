@@ -56,6 +56,7 @@ class _Console {
 		void Toggle();
 		void AddMessage(const std::string &Text, bool Log=false, const glm::vec4 &Color=glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
 		void UpdateHistory(int Direction);
+		void Scroll(int Direction);
 
 		// Commands
 		std::vector<std::string> CommandList;
@@ -78,7 +79,7 @@ class _Console {
 		_Style *Style{nullptr};
 		_Style *InputStyle{nullptr};
 		const _Font *Font{nullptr};
-
+		int ScrollPosition{0};
 };
 
 }

@@ -227,9 +227,19 @@ void _Console::Render(double BlendFactor) {
 	// Draw background
 	Element->Render();
 
+	// Set skip count
+	int Skips = ScrollPosition;
+
 	// Draw messages
 	glm::vec2 DrawPosition(PADDING_X * ae::_Element::GetUIScale(), Element->Bounds.End.y - TextboxElement->Parent->Size.y - Font->MaxBelow - SPACING_Y);
 	for(auto Iterator = Messages.rbegin(); Iterator != Messages.rend(); ++Iterator) {
+
+		// Handle scroll position
+		if(Skips) {
+			Skips--;
+			continue;
+		}
+
 		_Message &Message = (*Iterator);
 		Font->DrawText(Message.Text, DrawPosition, LEFT_BASELINE, Message.Color);
 
@@ -293,6 +303,13 @@ void _Console::UpdateHistory(int Direction) {
 		TextboxElement->Text = *CommandHistoryIterator;
 		TextboxElement->CursorPosition = TextboxElement->Text.length();
 	}
+}
+
+// Scroll console window up or down
+void _Console::Scroll(int Direction) {
+	ScrollPosition += Direction;
+	ScrollPosition = std::max(ScrollPosition, 0);
+	ScrollPosition = std::min(ScrollPosition, (int)Messages.size() - 1);
 }
 
 }

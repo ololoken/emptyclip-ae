@@ -169,6 +169,7 @@ class _Element {
 		const _Sound *Sound{nullptr};
 		uint32_t TextureIndex{0};
 		float Fade{1.0f};
+		float Rotation{0.0f};
 
 		// Layout
 		_Bounds Bounds;

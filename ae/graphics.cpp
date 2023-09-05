@@ -718,10 +718,6 @@ void _Graphics::DrawImage(const _Bounds &Bounds, const _Texture *Texture, bool S
 	SetVBO(VBO_QUAD_UV);
 	SetTextureID(Texture->ID);
 
-	// Get texture coordinates
-	float S = Stretch ? 1.0f : (Bounds.End.x - Bounds.Start.x) / (float)(Texture->Size.x);
-	float T = Stretch ? 1.0f : (Bounds.End.y - Bounds.Start.y) / (float)(Texture->Size.y);
-
 	// Get size
 	glm::vec2 Size = Bounds.End - Bounds.Start;
 
@@ -733,7 +729,46 @@ void _Graphics::DrawImage(const _Bounds &Bounds, const _Texture *Texture, bool S
 	Transform[1][1] = Size.y;
 	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(Transform));
 
+	// Get texture coordinates
+	float S = Stretch ? 1.0f : (Bounds.End.x - Bounds.Start.x) / (float)(Texture->Size.x);
+	float T = Stretch ? 1.0f : (Bounds.End.y - Bounds.Start.y) / (float)(Texture->Size.y);
+
 	// Texture transform
+	glm::mat4 TextureTransform(1.0f);
+	TextureTransform[0][0] = S;
+	TextureTransform[1][1] = T;
+	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
+// Draw rotated image in screen space
+void _Graphics::DrawRotatedImage(const _Bounds &Bounds, const _Texture *Texture, float Rotation, bool Stretch) {
+	SetVBO(VBO_QUAD_UV);
+	SetTextureID(Texture->ID);
+
+	// Get size
+	glm::vec2 Size = Bounds.End - Bounds.Start;
+
+	// Translate to position
+	glm::mat4 ModelTransform = glm::translate(glm::mat4(1.0f), glm::vec3(Bounds.GetCenter(), 0.0f));
+
+	// Rotate
+	ModelTransform = glm::rotate(ModelTransform, glm::radians(Rotation), glm::vec3(0, 0, 1));
+
+	// Translate to origin
+	ModelTransform = glm::translate(ModelTransform, glm::vec3(-Size * 0.5f, 0.0f));
+
+	// Scale
+	ModelTransform = glm::scale(ModelTransform, glm::vec3(Size, 0.0f));
+
+	// Set model transform
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(ModelTransform));
+
+	// Get texture coordinates
+	float S = Stretch ? 1.0f : (Bounds.End.x - Bounds.Start.x) / (float)(Texture->Size.x);
+	float T = Stretch ? 1.0f : (Bounds.End.y - Bounds.Start.y) / (float)(Texture->Size.y);
+
+	// Set texture transform
 	glm::mat4 TextureTransform(1.0f);
 	TextureTransform[0][0] = S;
 	TextureTransform[1][1] = T;

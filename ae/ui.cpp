@@ -74,6 +74,7 @@ _Element::_Element(tinyxml2::XMLElement *Node, _Element *Parent) :
 	AssignAttributeString(Node, "size_y", BaseSizeString[1]);
 	AssignAttributeString(Node, "allowed", AllowedCharacters);
 	Node->QueryUnsignedAttribute("maxlength", (uint32_t *)&MaxLength);
+	Node->QueryFloatAttribute("rotation", &Rotation);
 	Node->QueryFloatAttribute("offset_x", &BaseOffset.x);
 	Node->QueryFloatAttribute("offset_y", &BaseOffset.y);
 	Node->QueryIntAttribute("alignment_x", &Alignment.Horizontal);
@@ -197,6 +198,8 @@ void _Element::SerializeElement(tinyxml2::XMLDocument &Document, tinyxml2::XMLEl
 			Node->SetAttribute("text", Text.c_str());
 		if(AllowedCharacters.size())
 			Node->SetAttribute("allowed", AllowedCharacters.c_str());
+		if(Rotation != 0.0f)
+			Node->SetAttribute("rotation", Rotation);
 		if(BaseOffset.x != 0.0f)
 			Node->SetAttribute("offset_x", BaseOffset.x);
 		if(BaseOffset.y != 0.0f)
@@ -452,7 +455,10 @@ void _Element::Render() const {
 		else if(Texture) {
 			Graphics.SetProgram(Assets.Programs["ortho_pos_uv"]);
 			Graphics.SetColor(Color);
-			Graphics.DrawImage(DrawBounds, Texture, Stretch);
+			if(Rotation != 0.0f)
+				Graphics.DrawRotatedImage(DrawBounds, Texture, Rotation, Stretch);
+			else
+				Graphics.DrawImage(DrawBounds, Texture, Stretch);
 		}
 
 		// Draw hover texture

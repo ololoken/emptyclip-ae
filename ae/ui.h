@@ -135,7 +135,8 @@ class _Element {
 		void SetHeight(float Height) { BaseSize.y = Size.y = Height; CalculateBounds(false); }
 		void SetText(const std::string &Text) { this->Text = Text; CursorPosition = Text.length(); }
 
-		glm::vec2 GetOffsetPercent() { return Offset / (Parent->Size - Size); }
+		float GetOffsetPercentX() { return Offset.x / (Parent->Size.x - Size.x); }
+		float GetOffsetPercentY() { return Offset.y / (Parent->Size.y - Size.y); }
 
 		// Attributes
 		std::string ID;

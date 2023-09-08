@@ -138,6 +138,7 @@ class _Audio {
 
 		const _AudioSource *PlaySound(const _Sound *Sound, const _SoundSettings &SoundSettings=_SoundSettings(1.0f));
 		void PlayMusic(_Music *Music, bool Loop=true);
+		void StopSource(const _AudioSource *AudioSource);
 		void Stop();
 		void StopSounds();
 		void StopMusic();

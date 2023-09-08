@@ -467,6 +467,16 @@ void _Audio::PlayMusic(_Music *Music, bool Loop) {
 	}
 }
 
+// Stop an audio source
+void _Audio::StopSource(const _AudioSource *AudioSource) {
+
+	// Find source
+	for(size_t i = 0; i < Sources.size(); i++) {
+		if(AudioSource == Sources[i])
+			AudioSource->Stop();
+	}
+}
+
 // Stop all sound and music
 void _Audio::Stop() {
 	StopSounds();

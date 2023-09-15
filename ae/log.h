@@ -57,16 +57,26 @@ class _LogFile {
 
 			// Output to stdout
 			if(ToStdOut) {
-				if(PrependDate && !TokenCount)
-					std::clog << Buffer << " - ";
+				if(!TokenCount) {
+					if(PrependDate)
+						std::clog << Buffer << " - ";
+
+					if(Prefix)
+						std::clog << Prefix;
+				}
 
 				std::clog << Value;
 			}
 
 			// Output to file
 			if(File.is_open()) {
-				if(PrependDate && !TokenCount)
-					File << Buffer << " - ";
+				if(!TokenCount) {
+					if(PrependDate)
+						File << Buffer << " - ";
+
+					if(Prefix)
+						File << Prefix;
+				}
 
 				File << Value;
 			}
@@ -91,6 +101,7 @@ class _LogFile {
 			return *this;
 		}
 
+		const char *Prefix{nullptr};
 		bool ToStdOut{true};
 		bool PrependDate{true};
 

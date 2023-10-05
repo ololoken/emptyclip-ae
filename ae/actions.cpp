@@ -99,7 +99,7 @@ int _Actions::GetInputForAction(int InputType, size_t Action, int Rank) {
 // Return true if an input exists for an action
 bool _Actions::HasInputForAction(size_t Action) {
 	for(int i = 0; i < _Input::INPUT_COUNT; i++) {
-		if(GetInputForAction(i, Action) != -1)
+		if(GetInputForAction(i, Action, 0) != -1 || GetInputForAction(i, Action, 1) != -1)
 			return true;
 	}
 

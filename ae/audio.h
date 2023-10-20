@@ -125,7 +125,7 @@ class _Audio {
 		static const int BUFFER_COUNT{3};
 		static const int BUFFER_SIZE{4096};
 
-		void Init(bool Enabled, bool StartMusicThread=true);
+		void Init(bool Enabled, bool StartMusicThread=true, const char *DeviceName=nullptr);
 		void Close();
 
 		void Update(double FrameTime);

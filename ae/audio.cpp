@@ -190,12 +190,12 @@ _Music::~_Music() {
 }
 
 // Initialize
-void _Audio::Init(bool Enabled, bool StartMusicThread) {
+void _Audio::Init(bool Enabled, bool StartMusicThread, const char *DeviceName) {
 	if(!Enabled)
 		return;
 
 	// Open device
-	ALCdevice *Device = alcOpenDevice(nullptr);
+	ALCdevice *Device = alcOpenDevice(DeviceName);
 	if(Device == nullptr)
 		throw std::runtime_error(std::string(__func__) + " alcOpenDevice failed");
 

@@ -107,17 +107,17 @@ void PrintTimer(const std::string &Message, bool Reset) {
 // Format numbers larger than 9999 with SI suffix
 template<typename T> void FormatSI(std::stringstream &Buffer, T Number, RoundFunction *RoundFunction) {
 	if(std::abs(Number) >= 1e18)
-		Buffer << RoundFunction(Number * 1e-18) << "E";
+		Buffer << RoundFunction(Number / 1e18) << "E";
 	else if(std::abs(Number) >= 1e15)
-		Buffer << RoundFunction(Number * 1e-15) << "P";
+		Buffer << RoundFunction(Number / 1e15) << "P";
 	else if(std::abs(Number) >= 1e12)
-		Buffer << RoundFunction(Number * 1e-12) << "T";
+		Buffer << RoundFunction(Number / 1e12) << "T";
 	else if(std::abs(Number) >= 1e9)
-		Buffer << RoundFunction(Number * 1e-9) << "G";
+		Buffer << RoundFunction(Number / 1e9) << "G";
 	else if(std::abs(Number) >= 1e6)
-		Buffer << RoundFunction(Number * 1e-6) << "M";
+		Buffer << RoundFunction(Number / 1e6) << "M";
 	else if(std::abs(Number) >= 1e4)
-		Buffer << RoundFunction(Number * 1e-3) << "K";
+		Buffer << RoundFunction(Number / 1e3) << "K";
 	else
 		Buffer << Number;
 }

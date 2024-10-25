@@ -249,7 +249,7 @@ void _Console::Render(double BlendFactor) {
 	}
 }
 
-// Return if true if console is open
+// Return true if console is open
 bool _Console::IsOpen() {
 	return Element->Active;
 }

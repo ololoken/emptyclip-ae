@@ -99,6 +99,7 @@ class _Graphics {
 		void SetVBO(GLuint Type);
 		void SetAttribLevel(GLuint AttribLevel);
 		void SetColor(const glm::vec4 &Color);
+		void SetClearColor(const glm::vec4 &Color);
 		void SetTextureID(GLuint TextureID, GLenum Type=GL_TEXTURE_2D);
 		void SetVertexBufferID(GLuint VertexBufferID);
 		void SetProgram(const _Program *Program);

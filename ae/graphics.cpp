@@ -526,6 +526,11 @@ void _Graphics::SetColor(const glm::vec4 &Color) {
 	glUniform4fv(LastProgram->ColorID, 1, &Color[0]);
 }
 
+// Set opengl clear color
+void _Graphics::SetClearColor(const glm::vec4 &Color) {
+	glClearColor(Color.r, Color.g, Color.b, Color.a);
+}
+
 // Set texture id
 void _Graphics::SetTextureID(GLuint TextureID, GLenum Type) {
 	if(TextureID == LastTextureID)

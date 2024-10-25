@@ -74,7 +74,7 @@ void _Framebuffer::Clear() {
 		return;
 
 	glBindFramebuffer(GL_FRAMEBUFFER, ID);
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 

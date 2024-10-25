@@ -57,6 +57,7 @@ class _Program {
 		GLint TextureTransformID{-1};
 		GLint ColorID{-1};
 		GLint AmbientLightID{-1};
+		GLint FogColorID{-1};
 		GLint LightCountID{-1};
 		GLuint Attribs{0};
 
@@ -64,6 +65,7 @@ class _Program {
 		int LightCount{0};
 		_Light *Lights{nullptr};
 		glm::vec4 AmbientLight{1.0f};
+		glm::vec4 FogColor{0.0f};
 
 	private:
 

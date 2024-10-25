@@ -69,6 +69,7 @@ _Program::_Program(const std::string &Name, const _Shader *VertexShader, const _
 	TextureTransformID = glGetUniformLocation(ID, "texture_transform");
 	ColorID = glGetUniformLocation(ID, "color");
 	AmbientLightID = glGetUniformLocation(ID, "ambient_light");
+	FogColorID = glGetUniformLocation(ID, "fog_color");
 	LightCountID = glGetUniformLocation(ID, "light_count");
 
 	for(size_t i = 0; i < MaxLights; i++) {
@@ -104,6 +105,9 @@ void _Program::Use() const {
 
 	if(AmbientLightID != -1)
 		glUniform4fv(AmbientLightID, 1, &AmbientLight[0]);
+
+	if(FogColorID != -1)
+		glUniform4fv(FogColorID, 1, &FogColor[0]);
 
 	if(LightCountID != -1)
 		glUniform1i(LightCountID, LightCount);

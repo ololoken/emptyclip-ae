@@ -20,17 +20,17 @@
 #pragma once
 
 // Libraries
+#include <glm/vec4.hpp>
+#include <fstream>
 #include <string>
 #include <vector>
-#include <fstream>
-#include <glm/vec4.hpp>
 
 namespace ae {
 
 // Forward Declarations
 class _Element;
-class _Program;
 class _Font;
+class _Program;
 struct _Style;
 
 // Console class

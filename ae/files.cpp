@@ -18,9 +18,9 @@
 * 3. This notice may not be removed or altered from any source distribution.
 *******************************************************************************/
 #include <ae/files.h>
+#include <algorithm>
 #include <fstream>
 #include <cstring>
-#include <algorithm>
 
 namespace ae {
 
@@ -28,7 +28,6 @@ namespace ae {
 	#define WIN32_LEAN_AND_MEAN
 	#include <windows.h>
 #else
-	#include <sys/stat.h>
 	#include <dirent.h>
 #endif
 

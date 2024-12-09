@@ -18,13 +18,10 @@
 * 3. This notice may not be removed or altered from any source distribution.
 *******************************************************************************/
 #include <ae/console.h>
-#include <ae/assets.h>
-#include <ae/ui.h>
 #include <ae/font.h>
 #include <ae/graphics.h>
 #include <ae/util.h>
 #include <SDL_scancode.h>
-#include <stdexcept>
 
 namespace ae {
 

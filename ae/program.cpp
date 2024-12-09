@@ -18,12 +18,9 @@
 * 3. This notice may not be removed or altered from any source distribution.
 *******************************************************************************/
 #include <ae/program.h>
-#include <ae/graphics.h>
 #include <ae/light.h>
 #include <ae/util.h>
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <stdexcept>
 
 namespace ae {
 

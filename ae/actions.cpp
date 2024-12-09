@@ -19,9 +19,7 @@
 *******************************************************************************/
 #include <ae/actions.h>
 #include <ae/state.h>
-#include <ae/assets.h>
 #include <fstream>
-#include <iostream>
 
 namespace ae {
 

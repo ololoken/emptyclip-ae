@@ -19,9 +19,7 @@
 *******************************************************************************/
 #include <ae/mesh.h>
 #include <ae/util.h>
-#include <stdexcept>
 #include <fstream>
-#include <limits>
 #include <map>
 
 namespace ae {

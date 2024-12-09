@@ -20,8 +20,8 @@
 #pragma once
 
 // Libraries
-#include <string>
 #include <glm/vec2.hpp>
+#include <string>
 
 namespace ae {
 

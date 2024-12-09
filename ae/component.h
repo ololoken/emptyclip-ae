@@ -25,8 +25,8 @@
 namespace ae {
 
 // Forward Declarations
-class _Buffer;
 class _BaseObject;
+class _Buffer;
 
 // Classes
 class _Component {

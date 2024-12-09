@@ -22,7 +22,6 @@
 // Libraries
 #include <fstream>
 #include <iostream>
-#include <ctime>
 
 namespace ae {
 

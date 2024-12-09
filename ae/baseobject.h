@@ -29,7 +29,7 @@ class _BaseObject {
 
 	public:
 
-		virtual ~_BaseObject();
+		virtual ~_BaseObject() { }
 
 		virtual void Update(double FrameTime) = 0;
 

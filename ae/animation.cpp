@@ -19,17 +19,11 @@
 *******************************************************************************/
 #include <ae/animation.h>
 #include <ae/texture.h>
-#include <ae/graphics.h>
-#include <ae/assets.h>
 
 namespace ae {
 
 // Constructor
 _Animation::_Animation(ae::_BaseObject *ParentObject) : _Component(ParentObject) {
-}
-
-// Destructor
-_Animation::~_Animation() {
 }
 
 // Update

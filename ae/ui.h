@@ -21,8 +21,6 @@
 
 // Libraries
 #include <ae/bounds.h>
-#include <glm/vec2.hpp>
-#include <glm/vec4.hpp>
 #include <string>
 #include <vector>
 
@@ -35,12 +33,12 @@ namespace tinyxml2 {
 namespace ae {
 
 // Forward Declarations
-class _Font;
-class _Texture;
-class _TextureArray;
 class _Atlas;
+class _Font;
 class _Program;
 class _Sound;
+class _Texture;
+class _TextureArray;
 struct _KeyEvent;
 
 // Alignment struct

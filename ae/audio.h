@@ -21,12 +21,12 @@
 
 // Libraries
 #include <al.h>
-#include <vorbis/vorbisfile.h>
 #include <glm/vec3.hpp>
+#include <vorbis/vorbisfile.h>
+#include <string>
 #include <thread>
 #include <unordered_map>
 #include <vector>
-#include <string>
 
 namespace ae {
 

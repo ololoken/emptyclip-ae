@@ -21,14 +21,13 @@
 #pragma once
 
 // Libraries
-#include <vector>
 #include <queue>
 #include <cstdint>
 
 // Forward Declarations
+typedef struct _ENetAddress ENetAddress;
 typedef struct _ENetEvent ENetEvent;
 typedef struct _ENetHost ENetHost;
-typedef struct _ENetAddress ENetAddress;
 
 namespace ae {
 

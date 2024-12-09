@@ -21,7 +21,6 @@
 
 // Libraries
 #include <ae/opengl.h>
-#include <glm/vec2.hpp>
 #include <glm/mat4x4.hpp>
 #include <SDL_video.h>
 #include <string>
@@ -31,11 +30,11 @@ struct SDL_Cursor;
 namespace ae {
 
 // Forward Declarations
-class _Texture;
-class _TextureArray;
+class _Element;
 class _Mesh;
 class _Program;
-class _Element;
+class _Texture;
+class _TextureArray;
 struct _Bounds;
 
 enum VertexBufferType {

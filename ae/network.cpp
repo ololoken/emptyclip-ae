@@ -19,7 +19,6 @@
 *******************************************************************************/
 #ifndef AE_NO_NETWORK
 #include <ae/network.h>
-#include <ae/peer.h>
 #include <ae/buffer.h>
 #include <enet/enet.h>
 #include <stdexcept>

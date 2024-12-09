@@ -19,16 +19,14 @@
 *******************************************************************************/
 #include <ae/graphics.h>
 #include <ae/assets.h>
-#include <ae/program.h>
-#include <ae/texture.h>
-#include <ae/texture_array.h>
 #include <ae/mesh.h>
+#include <ae/program.h>
+#include <ae/texture_array.h>
+#include <ae/texture.h>
+#include <ae/bounds.h>
 #include <ae/ui.h>
-#include <SDL.h>
 #include <SDL_image.h>
-#include <SDL_mouse.h>
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #include <stdexcept>
 
 namespace ae {

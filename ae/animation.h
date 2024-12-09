@@ -23,8 +23,8 @@
 #include <ae/component.h>
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
-#include <vector>
 #include <string>
+#include <vector>
 
 namespace ae {
 
@@ -65,7 +65,7 @@ class _Animation : public ae::_Component {
 		};
 
 		_Animation(ae::_BaseObject *ParentObject);
-		~_Animation() override;
+		~_Animation() override { }
 
 		void Update(double FrameTime) override;
 		void Play(size_t Reel, double Speed=1.0);

@@ -18,22 +18,16 @@
 * 3. This notice may not be removed or altered from any source distribution.
 *******************************************************************************/
 #include <ae/ui.h>
-#include <ae/graphics.h>
 #include <ae/assets.h>
-#include <ae/input.h>
-#include <ae/assets.h>
-#include <ae/font.h>
-#include <ae/texture.h>
-#include <ae/texture_array.h>
 #include <ae/atlas.h>
 #include <ae/audio.h>
-#include <constants.h>
+#include <ae/font.h>
+#include <ae/graphics.h>
+#include <ae/input.h>
+#include <ae/texture.h>
 #include <SDL_keycode.h>
 #include <tinyxml2/tinyxml2.h>
-#include <glm/common.hpp>
 #include <algorithm>
-#include <sstream>
-#include <iostream>
 #include <regex>
 
 namespace ae {

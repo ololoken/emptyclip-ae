@@ -18,14 +18,11 @@
 * 3. This notice may not be removed or altered from any source distribution.
 *******************************************************************************/
 #include <ae/font.h>
+#include <ae/assets.h>
 #include <ae/graphics.h>
 #include <ae/texture.h>
-#include <ae/program.h>
-#include <ae/assets.h>
-#include <glm/gtc/type_ptr.hpp>
 #include <queue>
 #include <stdexcept>
-#include <functional>
 
 namespace ae {
 

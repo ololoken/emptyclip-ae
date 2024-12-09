@@ -18,27 +18,23 @@
 * 3. This notice may not be removed or altered from any source distribution.
 *******************************************************************************/
 #include <ae/assets.h>
-#include <ae/ui.h>
-#include <ae/program.h>
-#include <ae/font.h>
-#include <ae/texture.h>
-#include <ae/texture_array.h>
-#include <ae/tilemap.h>
-#include <ae/atlas.h>
-#include <ae/mesh.h>
 #include <ae/animation.h>
-#include <ae/files.h>
-#include <ae/graphics.h>
+#include <ae/atlas.h>
 #include <ae/audio.h>
-#include <constants.h>
-#include <map>
-#include <stdexcept>
-#include <sstream>
-#include <iostream>
-#include <fstream>
-#include <limits>
+#include <ae/files.h>
+#include <ae/font.h>
+#include <ae/graphics.h>
+#include <ae/mesh.h>
+#include <ae/program.h>
+#include <ae/texture_array.h>
+#include <ae/texture.h>
+#include <ae/tilemap.h>
+#include <ae/ui.h>
 #include <SDL_image.h>
 #include <tinyxml2/tinyxml2.h>
+#include <fstream>
+#include <sstream>
+#include <stdexcept>
 
 namespace ae {
 

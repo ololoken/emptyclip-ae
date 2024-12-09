@@ -21,7 +21,6 @@
 
 // Libraries
 #include <ae/input.h>
-#include <cstdint>
 
 namespace ae {
 
@@ -33,8 +32,8 @@ class _State {
 	public:
 
 		// Setup
-		_State();
-		virtual ~_State();
+		_State() { }
+		virtual ~_State() { }
 		virtual void Init() {}
 		virtual void Close() {}
 

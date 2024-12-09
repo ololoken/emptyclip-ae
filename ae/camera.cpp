@@ -19,9 +19,7 @@
 *******************************************************************************/
 #include <ae/camera.h>
 #include <ae/graphics.h>
-#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/norm.hpp>
-#include <cmath>
 
 namespace ae {
 

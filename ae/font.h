@@ -31,8 +31,8 @@
 namespace ae {
 
 // Forward Declarations
-class _Texture;
 class _Program;
+class _Texture;
 
 // Contains glyph info
 struct _Glyph {

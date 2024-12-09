@@ -20,30 +20,30 @@
 #pragma once
 
 // Libraries
-#include <glm/vec4.hpp>
 #include <glm/vec2.hpp>
+#include <glm/vec4.hpp>
+#include <string>
 #include <unordered_map>
 #include <vector>
-#include <string>
 
 struct SDL_Cursor;
 
 namespace ae {
 
 // Forward Declarations
-class _Font;
-class _Element;
-class _Texture;
-class _TextureArray;
-class _TileMap;
 class _Atlas;
+class _Element;
+class _Font;
 class _Mesh;
+class _Music;
 class _Program;
 class _Shader;
 class _Sound;
-class _Music;
-struct _Style;
+class _Texture;
+class _TextureArray;
+class _TileMap;
 struct _Reel;
+struct _Style;
 struct _TextureSettings;
 
 struct _Layer {

@@ -18,8 +18,6 @@
 * 3. This notice may not be removed or altered from any source distribution.
 *******************************************************************************/
 #include <ae/input.h>
-#include <ae/state.h>
-#include <framework.h>
 #include <SDL_keyboard.h>
 #include <SDL_mouse.h>
 

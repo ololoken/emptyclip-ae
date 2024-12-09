@@ -18,9 +18,7 @@
 * 3. This notice may not be removed or altered from any source distribution.
 *******************************************************************************/
 #include <ae/texture.h>
-#include <ae/graphics.h>
 #include <SDL_image.h>
-#include <SDL_rwops.h>
 #include <stdexcept>
 
 namespace ae {

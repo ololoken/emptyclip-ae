@@ -19,13 +19,11 @@
 *******************************************************************************/
 #include <ae/util.h>
 #include <sys/stat.h>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include <iomanip>
-#include <regex>
-#include <cmath>
 #include <SDL_timer.h>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <regex>
 
 namespace ae {
 

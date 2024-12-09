@@ -19,9 +19,8 @@
 *******************************************************************************/
 #include <ae/audio.h>
 #include <alc.h>
-#include <stdexcept>
-#include <vector>
 #include <glm/gtx/norm.hpp>
+#include <stdexcept>
 
 namespace ae {
 

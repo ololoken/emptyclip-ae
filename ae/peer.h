@@ -24,8 +24,8 @@
 #include <cstdint>
 
 // Forward Declarations
-struct _ENetPeer;
 class _Object;
+struct _ENetPeer;
 
 namespace ae {
 

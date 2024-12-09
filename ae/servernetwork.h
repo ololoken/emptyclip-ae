@@ -22,6 +22,7 @@
 
 // Libraries
 #include <ae/network.h>
+#include <cstddef>
 
 namespace ae {
 

@@ -409,6 +409,9 @@ void _Graphics::SetWindowSize(const glm::ivec2 &Size) {
 	Ortho = glm::ortho(0.0f, (float)CurrentSize.x, (float)CurrentSize.y, 0.0f, -1.0f, 1.0f);
 	SetStaticUniforms();
 
+	// Update UI size
+	Element->Size = Size;
+
 	// Update actual window
 	SDL_SetWindowSize(Window, Size.x, Size.y);
 }

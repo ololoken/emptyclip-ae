@@ -41,7 +41,7 @@ const glm::vec4 DebugColors[] = {
 	{ 0.0f, 0.0f, 1.0f, 1.0f }
 };
 const int DebugColorCount = sizeof(DebugColors) / sizeof(glm::vec4);
-static int BaseHeight = -1;
+static int BaseHeight = 1080;
 
 // Constructor for loading from xml
 _Element::_Element(tinyxml2::XMLElement *Node, _Element *Parent) :
@@ -82,7 +82,6 @@ _Element::_Element(tinyxml2::XMLElement *Node, _Element *Parent) :
 	Node->QueryIntAttribute("debug", &Debug);
 	Node->QueryBoolAttribute("enabled", &Enabled);
 	Node->QueryBoolAttribute("scaled", &Scaled);
-	Node->QueryIntAttribute("base_height", &BaseHeight);
 
 	// Get scale factor
 	float ScaleFactor = Scaled ? GetUIScale() : 1.0f;
@@ -157,10 +156,7 @@ _Element::~_Element() {
 
 // Get UI scale factor
 float _Element::GetUIScale() {
-	if(BaseHeight == -1)
-		return 1.0f;
-	else
-		return Graphics.CurrentSize.y / (float)BaseHeight;
+	return Graphics.CurrentSize.y / (float)BaseHeight;
 }
 
 // Serialize element and children to xml node
@@ -237,10 +233,8 @@ void _Element::SerializeElement(tinyxml2::XMLDocument &Document, tinyxml2::XMLEl
 
 		ParentNode->InsertEndChild(Node);
 	}
-	else {
-		Node->SetAttribute("base_height", BaseHeight);
+	else
 		Document.InsertEndChild(Node);
-	}
 
 	// Add children
 	for(const auto &Child : Children)

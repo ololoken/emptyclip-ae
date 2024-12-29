@@ -69,7 +69,7 @@ class _Actions {
 		std::string GetInputNameForAction(size_t Action, int Rank=0);
 
 		// Handlers
-		void InputEvent(_State *GameState, int InputType, int Input, float Value);
+		void InputEvent(_State *GameState, int InputType, int Input, float Value, bool Repeat);
 
 		// State of each action
 		std::vector<_ActionState> State;

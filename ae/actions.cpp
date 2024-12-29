@@ -123,7 +123,7 @@ std::string _Actions::GetInputNameForAction(size_t Action, int Rank) {
 }
 
 // Inject an input into the action handler
-void _Actions::InputEvent(_State *GameState, int InputType, int Input, float Value) {
+void _Actions::InputEvent(_State *GameState, int InputType, int Input, float Value, bool Repeat) {
 	if(Input < 0 || Input >= ACTIONS_MAXINPUTS || !GameState)
 		return;
 
@@ -153,7 +153,7 @@ void _Actions::InputEvent(_State *GameState, int InputType, int Input, float Val
 		float InputValue = Value * MapIterator.Scale;
 
 		// If true is returned, stop handling the same key
-		if(GameState->HandleAction(InputType, MapIterator.Action, (int)InputValue))
+		if(GameState->HandleAction(InputType, MapIterator.Action, (int)InputValue, Repeat))
 			break;
 	}
 }

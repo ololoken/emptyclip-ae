@@ -533,12 +533,11 @@ void _Font::BreakupString(const std::string &Text, float Width, std::vector<std:
 		else if(!InTag) {
 
 			// Handle line breaks
-			if(Text[i] == '\\' && i+1 < Text.size() && Text[i+1] == 'n') {
-				i++;
+			if(Text[i] == '\n') {
 				X = 0;
 				PreviousGlyphIndex = 0;
 				LastSpace = std::string::npos;
-				Strings.push_back(Text.substr(StartCut, i-1 - StartCut));
+				Strings.push_back(Text.substr(StartCut, i - StartCut));
 				StartCut = i+1;
 				continue;
 			}

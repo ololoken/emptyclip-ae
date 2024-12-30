@@ -65,7 +65,7 @@ std::string RemoveExtension(const std::string &Path) {
 
 // Trim whitespace from string
 std::string TrimString(const std::string &String) {
-	std::regex Regex("^[ \t]+|[ \t]+$");
+	std::regex Regex("^[\\s]+|[\\s]+$");
 	return std::regex_replace(String, Regex, "");
 }
 

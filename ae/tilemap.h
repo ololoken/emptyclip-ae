@@ -1,5 +1,5 @@
 /******************************************************************************
-* Copyright (c) 2024 Alan Witkowski
+* Copyright (c) 2025 Alan Witkowski
 *
 * This software is provided 'as-is', without any express or implied
 * warranty. In no event will the authors be held liable for any damages

@@ -148,7 +148,7 @@ void _ServerNetwork::HandleEvent(_NetworkEvent &Event, ENetEvent &EEvent) {
 
 // Send a packet
 void _ServerNetwork::SendPacket(const _Buffer &Buffer, const _Peer *Peer, SendType Type, uint8_t Channel) {
-	if(!Peer->ENetPeer)
+	if(!Peer || !Peer->ENetPeer)
 		return;
 
 	// Create enet packet
@@ -161,7 +161,6 @@ void _ServerNetwork::SendPacket(const _Buffer &Buffer, const _Peer *Peer, SendTy
 
 // Send a packet to all peers
 void _ServerNetwork::BroadcastPacket(const _Buffer &Buffer, _Peer *ExceptionPeer, SendType Type, uint8_t Channel) {
-
 	for(auto &Peer : Peers) {
 		if(Peer != ExceptionPeer && Peer->Object)
 			SendPacket(Buffer, Peer, Type, Channel);

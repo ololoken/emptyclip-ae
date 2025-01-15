@@ -438,7 +438,7 @@ void _Font::DrawTextFormatted(const std::string &Text, glm::vec2 Position, const
 			if(Mode == 1) {
 				Draw();
 				glm::vec4 Color = Assets.Colors[Attribute];
-				Graphics.SetColor(glm::vec4(Color.x, Color.y, Color.z, Alpha));
+				Graphics.SetColor(glm::vec4(Color.r, Color.g, Color.b, Color.a * Alpha));
 			}
 
 			Attribute = "";

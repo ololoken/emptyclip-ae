@@ -34,15 +34,13 @@ class _Peer {
 
 	public:
 
-		_Peer(_ENetPeer *ENetPeer);
+		_Peer(_ENetPeer *ENetPeer) : ENetPeer(ENetPeer) { }
 		~_Peer();
 
 		_ENetPeer *ENetPeer{nullptr};
 		_Object *Object{nullptr};
-		int DisconnectFlag{-1};
 		uint32_t AccountID{0};
-		uint32_t CharacterID{0};
-		uint16_t LastAck{0};
+		int DisconnectFlag{-1};
 
 };
 

@@ -23,10 +23,6 @@
 
 namespace ae {
 
-// Constructor
-_Peer::_Peer(_ENetPeer *ENetPeer) : ENetPeer(ENetPeer) {
-}
-
 // Destructor
 _Peer::~_Peer() {
 	if(ENetPeer)

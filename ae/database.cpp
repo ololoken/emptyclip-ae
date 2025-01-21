@@ -60,15 +60,15 @@ void _Database::RunQuery(const std::string &Query) {
 	sqlite3_stmt *NewQueryHandle;
 	int Result = sqlite3_prepare_v2(Database, Query.c_str(), -1, &NewQueryHandle, nullptr);
 	if(Result != SQLITE_OK)
-		throw std::runtime_error(std::string(sqlite3_errmsg(Database)));
+		throw std::runtime_error(GetErrorMessage(Query));
 
 	Result = sqlite3_step(NewQueryHandle);
 	if(Result != SQLITE_DONE)
-		throw std::runtime_error(std::string(sqlite3_errmsg(Database)));
+		throw std::runtime_error(GetErrorMessage(Query));
 
 	Result = sqlite3_finalize(NewQueryHandle);
 	if(Result != SQLITE_OK)
-		throw std::runtime_error(std::string(sqlite3_errmsg(Database)));
+		throw std::runtime_error(GetErrorMessage(Query));
 }
 
 // Runs a query that returns data
@@ -79,7 +79,7 @@ void _Database::PrepareQuery(const std::string &Query, int Handle) {
 	// Prepare query
 	int Result = sqlite3_prepare_v2(Database, Query.c_str(), -1, &QueryHandle[Handle], nullptr);
 	if(Result != SQLITE_OK)
-		throw std::runtime_error(std::string(sqlite3_errmsg(Database)));
+		throw std::runtime_error(GetErrorMessage(Query));
 
 	// Load column name map
 	int ColumnCount = sqlite3_column_count(QueryHandle[Handle]);
@@ -200,6 +200,11 @@ void _Database::BindString(int ColumnIndex, const std::string &String, int Handl
 	int Result = sqlite3_bind_text(QueryHandle[Handle], ColumnIndex, String.c_str(), -1, SQLITE_STATIC);
 	if(Result != SQLITE_OK)
 		throw std::runtime_error(std::string(sqlite3_errmsg(Database)));
+}
+
+// Build message for exception
+std::string _Database::GetErrorMessage(const std::string &Query) {
+	return "\"" + Query + "\": " + std::string(sqlite3_errmsg(Database));
 }
 
 template uint8_t _Database::GetInt<uint8_t>(int ColumnIndex, int Handle);

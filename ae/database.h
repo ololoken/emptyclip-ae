@@ -62,6 +62,8 @@ class _Database {
 
 	private:
 
+		std::string GetErrorMessage(const std::string &Query);
+
 		sqlite3 *Database;
 		sqlite3_stmt *QueryHandle[2];
 

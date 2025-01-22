@@ -253,9 +253,15 @@ bool _Console::IsOpen() {
 
 // Toggle display of console
 void _Console::Toggle() {
+
+	// Reset history iterator
+	CommandHistoryIterator = CommandHistory.end();
+
+	// Toggle element
 	Element->SetActive(!Element->Active);
 	TextboxElement->ResetCursor();
 
+	// Reset input box
 	if(!Element->Active) {
 		ae::FocusedElement = nullptr;
 		TextboxElement->Text = "";

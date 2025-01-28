@@ -20,6 +20,7 @@
 #include <ae/actions.h>
 #include <ae/state.h>
 #include <fstream>
+#include <cmath>
 
 namespace ae {
 

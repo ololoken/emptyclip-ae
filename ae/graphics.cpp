@@ -42,6 +42,9 @@ void _Graphics::Init(const _WindowSettings &WindowSettings) {
 	if(SDL_GetDesktopDisplayMode(0, &DisplayMode) == 0)
 		FullscreenSize = glm::ivec2(DisplayMode.w, DisplayMode.h);
 
+	// Save position
+	WindowPosition = WindowSettings.Position;
+
 	// Set video flags
 	Uint32 VideoFlags = SDL_WINDOW_OPENGL;
 	if(WindowSettings.Fullscreen) {
@@ -421,13 +424,21 @@ bool _Graphics::SetFullscreen(bool Fullscreen) {
 	if(FullscreenSize == glm::ivec2(0))
 		return false;
 
+	// Save old window position
 	if(Fullscreen)
-		Graphics.SetWindowSize(FullscreenSize);
-	else
-		Graphics.SetWindowSize(WindowSize);
+		SDL_GetWindowPosition(Window, &WindowPosition.x, &WindowPosition.y);
 
+	// Toggle fullscreen
 	if(SDL_SetWindowFullscreen(Window, SDL_GetWindowFlags(Window) ^ SDL_WINDOW_FULLSCREEN_DESKTOP) != 0)
 		return false;
+
+	// Set window size
+	if(!Fullscreen) {
+		Graphics.SetWindowSize(WindowSize);
+		SDL_SetWindowPosition(Window, WindowPosition.x, WindowPosition.y);
+	}
+	else
+		Graphics.SetWindowSize(FullscreenSize);
 
 	return true;
 }

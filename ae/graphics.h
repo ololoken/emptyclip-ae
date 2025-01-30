@@ -139,6 +139,7 @@ class _Graphics {
 
 		// Window
 		glm::ivec2 WindowSize{0};
+		glm::ivec2 WindowPosition{0};
 		glm::ivec2 FullscreenSize{0};
 		glm::ivec2 CurrentSize{0};
 		glm::ivec2 ViewportSize{0};

@@ -24,6 +24,7 @@
 #include <string>
 #include <vector>
 #include <cmath>
+#include <cstdint>
 
 namespace ae {
 

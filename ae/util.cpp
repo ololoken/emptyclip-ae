@@ -120,6 +120,30 @@ template<typename T> void FormatSI(std::stringstream &Buffer, T Number, RoundFun
 		Buffer << Number;
 }
 
+
+// Format time as 00:00:00.00
+void FormatTime(std::stringstream &Buffer, double Time) {
+	uint32_t Hours = Time / 3600;
+	uint32_t Minutes = (uint32_t)(Time / 60) % 60;
+	uint32_t Seconds = (uint32_t)(Time) % 60;
+	uint32_t Centiseconds = (uint32_t)((Time - (uint32_t)(Time)) * 100);
+	Buffer
+		<< std::setw(2) << std::setfill('0') << Hours << ':'
+		<< std::setw(2) << std::setfill('0') << Minutes << ':'
+		<< std::setw(2) << std::setfill('0') << Seconds << '.'
+		<< std::setw(2) << std::setfill('0') << Centiseconds;
+}
+
+// Format time as hours/minutes/seconds
+void FormatTimeHMS(std::stringstream &Buffer, int64_t Time) {
+	if(Time < 60)
+		Buffer << Time << "s";
+	else if(Time < 3600)
+		Buffer << Time / 60 << "m";
+	else
+		Buffer << Time / 3600 << "h" << (Time / 60 % 60) << "m";
+}
+
 template void FormatSI<int64_t>(std::stringstream &Buffer, int64_t Number, RoundFunction *RoundFunction);
 template void FormatSI<double>(std::stringstream &Buffer, double Number, RoundFunction *RoundFunction);
 

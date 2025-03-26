@@ -47,14 +47,17 @@ inline T ToNumber(const std::string &String) {
 	return Number;
 }
 
+inline double Round0(double Number) { return std::round(Number); }
 inline double Round1(double Number) { return std::round(Number * 10) / 10.0; }
 inline double Round2(double Number) { return std::round(Number * 100) / 100.0; }
 inline double Round3(double Number) { return std::round(Number * 1000) / 1000.0; }
 
+inline double RoundUp0(double Number) { return std::ceil(Number); }
 inline double RoundUp1(double Number) { return std::ceil(Number * 10) / 10.0; }
 inline double RoundUp2(double Number) { return std::ceil(Number * 100) / 100.0; }
 inline double RoundUp3(double Number) { return std::ceil(Number * 1000) / 1000.0; }
 
+inline double RoundDown0(double Number) { return std::floor(Number); }
 inline double RoundDown1(double Number) { return std::floor(Number * 10) / 10.0; }
 inline double RoundDown2(double Number) { return std::floor(Number * 100) / 100.0; }
 inline double RoundDown3(double Number) { return std::floor(Number * 1000) / 1000.0; }

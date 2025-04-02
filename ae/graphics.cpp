@@ -429,7 +429,7 @@ bool _Graphics::SetFullscreen(bool Fullscreen) {
 		SDL_GetWindowPosition(Window, &WindowPosition.x, &WindowPosition.y);
 
 	// Toggle fullscreen
-	if(SDL_SetWindowFullscreen(Window, SDL_GetWindowFlags(Window) ^ SDL_WINDOW_FULLSCREEN_DESKTOP) != 0)
+	if(SDL_SetWindowFullscreen(Window, Fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0) != 0)
 		return false;
 
 	// Set window size

@@ -51,7 +51,7 @@ class _Texture {
 		_Texture(const std::string &Path) : Name(Path) {}
 		_Texture(const std::string &Path, const _TextureSettings &TextureSettings);
 		_Texture(const std::string &Path, FILE *FileHandle, const _TextureSettings &TextureSettings);
-		_Texture(unsigned char *Data, const glm::ivec2 &Size, int InternalFormat, GLenum Format);
+		_Texture(unsigned char *Data, const glm::ivec2 &Size, GLint InternalFormat, GLenum Format);
 		~_Texture();
 
 		void UpdateAnisotropicFiltering(float Value) const;

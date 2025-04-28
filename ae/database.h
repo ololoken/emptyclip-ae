@@ -39,6 +39,8 @@ class _Database {
 		_Database(const std::string &Path, bool ReadOnly=false);
 		~_Database();
 
+		void Backup(const std::string &Path);
+
 		void RunQuery(const std::string &Query);
 		void PrepareQuery(const std::string &Query, int Handle=0);
 		int FetchRow(int Handle=0);

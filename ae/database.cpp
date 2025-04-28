@@ -42,7 +42,7 @@ _Database::_Database(const std::string &Path, bool ReadOnly) {
 		std::string Error = sqlite3_errmsg(Database);
 		sqlite3_close(Database);
 
-		throw std::runtime_error(Error);
+		throw std::runtime_error(Error + ": " + Path);
 	}
 }
 
@@ -52,6 +52,42 @@ _Database::~_Database() {
 	// Close database
 	if(Database)
 		sqlite3_close(Database);
+}
+
+// Backup database
+void _Database::Backup(const std::string &Path) {
+
+	// Create destination database
+	sqlite3 *DestinationDatabase;
+	int Result = sqlite3_open(Path.c_str(), &DestinationDatabase);
+	if(Result != SQLITE_OK) {
+		std::string Error = sqlite3_errmsg(DestinationDatabase);
+		sqlite3_close(DestinationDatabase);
+
+		throw std::runtime_error(Error + ": " + Path);
+	}
+
+	// Initialize backup
+	sqlite3_backup *Backup = sqlite3_backup_init(DestinationDatabase, "main", Database, "main");
+	if(!Backup) {
+		std::string Error = sqlite3_errmsg(DestinationDatabase);
+		sqlite3_close(DestinationDatabase);
+
+		throw std::runtime_error(Error + ": " + Path);
+	}
+
+	// Backup
+	Result = sqlite3_backup_step(Backup, -1);
+	if(!Result) {
+		std::string Error = sqlite3_errmsg(DestinationDatabase);
+		sqlite3_close(DestinationDatabase);
+
+		throw std::runtime_error(Error + ": " + Path);
+	}
+
+	// Finalize
+	sqlite3_backup_finish(Backup);
+	sqlite3_close(DestinationDatabase);
 }
 
 // Runs a query

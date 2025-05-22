@@ -19,6 +19,7 @@
 *******************************************************************************/
 #include <ae/framebuffer.h>
 #include <stdexcept>
+#include <string>
 
 namespace ae {
 

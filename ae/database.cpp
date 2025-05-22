@@ -252,6 +252,7 @@ template uint8_t _Database::GetInt(const std::string &ColumnName, int Handle);
 template uint32_t _Database::GetInt(const std::string &ColumnName, int Handle);
 template uint64_t _Database::GetInt(const std::string &ColumnName, int Handle);
 template int _Database::GetInt(const std::string &ColumnName, int Handle);
+template unsigned long _Database::GetInt(const std::string &ColumnName, int Handle);
 
 }
 #endif

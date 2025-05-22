@@ -37,5 +37,6 @@ template int32_t GetRandomInt<int32_t>(int32_t Min, int32_t Max);
 template int64_t GetRandomInt<int64_t>(int64_t Min, int64_t Max);
 template uint32_t GetRandomInt<uint32_t>(uint32_t Min, uint32_t Max);
 template uint64_t GetRandomInt<uint64_t>(uint64_t Min, uint64_t Max);
+template unsigned long GetRandomInt<unsigned long>(unsigned long Min, unsigned long Max);
 
 }

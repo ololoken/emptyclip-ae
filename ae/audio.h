@@ -20,7 +20,7 @@
 #pragma once
 
 // Libraries
-#include <al.h>
+#include <AL/al.h>
 #include <glm/vec3.hpp>
 #include <vorbis/vorbisfile.h>
 #include <string>

@@ -63,7 +63,7 @@ class _FrameLimit {
 
 	private:
 
-		std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds> Timer;
+		std::chrono::time_point<std::chrono::high_resolution_clock> Timer;
 		double FrameRate{0.0};
 		double ExtraTime{0.0};
 

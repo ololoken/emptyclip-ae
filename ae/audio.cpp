@@ -18,7 +18,7 @@
 * 3. This notice may not be removed or altered from any source distribution.
 *******************************************************************************/
 #include <ae/audio.h>
-#include <alc.h>
+#include <AL/alc.h>
 #include <glm/gtx/norm.hpp>
 #include <stdexcept>
 

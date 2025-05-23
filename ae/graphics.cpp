@@ -55,6 +55,7 @@ void _Graphics::Init(const _WindowSettings &WindowSettings) {
 		CurrentSize = WindowSize;
 
 	// Set opengl attributes
+#ifndef __EMSCRIPTEN__
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
@@ -64,7 +65,7 @@ void _Graphics::Init(const _WindowSettings &WindowSettings) {
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, WindowSettings.MSAA);
 	}
-
+#endif
 	// Load cursors
 	Cursors[CURSOR_NONE] = nullptr;
 	Cursors[CURSOR_MAIN] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
